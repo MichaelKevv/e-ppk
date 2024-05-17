@@ -1,0 +1,119 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: "Poppins", sans-serif;
+}
+/* main content */
+ .home-section {
+	position: relative;
+	background: rgb(220, 220, 220);;
+	min-height: 100vh;
+	width: calc(100% - 240px);
+	left: 240px;
+	transition: all 0.5s ease;
+} */
+.sidebar.active ~ .home-section {
+	width: calc(100% - 60px);
+	left: 60px;
+}
+.home-section nav {
+	display: flex;
+	justify-content: space-between;
+	height: 80px;
+	background: #fff;
+	display: flex;
+	align-items: center;
+	position: fixed;
+	width: calc(100% - 240px);
+	left: 240px;
+	z-index: 100;
+	padding: 0 20px;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+	transition: all 0.5s ease;
+}
+.sidebar.active ~ .home-section nav {
+	left: 60px;
+	width: calc(100% - 60px);
+}
+.home-section nav .sidebar-button {
+	display: flex;
+	align-items: center;
+	font-size: 24px;
+	font-weight: 500;
+}
+nav .sidebar-button i {
+	font-size: 35px;
+	margin-right: 10px;
+}
+
+.home-section nav .profile-details {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: #000000;
+	border: 2px solid #efeef1;
+	border-radius: 6px;
+	height: 50px;
+	min-width: 190px;
+}
+
+nav .profile-details .admin_name {
+	font-size: 15px;
+	font-weight: 500;
+	color: #333;
+	white-space: nowrap;
+}
+.home-section .home-content {
+	position: relative;
+	padding-top: 104px;
+	padding-left: 20px;
+	padding-right: 20px;
+} 
+
+.btn {
+	background-color: #010101;
+	color: white;
+	padding: 10px 20px;
+	border: none ;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+.btn a {
+	text-decoration: none;
+	color: rgb(251, 249, 249);
+}
+
+.btn-tambah {
+	margin: 10px 0;
+}
+
+.btn-simpan {
+	width: 100%;
+}
+
+.btn:hover {
+    background-color: #484848;
+	border: none;
+	cursor: pointer;
+	color: #000000;
+}
+
+.table-data {
+	text-align: center;
+	border-collapse: collapse;
+	width: 100%;
+}
+th, td {
+	border: 1px solid rgb(0, 0, 0);
+	padding: 1px 1px;
+}
+.input {
+	width: 100%;
+	margin: 10px 0;
+	padding: 10px;
+	border-radius: 10px;
+	border: 1px solid rgb(255, 255, 255);
+}
