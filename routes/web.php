@@ -12,6 +12,7 @@ use App\Http\Controllers\PresensiController;
 use App\Http\Controllers\SatpamController;
 use App\Http\Controllers\PenggunaController;
 use App\Http\Controllers\PetugasController;
+use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\SupirController;
 use Illuminate\Support\Facades\Route;
 
@@ -26,8 +27,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/get-jam-kerja/{pegawaiId}', [JamKerjaController::class, 'getJamKerjaByPegawai']);
-
 Route::get('/', [LoginController::class, 'showLoginForm'])->name('login')->middleware('guest');
 Route::get('login', [LoginController::class, 'showLoginForm'])->name('login')->middleware('guest');
 Route::post('login', [LoginController::class, 'login']);
@@ -36,6 +35,5 @@ Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index']);
     Route::resource('petugas', PetugasController::class);
     Route::resource('pengguna', PenggunaController::class);
-
-    Route::get('penggajian/export-pdf/{id_penggajian}', [PenggajianController::class, 'exportPdf']);
+    Route::resource('siswa', SiswaController::class);
 });

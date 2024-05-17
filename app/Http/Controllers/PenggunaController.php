@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\TbPengguna;
 use App\Models\TbPetuga;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class PenggunaController extends Controller
@@ -30,7 +33,6 @@ class PenggunaController extends Controller
      */
     public function create()
     {
-        return view('pengguna/create');
     }
 
     /**
@@ -41,14 +43,6 @@ class PenggunaController extends Controller
      */
     public function store(Request $request)
     {
-        TbPengguna::create([
-            'id_pegawai' => $request->id_pegawai,
-            'id_jam_kerja' => $request->id_jam_kerja,
-            'jabatan'  => $request->jabatan,
-        ]);
-        Alert::success("Success", "Data berhasil disimpan");
-
-        return redirect("pengguna");
     }
 
     /**
@@ -70,9 +64,7 @@ class PenggunaController extends Controller
      */
     public function edit(TbPengguna $pengguna)
     {
-        $data["pegawaiExist"] = TbPengguna::find($pengguna->id_pegawai);
-        $data['pengguna'] = TbPengguna::all();
-        return view('pengguna/edit', compact('pengguna'), $data);
+        return view('pengguna/edit', compact('pengguna'));
     }
 
     /**
@@ -84,14 +76,35 @@ class PenggunaController extends Controller
      */
     public function update(Request $request, TbPengguna $pengguna)
     {
-        $pengguna->update([
-            'id_pegawai' => $request->id_pegawai,
-            'id_jam_kerja' => $request->id_jam_kerja,
-            'jabatan'  => $request->jabatan,
+        $validator = Validator::make($request->all(), [
+            'username' => 'required|string|unique:tb_pengguna,username,' . $pengguna->id_pengguna . ',id_pengguna',
+            'email' => 'required|email|unique:tb_pengguna,email,' . $pengguna->id_pengguna . ',id_pengguna',
+            'password' => 'nullable|string|min:6',
         ]);
-        Alert::success("Success", "Data berhasil disimpan");
 
-        return redirect("pengguna");
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $pengguna->username = $request->username;
+            $pengguna->email = $request->email;
+            if ($request->filled('password')) {
+                $pengguna->password = Hash::make($request->password);
+            }
+            $pengguna->save();
+
+            DB::commit();
+
+            Alert::success("Success", "Data berhasil diperbarui");
+
+            return redirect("pengguna");
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui data.')->withInput();
+        }
     }
 
     /**
