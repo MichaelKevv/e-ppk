@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\TbSiswa;
+use App\Models\TbKepalaSekolah;
 use App\Models\TbPengguna;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
 
-class SiswaController extends Controller
+class KepsekController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,11 +19,11 @@ class SiswaController extends Controller
      */
     public function index()
     {
-        $data = TbSiswa::all();
+        $data = TbKepalaSekolah::all();
         $title = 'Hapus Petugas';
         $text = "Apakah anda yakin untuk hapus?";
         confirmDelete($title, $text);
-        return view('siswa/index', compact('data'));
+        return view('kepsek/index', compact('data'));
     }
 
     /**
@@ -33,7 +33,7 @@ class SiswaController extends Controller
      */
     public function create()
     {
-        return view('siswa/create');
+        return view('kepsek/create');
     }
 
     /**
@@ -46,8 +46,6 @@ class SiswaController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'nama' => 'required|string|max:255',
-            'kelas' => 'required|string|max:255',
-            'jurusan' => 'required|string|max:255',
             'alamat' => 'required|string|max:255',
             'no_telp' => 'required|string|max:15',
             'username' => 'required|string|unique:tb_pengguna,username',
@@ -64,20 +62,20 @@ class SiswaController extends Controller
         try {
             $penggunaData = $request->only(['username', 'email']);
             $penggunaData['password'] = Hash::make($request->password);
-            $penggunaData['role'] = 'siswa';
+            $penggunaData['role'] = 'kepala_sekolah';
 
             $pengguna = TbPengguna::create($penggunaData);
 
-            $petugasData = $request->only(['nama', 'kelas', 'jurusan', 'alamat', 'no_telp']);
+            $petugasData = $request->only(['nama', 'alamat', 'no_telp']);
             $petugasData['id_pengguna'] = $pengguna->id_pengguna;
 
-            TbSiswa::create($petugasData);
+            TbKepalaSekolah::create($petugasData);
 
             Alert::success("Success", "Data berhasil disimpan");
 
             DB::commit();
 
-            return redirect("siswa");
+            return redirect("kepsek");
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data.')->withInput();
@@ -101,10 +99,10 @@ class SiswaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(TbSiswa $siswa)
+    public function edit(TbKepalaSekolah $kepsek)
     {
-        $pengguna = TbPengguna::find($siswa->id_pengguna);
-        return view('siswa/edit', compact('siswa', 'pengguna'));
+        $pengguna = TbPengguna::find($kepsek->id_pengguna);
+        return view('kepsek/edit', compact('kepsek', 'pengguna'));
     }
 
     /**
@@ -114,16 +112,14 @@ class SiswaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, TbSiswa $siswa)
+    public function update(Request $request, TbKepalaSekolah $kepsek)
     {
         $validator = Validator::make($request->all(), [
             'nama' => 'required|string|max:255',
-            'kelas' => 'required|string|max:255',
-            'jurusan' => 'required|string|max:255',
             'alamat' => 'required|string|max:255',
             'no_telp' => 'required|string|max:15',
-            'username' => 'required|string|unique:tb_pengguna,username,' . $siswa->id_pengguna . ',id_pengguna',
-            'email' => 'required|email|unique:tb_pengguna,email,' . $siswa->id_pengguna . ',id_pengguna',
+            'username' => 'required|string|unique:tb_pengguna,username,' . $kepsek->id_pengguna . ',id_pengguna',
+            'email' => 'required|email|unique:tb_pengguna,email,' . $kepsek->id_pengguna . ',id_pengguna',
             'password' => 'nullable|string|min:6',
         ]);
 
@@ -134,7 +130,7 @@ class SiswaController extends Controller
         DB::beginTransaction();
 
         try {
-            $pengguna = TbPengguna::findOrFail($siswa->id_pengguna);
+            $pengguna = TbPengguna::findOrFail($kepsek->id_pengguna);
 
             $pengguna->username = $request->username;
             $pengguna->email = $request->email;
@@ -142,18 +138,16 @@ class SiswaController extends Controller
                 $pengguna->password = Hash::make($request->password);
             }
             $pengguna->save();
-            $siswa->nama = $request->nama;
-            $siswa->kelas = $request->kelas;
-            $siswa->jurusan = $request->jurusan;
-            $siswa->alamat = $request->alamat;
-            $siswa->no_telp = $request->no_telp;
-            $siswa->save();
+            $kepsek->nama = $request->nama;
+            $kepsek->alamat = $request->alamat;
+            $kepsek->no_telp = $request->no_telp;
+            $kepsek->save();
 
             DB::commit();
 
             Alert::success("Success", "Data berhasil diperbarui");
 
-            return redirect("siswa");
+            return redirect("kepsek");
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui data.')->withInput();
@@ -166,14 +160,14 @@ class SiswaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(TbSiswa $siswa)
+    public function destroy(TbKepalaSekolah $kepsek)
     {
         DB::beginTransaction();
 
         try {
-            $pengguna = TbPengguna::findOrFail($siswa->id_pengguna);
+            $pengguna = TbPengguna::findOrFail($kepsek->id_pengguna);
 
-            $siswa->delete();
+            $kepsek->delete();
 
             $pengguna->delete();
 
@@ -181,7 +175,7 @@ class SiswaController extends Controller
 
             Alert::success("Success", "Data berhasil dihapus");
 
-            return redirect("siswa");
+            return redirect("kepsek");
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus data.');

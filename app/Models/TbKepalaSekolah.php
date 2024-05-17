@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class TbKepalaSekolah
- * 
+ *
  * @property int $id_kepala
  * @property int $id_pengguna
  * @property string $nama
@@ -20,7 +20,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $kontak
  * @property Carbon $created_at
  * @property Carbon $updated_at
- * 
+ *
  * @property TbPengguna $tb_pengguna
  * @property Collection|TbReviewPengaduan[] $tb_review_pengaduans
  *
@@ -39,7 +39,7 @@ class TbKepalaSekolah extends Model
 		'id_pengguna',
 		'nama',
 		'alamat',
-		'kontak'
+		'no_telp'
 	];
 
 	public function tb_pengguna()

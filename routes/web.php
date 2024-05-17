@@ -3,6 +3,7 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JamKerjaController;
 use App\Http\Controllers\KenekController;
+use App\Http\Controllers\KepsekController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MesinController;
 use App\Http\Controllers\PaletController;
@@ -36,4 +37,5 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('petugas', PetugasController::class);
     Route::resource('pengguna', PenggunaController::class);
     Route::resource('siswa', SiswaController::class);
+    Route::resource('kepsek', KepsekController::class);
 });

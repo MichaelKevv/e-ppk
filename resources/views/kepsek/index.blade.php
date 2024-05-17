@@ -4,13 +4,13 @@
         <div class="page-title">
             <div class="row">
                 <div class="col-12 col-md-6 order-md-1 order-last">
-                    <h3>Data Petugas</h3>
+                    <h3>Data Kepala Sekolah</h3>
                 </div>
                 <div class="col-12 col-md-6 order-md-2 order-first">
                     <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="{{ url('dashboard') }}">Dashboard</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Data Petugas</li>
+                            <li class="breadcrumb-item active" aria-current="page">Data Kepala Sekolah</li>
                         </ol>
                     </nav>
                 </div>
@@ -19,7 +19,7 @@
         <section class="section">
             <div class="card">
                 <div class="card-header">
-                    <a href="{{ url('petugas/create') }}"><button class="btn btn-success">Tambah Data</button></a>
+                    <a href="{{ url('kepsek/create') }}"><button class="btn btn-success">Tambah Data</button></a>
                 </div>
                 <div class="card-body">
                     <table class="table table-striped" id="table1">
@@ -34,22 +34,22 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($data as $petugas)
+                            @foreach ($data as $kepsek)
                                 <tr>
-                                    <td>{{ $petugas->nama }}</td>
-                                    <td>{{ $petugas->alamat }}</td>
-                                    <td>{{ $petugas->no_telp }}</td>
-                                    <td>{{ $petugas->tb_pengguna->username }}</td>
-                                    <td>{{ $petugas->tb_pengguna->email }}</td>
+                                    <td>{{ $kepsek->nama }}</td>
+                                    <td>{{ $kepsek->alamat }}</td>
+                                    <td>{{ $kepsek->no_telp }}</td>
+                                    <td>{{ $kepsek->tb_pengguna->username }}</td>
+                                    <td>{{ $kepsek->tb_pengguna->email }}</td>
                                     <td>
-                                        <a href="{{ route('petugas.edit', $petugas->id_petugas) }}"
+                                        <a href="{{ route('kepsek.edit', $kepsek->id_kepala) }}"
                                             class="text-secondary font-weight-bold text-xs" data-toggle="tooltip"
-                                            data-original-title="Edit Petugas">
+                                            data-original-title="Edit Kepala Sekolah">
                                             <button class="btn btn-primary" type="button">
                                                 <i class="bi bi-pencil"></i>
                                             </button>
                                         </a>
-                                        <a href="{{ route('petugas.destroy', $petugas->id_petugas) }}"
+                                        <a href="{{ route('kepsek.destroy', $kepsek->id_kepala) }}"
                                             class="btn btn-danger font-weight-bold text-xs" data-confirm-delete="true">
                                             Delete
                                         </a>
