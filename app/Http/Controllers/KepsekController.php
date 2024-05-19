@@ -20,7 +20,7 @@ class KepsekController extends Controller
     public function index()
     {
         $data = TbKepalaSekolah::all();
-        $title = 'Hapus Petugas';
+        $title = 'Hapus Kepala Sekolah';
         $text = "Apakah anda yakin untuk hapus?";
         confirmDelete($title, $text);
         return view('kepsek/index', compact('data'));

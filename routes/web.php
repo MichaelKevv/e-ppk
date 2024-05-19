@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ArtikelController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JamKerjaController;
 use App\Http\Controllers\KenekController;
@@ -8,6 +9,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MesinController;
 use App\Http\Controllers\PaletController;
 use App\Http\Controllers\PegawaiController;
+use App\Http\Controllers\PengaduanController;
 use App\Http\Controllers\PenggajianController;
 use App\Http\Controllers\PresensiController;
 use App\Http\Controllers\SatpamController;
@@ -28,7 +30,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [LoginController::class, 'showLoginForm'])->name('login')->middleware('guest');
+Route::get('/', [DashboardController::class, 'indexUser']);
+Route::get('showarticle', [ArtikelController::class, 'indexUser']);
+Route::get('register', [LoginController::class, 'showRegisterForm'])->name('register');
 Route::get('login', [LoginController::class, 'showLoginForm'])->name('login')->middleware('guest');
 Route::post('login', [LoginController::class, 'login']);
 Route::middleware(['auth'])->group(function () {
@@ -38,4 +42,6 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('pengguna', PenggunaController::class);
     Route::resource('siswa', SiswaController::class);
     Route::resource('kepsek', KepsekController::class);
+    Route::resource('pengaduan', PengaduanController::class);
+    Route::resource('artikel', ArtikelController::class);
 });

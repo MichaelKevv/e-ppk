@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-
 /**
  * Class TbPengguna
  *
@@ -47,16 +46,16 @@ class TbPengguna extends Authenticatable
 
 	public function tb_kepala_sekolahs()
 	{
-		return $this->hasOne(TbKepalaSekolah::class, 'id_pengguna');
+		return $this->hasMany(TbKepalaSekolah::class, 'id_pengguna');
 	}
 
 	public function tb_petugas()
 	{
-		return $this->hasOne(TbPetuga::class, 'id_pengguna');
+		return $this->hasMany(TbPetuga::class, 'id_pengguna');
 	}
 
 	public function tb_siswas()
 	{
-		return $this->hasOne(TbSiswa::class, 'id_pengguna');
+		return $this->hasMany(TbSiswa::class, 'id_pengguna');
 	}
 }

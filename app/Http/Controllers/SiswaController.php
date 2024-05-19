@@ -20,7 +20,7 @@ class SiswaController extends Controller
     public function index()
     {
         $data = TbSiswa::all();
-        $title = 'Hapus Petugas';
+        $title = 'Hapus Siswa';
         $text = "Apakah anda yakin untuk hapus?";
         confirmDelete($title, $text);
         return view('siswa/index', compact('data'));

@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id_petugas
  * @property int $id_pengguna
  * @property string $nama
+ * @property string $gender
  * @property string $alamat
  * @property string $no_telp
  * @property Carbon $created_at
@@ -38,6 +39,7 @@ class TbPetuga extends Model
 	protected $fillable = [
 		'id_pengguna',
 		'nama',
+		'gender',
 		'alamat',
 		'no_telp'
 	];

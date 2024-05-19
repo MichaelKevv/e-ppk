@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $nama
  * @property string $kelas
  * @property string $jurusan
+ * @property string $gender
  * @property string $alamat
  * @property string $no_telp
  * @property Carbon $created_at
@@ -42,6 +43,7 @@ class TbSiswa extends Model
 		'nama',
 		'kelas',
 		'jurusan',
+		'gender',
 		'alamat',
 		'no_telp'
 	];
