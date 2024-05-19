@@ -42,9 +42,7 @@
                                             <div class="col-12">
                                                 <div class="form-group">
                                                     <label for="email-id-vertical">Konten</label>
-                                                    <input type="text" id="email-id-vertical" class="form-control"
-                                                        placeholder="Masukkan Konten" name="konten"
-                                                        value="{{ $artikel->konten }}" required>
+                                                    <textarea id="konten" name="konten">{{ $artikel->konten }}</textarea>
                                                 </div>
                                             </div>
                                             <div class="col-12">

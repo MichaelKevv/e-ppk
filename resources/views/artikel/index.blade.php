@@ -41,7 +41,7 @@
                                         <img src="{{ url('storage/foto-artikel/' . $artikel->gambar) }}" width="100px">
                                     </td>
                                     <td>{{ $artikel->judul }}</td>
-                                    <td>{{ $artikel->konten }}</td>
+                                    <td>{!! $artikel->konten !!}</td>
                                     <td>{{ $artikel->kategori }}</td>
                                     <td>{{ \Carbon\Carbon::parse($artikel->created_at)->isoFormat('D MMMM YYYY HH:mm:ss') }}</td>
                                     <td>{{ $artikel->author }}</td>

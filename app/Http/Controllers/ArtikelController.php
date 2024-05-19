@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\TbArtikel;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -29,7 +28,13 @@ class ArtikelController extends Controller
     public function indexUser()
     {
         $data = TbArtikel::all();
-        return view('artikel_user', compact('data'));
+        return view('article_user', compact('data'));
+    }
+
+    public function articleDetail($id)
+    {
+        $data = TbArtikel::findOrFail($id);
+        return view('article_detail', compact('data'));
     }
 
     /**

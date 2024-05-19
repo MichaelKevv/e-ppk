@@ -29,15 +29,18 @@
                         <div
                             class="col-lg-4 col-md-6 portfolio-item isotope-item filter-{{ strtolower($artikel->kategori) }}">
                             <div class="portfolio-content h-100">
-                                <img src="{{ url('storage/foto-artikel/' . $artikel->gambar) }}" class="img-fluid" alt="">
+                                <img src="{{ url('storage/foto-artikel/' . $artikel->gambar) }}" class="img-fluid"
+                                    alt="">
                                 <div class="portfolio-info">
                                     <h4>{{ $artikel->kategori }}</h4>
                                     <p>{{ Str::limit($artikel->judul, 50) }}</p>
-                                    <a href="{{ url('storage/foto-artikel/' . $artikel->gambar) }}" title="{{ $artikel->judul }}"
+                                    <a href="{{ url('storage/foto-artikel/' . $artikel->gambar) }}"
+                                        title="{{ $artikel->judul }}"
                                         data-gallery="portfolio-gallery-{{ strtolower($artikel->kategori) }}"
                                         class="glightbox preview-link">
                                         <i class="bi bi-zoom-in"></i></a>
-                                    <a href="" title="More Details" class="details-link">
+                                    <a href="{{ url('article_detail/' . $artikel->id_artikel) }}" title="More Details"
+                                        class="details-link">
                                         <i class="bi bi-link-45deg"></i>
                                     </a>
                                 </div>

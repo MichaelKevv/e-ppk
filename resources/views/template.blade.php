@@ -253,8 +253,6 @@
     </div>
 
     <script src="{{ asset('extensions/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
-
-
     <script src="{{ asset('compiled/js/app.js') }}"></script>
 
     @include('sweetalert::alert')
@@ -267,6 +265,17 @@
     <script src="{{ asset('static/js/pages/simple-datatables.js') }}"></script>
     <script src="{{ asset('static/js/components/dark.js') }}"></script>
 
+    <script script src="https://cdn.tiny.cloud/1/1n3f7wnxsqlud0ga3vqsndjt3zhzvf7skeun894b43byqkwk/tinymce/7/tinymce.min.js"
+        referrerpolicy="origin"></script>
+    <script>
+        tinymce.init({
+            selector: 'textarea',
+            plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate mentions tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss markdown',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+            tinycomments_mode: 'embedded',
+            tinycomments_author: 'Author name',
+        });
+    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Mendapatkan URL saat ini
