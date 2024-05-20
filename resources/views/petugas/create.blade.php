@@ -44,9 +44,19 @@
                                             </div>
                                             <div class="col-12">
                                                 <div class="form-group">
+                                                    <label for="email-id-vertical">Gender</label>
+                                                    <select class="form-control" name="gender" id="gender">
+                                                        <option value="" selected>Pilih Gender</option>
+                                                        <option value="laki-laki">Laki-Laki</option>
+                                                        <option value="perempuan">Perempuan</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="form-group">
                                                     <label for="email-id-vertical">Nomor Telepon</label>
                                                     <input type="text" id="email-id-vertical" class="form-control"
-                                                        placeholder="Masukkan Nomor Telepon / WA" name="no_telp" required>
+                                                        placeholder="Masukkan Nomor Telepon / WA, contoh 085xxxxx" name="no_telp" required>
                                                 </div>
                                             </div>
                                             <div class="col-12">
@@ -70,7 +80,13 @@
                                                         placeholder="Masukkan Password" name="password" required>
                                                 </div>
                                             </div>
-
+                                            <div class="col-12">
+                                                <div class="form-group">
+                                                    <label for="email-id-vertical">Foto</label>
+                                                    <input type="file" id="email-id-vertical" class="form-control"
+                                                        name="foto" required>
+                                                </div>
+                                            </div>
                                             <div class="col-12 d-flex justify-content-end">
                                                 <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
                                             </div>

@@ -71,6 +71,7 @@
                                 <span>Dashboard</span>
                             </a>
                         </li>
+                        @if (Auth::user()->role == 'kepala_sekolah')
                         <li class="sidebar-item  has-sub">
                             <a href="#" class='sidebar-link'>
                                 <i class="bi bi-people-fill"></i>
@@ -91,24 +92,29 @@
                                 </li>
                             </ul>
                         </li>
+                        @endif
+                        @if (Auth::user()->role == 'kepala_sekolah' || Auth::user()->role == 'petugas')
                         <li class="sidebar-item  ">
                             <a href="{{ url('artikel') }}" class='sidebar-link'>
-                                <i class="bi bi-cash-stack"></i>
+                                <i class="bi bi-book-fill"></i>
                                 <span>Artikel</span>
                             </a>
                         </li>
+                        @endif
+                        @if (Auth::user()->role == 'siswa' || Auth::user()->role == 'kepala_sekolah' || Auth::user()->role == 'petugas')
                         <li class="sidebar-item  ">
                             <a href="{{ url('pengaduan') }}" class='sidebar-link'>
-                                <i class="bi bi-cash-stack"></i>
+                                <i class="bi bi-briefcase-fill"></i>
                                 <span>Pengaduan</span>
                             </a>
                         </li>
                         <li class="sidebar-item  ">
                             <a href="{{ url('feedback') }}" class='sidebar-link'>
-                                <i class="bi bi-cash-stack"></i>
+                                <i class="bi bi-chat-left-dots-fill"></i>
                                 <span>Feedback</span>
                             </a>
                         </li>
+                        @endif
                     </ul>
                 </div>
             </div>
@@ -298,47 +304,6 @@
                     }
                 }
             });
-        });
-
-        document.addEventListener("DOMContentLoaded", function() {
-            const selectPegawai = document.getElementById('id_pegawai');
-            const selectJamKerja = document.getElementById('id_jam_kerja');
-
-            selectPegawai.addEventListener('change', function() {
-                const selectedPegawaiId = selectPegawai.value;
-                // Kirim permintaan Ajax untuk mendapatkan jam kerja yang sesuai dengan pengguna yang dipilih
-                fetch(`/get-jam-kerja/${selectedPegawaiId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        // Hapus semua opsi yang ada pada select jam kerja
-                        selectJamKerja.innerHTML = '';
-                        // Tambahkan opsi jam kerja yang baru
-                        data.forEach(jamKerja => {
-                            const option = document.createElement('option');
-                            option.value = jamKerja.id_jam_kerja;
-                            option.textContent = jamKerja.jam_kerja + " Jam";
-                            selectJamKerja.appendChild(option);
-                        });
-                    })
-                    .catch(error => console.error('Terjadi kesalahan:', error));
-            });
-
-            // Lakukan permintaan Ajax saat halaman dimuat untuk pertama kali
-            const initialPegawaiId = selectPegawai.value;
-            fetch(`/get-jam-kerja/${initialPegawaiId}`)
-                .then(response => response.json())
-                .then(data => {
-                    // Hapus semua opsi yang ada pada select jam kerja
-                    selectJamKerja.innerHTML = '';
-                    // Tambahkan opsi jam kerja yang baru
-                    data.forEach(jamKerja => {
-                        const option = document.createElement('option');
-                        option.value = jamKerja.id_jam_kerja;
-                        option.textContent = jamKerja.jam_kerja + " Jam";
-                        selectJamKerja.appendChild(option);
-                    });
-                })
-                .catch(error => console.error('Terjadi kesalahan:', error));
         });
     </script>
 

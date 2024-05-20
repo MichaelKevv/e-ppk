@@ -7,6 +7,7 @@ use App\Models\TbPengguna;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -47,10 +48,12 @@ class KepsekController extends Controller
         $validator = Validator::make($request->all(), [
             'nama' => 'required|string|max:255',
             'alamat' => 'required|string|max:255',
+            'gender' => 'required|string|max:255',
             'no_telp' => 'required|string|max:15',
             'username' => 'required|string|unique:tb_pengguna,username',
             'email' => 'required|email|unique:tb_pengguna,email',
             'password' => 'required|string|min:6',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -66,10 +69,15 @@ class KepsekController extends Controller
 
             $pengguna = TbPengguna::create($penggunaData);
 
-            $petugasData = $request->only(['nama', 'alamat', 'no_telp']);
-            $petugasData['id_pengguna'] = $pengguna->id_pengguna;
+            $kepsekData = $request->only(['nama', 'alamat', 'no_telp', 'gender']);
+            if ($request->hasFile('foto')) {
+                $image = $request->file('foto');
+                $image->storeAs('public/foto-kepsek', $image->hashName());
+                $kepsekData['foto'] = $image->hashName();
+            }
+            $kepsekData['id_pengguna'] = $pengguna->id_pengguna;
 
-            TbKepalaSekolah::create($petugasData);
+            TbKepalaSekolah::create($kepsekData);
 
             Alert::success("Success", "Data berhasil disimpan");
 
@@ -117,10 +125,12 @@ class KepsekController extends Controller
         $validator = Validator::make($request->all(), [
             'nama' => 'required|string|max:255',
             'alamat' => 'required|string|max:255',
+            'gender' => 'required|string|max:255',
             'no_telp' => 'required|string|max:15',
             'username' => 'required|string|unique:tb_pengguna,username,' . $kepsek->id_pengguna . ',id_pengguna',
             'email' => 'required|email|unique:tb_pengguna,email,' . $kepsek->id_pengguna . ',id_pengguna',
             'password' => 'nullable|string|min:6',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -141,6 +151,15 @@ class KepsekController extends Controller
             $kepsek->nama = $request->nama;
             $kepsek->alamat = $request->alamat;
             $kepsek->no_telp = $request->no_telp;
+            $kepsek->gender = $request->gender;
+            if ($request->hasFile('foto')) {
+                if ($kepsek->foto) {
+                    Storage::delete('public/foto-kepsek/' . $kepsek->gambar);
+                }
+                $foto = $request->file('foto');
+                $foto->storeAs('public/foto-kepsek', $foto->hashName());
+                $kepsek->foto = $foto->hashName();
+            }
             $kepsek->save();
 
             DB::commit();
@@ -165,6 +184,9 @@ class KepsekController extends Controller
         DB::beginTransaction();
 
         try {
+            if ($kepsek->gambar) {
+                Storage::delete('public/foto-kepsek/' . $kepsek->gambar);
+            }
             $pengguna = TbPengguna::findOrFail($kepsek->id_pengguna);
 
             $kepsek->delete();

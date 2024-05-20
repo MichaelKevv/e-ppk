@@ -3,11 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\TbPengaduan;
-use App\Models\TbSiswa;
-use App\Models\TbPengguna;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -20,7 +18,11 @@ class PengaduanController extends Controller
      */
     public function index()
     {
-        $data = TbPengaduan::all();
+        if (Auth::user()->role == 'siswa') {
+            $data = TbPengaduan::where('id_siswa', session('userdata')->id_siswa)->get();
+        } else {
+            $data = TbPengaduan::all();
+        }
         $title = 'Hapus Pengaduan';
         $text = "Apakah anda yakin untuk hapus?";
         confirmDelete($title, $text);
@@ -46,14 +48,8 @@ class PengaduanController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'nama' => 'required|string|max:255',
-            'kelas' => 'required|string|max:255',
-            'jurusan' => 'required|string|max:255',
-            'alamat' => 'required|string|max:255',
-            'no_telp' => 'required|string|max:15',
-            'username' => 'required|string|unique:tb_pengguna,username',
-            'email' => 'required|email|unique:tb_pengguna,email',
-            'password' => 'required|string|min:6',
+            'judul' => 'required|string|max:255',
+            'deskripsi' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -63,16 +59,10 @@ class PengaduanController extends Controller
         DB::beginTransaction();
 
         try {
-            $penggunaData = $request->only(['username', 'email']);
-            $penggunaData['password'] = Hash::make($request->password);
-            $penggunaData['role'] = 'pengaduan';
+            $pengaduanData = $request->only(['judul', 'deskripsi']);
 
-            $pengguna = TbPengguna::create($penggunaData);
-
-            $petugasData = $request->only(['nama', 'kelas', 'jurusan', 'alamat', 'no_telp']);
-            $petugasData['id_pengguna'] = $pengguna->id_pengguna;
-
-            TbSiswa::create($petugasData);
+            $pengaduanData['id_siswa'] = session('userdata')->id_siswa;
+            TbPengaduan::create($pengaduanData);
 
             Alert::success("Success", "Data berhasil disimpan");
 
@@ -91,9 +81,9 @@ class PengaduanController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(TbPengaduan $pengaduan)
     {
-        //
+        return view('pengaduan.detail', compact('pengaduan'));
     }
 
     /**
@@ -102,10 +92,9 @@ class PengaduanController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(TbSiswa $pengaduan)
+    public function edit(TbPengaduan $pengaduan)
     {
-        $pengguna = TbPengguna::find($pengaduan->id_pengguna);
-        return view('pengaduan/edit', compact('pengaduan', 'pengguna'));
+        return view('pengaduan/edit', compact('pengaduan'));
     }
 
     /**
@@ -115,17 +104,11 @@ class PengaduanController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, TbSiswa $pengaduan)
+    public function update(Request $request, TbPengaduan $pengaduan)
     {
         $validator = Validator::make($request->all(), [
-            'nama' => 'required|string|max:255',
-            'kelas' => 'required|string|max:255',
-            'jurusan' => 'required|string|max:255',
-            'alamat' => 'required|string|max:255',
-            'no_telp' => 'required|string|max:15',
-            'username' => 'required|string|unique:tb_pengguna,username,' . $pengaduan->id_pengguna . ',id_pengguna',
-            'email' => 'required|email|unique:tb_pengguna,email,' . $pengaduan->id_pengguna . ',id_pengguna',
-            'password' => 'nullable|string|min:6',
+            'judul' => 'required|string|max:255',
+            'deskripsi' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -135,19 +118,8 @@ class PengaduanController extends Controller
         DB::beginTransaction();
 
         try {
-            $pengguna = TbPengguna::findOrFail($pengaduan->id_pengguna);
-
-            $pengguna->username = $request->username;
-            $pengguna->email = $request->email;
-            if ($request->filled('password')) {
-                $pengguna->password = Hash::make($request->password);
-            }
-            $pengguna->save();
-            $pengaduan->nama = $request->nama;
-            $pengaduan->kelas = $request->kelas;
-            $pengaduan->jurusan = $request->jurusan;
-            $pengaduan->alamat = $request->alamat;
-            $pengaduan->no_telp = $request->no_telp;
+            $pengaduan->judul = $request->judul;
+            $pengaduan->deskripsi = $request->deskripsi;
             $pengaduan->save();
 
             DB::commit();
@@ -167,16 +139,13 @@ class PengaduanController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(TbSiswa $pengaduan)
+    public function destroy(TbPengaduan $pengaduan)
     {
         DB::beginTransaction();
 
         try {
-            $pengguna = TbPengguna::findOrFail($pengaduan->id_pengguna);
 
             $pengaduan->delete();
-
-            $pengguna->delete();
 
             DB::commit();
 

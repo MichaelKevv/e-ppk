@@ -19,17 +19,22 @@
         <section class="section">
             <div class="card">
                 <div class="card-header">
-                    <a href="{{ url('pengaduan/create') }}"><button class="btn btn-success">Tambah Data</button></a>
+                    @if (Auth::user()->role == 'siswa')
+                        <a href="{{ url('pengaduan/create') }}"><button class="btn btn-success">Tambah Data</button></a>
+                    @endif
                 </div>
                 <div class="card-body">
                     <table class="table table-striped" id="table1">
                         <thead>
                             <tr>
-                                <th>Nama Siswa</th>
-                                <th>Kelas</th>
-                                <th>Jurusan</th>
+                                @if (Auth::user()->role == 'petugas' || Auth::user()->role == 'kepala_sekolah')
+                                    <th>Nama Siswa</th>
+                                    <th>Kelas</th>
+                                    <th>Jurusan</th>
+                                @endif
                                 <th>Judul</th>
                                 <th>Deskripsi</th>
+                                <th>Tanggal</th>
                                 <th>Status</th>
                                 <th>Aksi</th>
                             </tr>
@@ -37,24 +42,39 @@
                         <tbody>
                             @foreach ($data as $pengaduan)
                                 <tr>
-                                    <td>{{ $pengaduan->tb_siswa->nama }}</td>
-                                    <td>{{ $pengaduan->tb_siswa->kelas }}</td>
-                                    <td>{{ $pengaduan->tb_siswa->jurusan }}</td>
+                                    @if (Auth::user()->role == 'petugas' || Auth::user()->role == 'kepala_sekolah')
+                                        <td>{{ $pengaduan->tb_siswa->nama }}</td>
+                                        <td>{{ $pengaduan->tb_siswa->kelas }}</td>
+                                        <td>{{ $pengaduan->tb_siswa->jurusan }}</td>
+                                    @endif
                                     <td>{{ $pengaduan->judul }}</td>
-                                    <td>{{ $pengaduan->deskripsi }}</td>
+                                    <td>{!! Str::limit($pengaduan->deskripsi, 50) !!}</td>
+                                    <td>{{ \Carbon\Carbon::parse($pengaduan->created_at)->isoFormat('D MMMM YYYY HH:mm:ss') }}
+                                    </td>
                                     <td>{{ $pengaduan->status }}</td>
                                     <td>
-                                        <a href="{{ route('pengaduan.edit', $pengaduan->id_pengaduan) }}"
-                                            class="text-secondary font-weight-bold text-xs" data-toggle="tooltip"
-                                            data-original-title="Edit Pengaduan">
-                                            <button class="btn btn-primary" type="button">
-                                                <i class="bi bi-pencil"></i>
-                                            </button>
-                                        </a>
-                                        <a href="{{ route('pengaduan.destroy', $pengaduan->id_pengaduan) }}"
-                                            class="btn btn-danger font-weight-bold text-xs" data-confirm-delete="true">
-                                            Delete
-                                        </a>
+                                        @if (Auth::user()->role == 'siswa')
+                                            <a href="{{ route('pengaduan.edit', $pengaduan->id_pengaduan) }}"
+                                                class="text-secondary font-weight-bold text-xs" data-toggle="tooltip"
+                                                data-original-title="Edit Pengaduan">
+                                                <button class="btn btn-primary" type="button">
+                                                    <i class="bi bi-pencil"></i>
+                                                </button>
+                                            </a>
+                                            <a href="{{ route('pengaduan.show', $pengaduan->id_pengaduan) }}"
+                                                class="btn btn-warning font-weight-bold text-xs">
+                                                Detail
+                                            </a>
+                                            <a href="{{ route('pengaduan.destroy', $pengaduan->id_pengaduan) }}"
+                                                class="btn btn-danger font-weight-bold text-xs" data-confirm-delete="true">
+                                                Delete
+                                            </a>
+                                        @else
+                                            <a href="{{ route('pengaduan.show', $pengaduan->id_pengaduan) }}"
+                                                class="btn btn-warning font-weight-bold text-xs">
+                                                Detail
+                                            </a>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach

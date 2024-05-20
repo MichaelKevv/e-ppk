@@ -27,9 +27,13 @@
                             <tr>
                                 <th>Nama</th>
                                 <th>Alamat</th>
+                                <th>Gender</th>
                                 <th>Nomor Telepon</th>
+                                <th>Kelas</th>
+                                <th>Jurusan</th>
                                 <th>Username</th>
                                 <th>Email</th>
+                                <th>Foto</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -38,9 +42,15 @@
                                 <tr>
                                     <td>{{ $siswa->nama }}</td>
                                     <td>{{ $siswa->alamat }}</td>
+                                    <td>{{ $siswa->gender }}</td>
                                     <td>{{ $siswa->no_telp }}</td>
+                                    <td>{{ $siswa->kelas }}</td>
+                                    <td>{{ $siswa->jurusan }}</td>
                                     <td>{{ $siswa->tb_pengguna->username }}</td>
                                     <td>{{ $siswa->tb_pengguna->email }}</td>
+                                    <td>
+                                        <img src="{{ url('storage/foto-siswa/' . $siswa->foto) }}" width="100px">
+                                    </td>
                                     <td>
                                         <a href="{{ route('siswa.edit', $siswa->id_siswa) }}"
                                             class="text-secondary font-weight-bold text-xs" data-toggle="tooltip"

@@ -26,10 +26,12 @@
                         <thead>
                             <tr>
                                 <th>Nama</th>
+                                <th>Gender</th>
                                 <th>Alamat</th>
                                 <th>Nomor Telepon</th>
                                 <th>Username</th>
                                 <th>Email</th>
+                                <th>Foto</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -37,10 +39,14 @@
                             @foreach ($data as $kepsek)
                                 <tr>
                                     <td>{{ $kepsek->nama }}</td>
+                                    <td>{{ $kepsek->gender }}</td>
                                     <td>{{ $kepsek->alamat }}</td>
                                     <td>{{ $kepsek->no_telp }}</td>
                                     <td>{{ $kepsek->tb_pengguna->username }}</td>
                                     <td>{{ $kepsek->tb_pengguna->email }}</td>
+                                    <td>
+                                        <img src="{{ url('storage/foto-kepsek/' . $kepsek->foto) }}" width="100px">
+                                    </td>
                                     <td>
                                         <a href="{{ route('kepsek.edit', $kepsek->id_kepala) }}"
                                             class="text-secondary font-weight-bold text-xs" data-toggle="tooltip"

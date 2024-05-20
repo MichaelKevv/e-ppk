@@ -10,10 +10,11 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class TbTanggapanPengaduan
+ * Class TbFeedback
  * 
  * @property int $id_tanggapan
  * @property int $id_pengaduan
+ * @property int|null $id_siswa
  * @property int $id_petugas
  * @property string $teks_tanggapan
  * @property Carbon $created_at
@@ -21,21 +22,24 @@ use Illuminate\Database\Eloquent\Model;
  * 
  * @property TbPengaduan $tb_pengaduan
  * @property TbPetuga $tb_petuga
+ * @property TbSiswa|null $tb_siswa
  *
  * @package App\Models
  */
-class TbTanggapanPengaduan extends Model
+class TbFeedback extends Model
 {
-	protected $table = 'tb_tanggapan_pengaduan';
+	protected $table = 'tb_feedback';
 	protected $primaryKey = 'id_tanggapan';
 
 	protected $casts = [
 		'id_pengaduan' => 'int',
+		'id_siswa' => 'int',
 		'id_petugas' => 'int'
 	];
 
 	protected $fillable = [
 		'id_pengaduan',
+		'id_siswa',
 		'id_petugas',
 		'teks_tanggapan'
 	];
@@ -48,5 +52,10 @@ class TbTanggapanPengaduan extends Model
 	public function tb_petuga()
 	{
 		return $this->belongsTo(TbPetuga::class, 'id_petugas');
+	}
+
+	public function tb_siswa()
+	{
+		return $this->belongsTo(TbSiswa::class, 'id_siswa');
 	}
 }

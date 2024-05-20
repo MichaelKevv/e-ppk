@@ -19,11 +19,12 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $gender
  * @property string $alamat
  * @property string $no_telp
+ * @property string $foto
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * 
  * @property TbPengguna $tb_pengguna
- * @property Collection|TbTanggapanPengaduan[] $tb_tanggapan_pengaduans
+ * @property Collection|TbFeedback[] $tb_feedbacks
  *
  * @package App\Models
  */
@@ -41,7 +42,8 @@ class TbPetuga extends Model
 		'nama',
 		'gender',
 		'alamat',
-		'no_telp'
+		'no_telp',
+		'foto'
 	];
 
 	public function tb_pengguna()
@@ -49,8 +51,8 @@ class TbPetuga extends Model
 		return $this->belongsTo(TbPengguna::class, 'id_pengguna');
 	}
 
-	public function tb_tanggapan_pengaduans()
+	public function tb_feedbacks()
 	{
-		return $this->hasMany(TbTanggapanPengaduan::class, 'id_petugas');
+		return $this->hasMany(TbFeedback::class, 'id_petugas');
 	}
 }

@@ -36,36 +36,20 @@
 
                 <div class="col-lg-6 d-flex flex-column justify-content-center" data-aos="fade-up" data-aos-delay="200">
                     <div class="about-content ps-0 ps-lg-3">
-                        <h3>Voluptatem dignissimos provident quasi corporis voluptates sit assumenda.</h3>
-                        <p class="fst-italic">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                            incididunt ut labore et dolore
-                            magna aliqua.
+                        <h3>Sambutan Kepala Sekolah</h3>
+                        <p class="">
+                            Selamat datang di website pengaduan perundungan siswa SMP Negeri 2 Bantaran Satu Atap Kabupaten
+                            Probolinggo. Kami sangat bangga memperkenalkan platform ini sebagai bagian dari komitmen kami
+                            untuk menciptakan lingkungan sekolah yang aman dan nyaman bagi seluruh siswa. Melalui website
+                            ini, kami berharap setiap siswa yang mengalami atau menyaksikan perundungan dapat melaporkannya
+                            dengan mudah dan aman. Setiap laporan akan ditangani dengan serius untuk memastikan
+                            kesejahteraan seluruh siswa.
                         </p>
-                        <ul>
-                            <li>
-                                <i class="bi bi-diagram-3"></i>
-                                <div>
-                                    <h4>Ullamco laboris nisi ut aliquip consequat</h4>
-                                    <p>Magni facilis facilis repellendus cum excepturi quaerat praesentium libre
-                                        trade</p>
-                                </div>
-                            </li>
-                            <li>
-                                <i class="bi bi-fullscreen-exit"></i>
-                                <div>
-                                    <h4>Magnam soluta odio exercitationem reprehenderi</h4>
-                                    <p>Quo totam dolorum at pariatur aut distinctio dolorum laudantium illo direna
-                                        pasata redi</p>
-                                </div>
-                            </li>
-                        </ul>
                         <p>
-                            Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-                            reprehenderit in voluptate
-                            velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-                            proident, sunt in
-                            culpa qui officia deserunt mollit anim id est laborum
+                            Kami juga menyediakan berbagai informasi dan sumber daya untuk membantu siswa memahami dan
+                            menangani perundungan. Kami berharap dengan adanya website ini, kita semua dapat bekerja sama
+                            menciptakan budaya sekolah yang positif dan bebas dari perundungan. Terima kasih atas dukungan
+                            dan partisipasi Anda dalam mewujudkan lingkungan sekolah yang lebih baik.
                         </p>
                     </div>
 
@@ -81,43 +65,33 @@
 
         <!-- Section Title -->
         <div class="container section-title" data-aos="fade-up">
-            <h2>Services</h2>
-            <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
+            <h2>Layanan</h2>
+            <p>Beberapa Layanan yang Kami Tawarkan</p>
         </div><!-- End Section Title -->
 
         <div class="container">
 
             <div class="row gy-4">
 
-                <div class="col-xl-3 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="100">
+                <div class="col-xl-4 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="100">
+                    <div class="service-item position-relative">
+                        <div class="icon"><i class="bi bi-briefcase icon"></i></div>
+                        <h4>Pengaduan</h4>
+                        <p>Siswa dapat melakukan pengaduan tentang permasalahan mereka</p>
+                    </div>
+                </div><!-- End Service Item -->
+                <div class="col-xl-4 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="200">
+                    <div class="service-item position-relative">
+                        <div class="icon"><i class="bi bi-chat-left-dots icon"></i></div>
+                        <h4>Feedback</h4>
+                        <p>Kami berkomitmen memberikan feedback yang terbaik untuk siswa</p>
+                    </div>
+                </div><!-- End Service Item -->
+                <div class="col-xl-4 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="200">
                     <div class="service-item position-relative">
                         <div class="icon"><i class="bi bi-activity icon"></i></div>
-                        <h4><a href="service-details.html" class="stretched-link">Lorem Ipsum</a></h4>
-                        <p>Voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi</p>
-                    </div>
-                </div><!-- End Service Item -->
-
-                <div class="col-xl-3 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="200">
-                    <div class="service-item position-relative">
-                        <div class="icon"><i class="bi bi-bounding-box-circles icon"></i></div>
-                        <h4><a href="service-details.html" class="stretched-link">Sed ut perspici</a></h4>
-                        <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore</p>
-                    </div>
-                </div><!-- End Service Item -->
-
-                <div class="col-xl-3 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="300">
-                    <div class="service-item position-relative">
-                        <div class="icon"><i class="bi bi-calendar4-week icon"></i></div>
-                        <h4><a href="service-details.html" class="stretched-link">Magni Dolores</a></h4>
-                        <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia</p>
-                    </div>
-                </div><!-- End Service Item -->
-
-                <div class="col-xl-3 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="400">
-                    <div class="service-item position-relative">
-                        <div class="icon"><i class="bi bi-broadcast icon"></i></div>
-                        <h4><a href="service-details.html" class="stretched-link">Nemo Enim</a></h4>
-                        <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis</p>
+                        <h4>Artikel</h4>
+                        <p>Kami memberikan artikel tentang Mental Health</p>
                     </div>
                 </div><!-- End Service Item -->
 
@@ -128,7 +102,7 @@
     </section><!-- /Services Section -->
 
     <!-- Faq Section -->
-    <section id="faq" class="faq section">
+    {{-- <section id="faq" class="faq section">
 
         <!-- Section Title -->
         <div class="container section-title" data-aos="fade-up">
@@ -224,10 +198,10 @@
 
         </div>
 
-    </section><!-- /Faq Section -->
+    </section><!-- /Faq Section --> --}}
 
     <!-- Team Section -->
-    <section id="team" class="team section">
+    {{-- <section id="team" class="team section">
 
         <!-- Section Title -->
         <div class="container section-title" data-aos="fade-up">
@@ -315,10 +289,10 @@
 
         </div>
 
-    </section><!-- /Team Section -->
+    </section><!-- /Team Section --> --}}
 
     <!-- Clients Section -->
-    <section id="clients" class="clients section">
+    {{-- <section id="clients" class="clients section">
 
         <!-- Section Title -->
         <div class="container section-title" data-aos="fade-up">
@@ -385,10 +359,10 @@
 
         </div>
 
-    </section><!-- /Clients Section -->
+    </section><!-- /Clients Section --> --}}
 
     <!-- Contact Section -->
-    <section id="contact" class="contact section">
+    {{-- <section id="contact" class="contact section">
 
         <!-- Section Title -->
         <div class="container section-title" data-aos="fade-up">
@@ -478,5 +452,5 @@
 
         </div>
 
-    </section><!-- /Contact Section -->
+    </section><!-- /Contact Section --> --}}
 @endsection

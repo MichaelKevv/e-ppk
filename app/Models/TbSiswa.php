@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $gender
  * @property string $alamat
  * @property string $no_telp
+ * @property string $foto
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * 
@@ -45,7 +46,8 @@ class TbSiswa extends Model
 		'jurusan',
 		'gender',
 		'alamat',
-		'no_telp'
+		'no_telp',
+		'foto'
 	];
 
 	public function tb_pengguna()

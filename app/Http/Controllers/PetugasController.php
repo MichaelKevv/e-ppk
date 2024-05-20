@@ -7,6 +7,7 @@ use App\Models\TbPengguna;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -47,10 +48,12 @@ class PetugasController extends Controller
         $validator = Validator::make($request->all(), [
             'nama' => 'required|string|max:255',
             'alamat' => 'required|string|max:255',
+            'gender' => 'required|string|max:255',
             'no_telp' => 'required|string|max:15',
             'username' => 'required|string|unique:tb_pengguna,username',
             'email' => 'required|email|unique:tb_pengguna,email',
             'password' => 'required|string|min:6',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -66,7 +69,12 @@ class PetugasController extends Controller
 
             $pengguna = TbPengguna::create($penggunaData);
 
-            $petugasData = $request->only(['nama', 'alamat', 'no_telp']);
+            $petugasData = $request->only(['nama', 'alamat', 'no_telp', 'gender']);
+            if ($request->hasFile('foto')) {
+                $image = $request->file('foto');
+                $image->storeAs('public/foto-petugas', $image->hashName());
+                $petugasData['foto'] = $image->hashName();
+            }
             $petugasData['id_pengguna'] = $pengguna->id_pengguna;
 
             TbPetuga::create($petugasData);
@@ -117,10 +125,12 @@ class PetugasController extends Controller
         $validator = Validator::make($request->all(), [
             'nama' => 'required|string|max:255',
             'alamat' => 'required|string|max:255',
+            'gender' => 'required|string|max:255',
             'no_telp' => 'required|string|max:15',
-            'username' => 'required|string|unique:tb_pengguna,username' . $petuga->id_pengguna . ',id_pengguna',
+            'username' => 'required|string|unique:tb_pengguna,username,' . $petuga->id_pengguna . ',id_pengguna',
             'email' => 'required|email|unique:tb_pengguna,email,' . $petuga->id_pengguna . ',id_pengguna',
             'password' => 'nullable|string|min:6',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -141,6 +151,15 @@ class PetugasController extends Controller
             $petuga->nama = $request->nama;
             $petuga->alamat = $request->alamat;
             $petuga->no_telp = $request->no_telp;
+            $petuga->gender = $request->gender;
+            if ($request->hasFile('foto')) {
+                if ($petuga->foto) {
+                    Storage::delete('public/foto-petugas/' . $petuga->gambar);
+                }
+                $foto = $request->file('foto');
+                $foto->storeAs('public/foto-petugas', $foto->hashName());
+                $petuga->foto = $foto->hashName();
+            }
             $petuga->save();
 
             DB::commit();
@@ -165,6 +184,9 @@ class PetugasController extends Controller
         DB::beginTransaction();
 
         try {
+            if ($petuga->gambar) {
+                Storage::delete('public/foto-petugas/' . $petuga->gambar);
+            }
             $pengguna = TbPengguna::findOrFail($petuga->id_pengguna);
 
             $petuga->delete();

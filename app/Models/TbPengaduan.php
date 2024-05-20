@@ -22,8 +22,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property Carbon $updated_at
  * 
  * @property TbSiswa $tb_siswa
- * @property Collection|TbReviewPengaduan[] $tb_review_pengaduans
- * @property Collection|TbTanggapanPengaduan[] $tb_tanggapan_pengaduans
+ * @property Collection|TbFeedback[] $tb_feedbacks
  *
  * @package App\Models
  */
@@ -48,13 +47,8 @@ class TbPengaduan extends Model
 		return $this->belongsTo(TbSiswa::class, 'id_siswa');
 	}
 
-	public function tb_review_pengaduans()
+	public function tb_feedbacks()
 	{
-		return $this->hasMany(TbReviewPengaduan::class, 'id_pengaduan');
-	}
-
-	public function tb_tanggapan_pengaduans()
-	{
-		return $this->hasMany(TbTanggapanPengaduan::class, 'id_pengaduan');
+		return $this->hasMany(TbFeedback::class, 'id_pengaduan');
 	}
 }

@@ -7,7 +7,6 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -19,11 +18,11 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $gender
  * @property string $alamat
  * @property string $no_telp
+ * @property string $foto
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * 
  * @property TbPengguna $tb_pengguna
- * @property Collection|TbReviewPengaduan[] $tb_review_pengaduans
  *
  * @package App\Models
  */
@@ -41,16 +40,12 @@ class TbKepalaSekolah extends Model
 		'nama',
 		'gender',
 		'alamat',
-		'no_telp'
+		'no_telp',
+		'foto'
 	];
 
 	public function tb_pengguna()
 	{
 		return $this->belongsTo(TbPengguna::class, 'id_pengguna');
-	}
-
-	public function tb_review_pengaduans()
-	{
-		return $this->hasMany(TbReviewPengaduan::class, 'id_kepala');
 	}
 }

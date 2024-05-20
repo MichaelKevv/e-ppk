@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CV Indah Cemerlang</title>
+    <title>E-PPK</title>
 
     <link rel="Shortcut icon" href = "{{ asset('images/logo_eppk.png') }}"alt="">
     <link rel="stylesheet" crossorigin href="{{ asset('compiled/css/app.css') }}">
@@ -28,19 +28,27 @@
                     <form action="{{ route('login') }}" method="POST">
                         @csrf
                         <div class="form-group position-relative has-icon-left mb-4">
-                            <input type="text" name="email" class="form-control form-control-xl" placeholder="Email">
+                            <input type="text" name="email" class="form-control form-control-xl"
+                                placeholder="Email / Username">
                             <div class="form-control-icon">
                                 <i class="bi bi-person"></i>
                             </div>
                         </div>
                         <div class="form-group position-relative has-icon-left mb-4">
-                            <input type="password" name="password" class="form-control form-control-xl" placeholder="Password">
+                            <input type="password" name="password" class="form-control form-control-xl"
+                                placeholder="Password">
                             <div class="form-control-icon">
                                 <i class="bi bi-shield-lock"></i>
                             </div>
                         </div>
                         <button type="submit" class="btn btn-primary btn-block btn-lg shadow-lg mt-5">Log in</button>
                     </form>
+                    <div class="text-center mt-4 text-lg fs-4">
+                        <p class="text-gray-600">
+                            Tidak punya akun siswa?
+                            <a href="{{ url('register') }}" class="font-bold">Register</a>.
+                        </p>
+                    </div>
                 </div>
             </div>
             <div class="col-lg-6 d-none d-lg-block">

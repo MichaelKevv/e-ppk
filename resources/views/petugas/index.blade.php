@@ -27,9 +27,11 @@
                             <tr>
                                 <th>Nama</th>
                                 <th>Alamat</th>
+                                <th>Gender</th>
                                 <th>Nomor Telepon</th>
                                 <th>Username</th>
                                 <th>Email</th>
+                                <th>Foto</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -38,9 +40,13 @@
                                 <tr>
                                     <td>{{ $petugas->nama }}</td>
                                     <td>{{ $petugas->alamat }}</td>
+                                    <td>{{ $petugas->gender }}</td>
                                     <td>{{ $petugas->no_telp }}</td>
                                     <td>{{ $petugas->tb_pengguna->username }}</td>
                                     <td>{{ $petugas->tb_pengguna->email }}</td>
+                                    <td>
+                                        <img src="{{ url('storage/foto-petugas/' . $petugas->foto) }}" width="100px">
+                                    </td>
                                     <td>
                                         <a href="{{ route('petugas.edit', $petugas->id_petugas) }}"
                                             class="text-secondary font-weight-bold text-xs" data-toggle="tooltip"

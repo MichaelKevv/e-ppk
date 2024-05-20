@@ -7,6 +7,7 @@ use App\Models\TbPengguna;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -48,11 +49,13 @@ class SiswaController extends Controller
             'nama' => 'required|string|max:255',
             'kelas' => 'required|string|max:255',
             'jurusan' => 'required|string|max:255',
+            'gender' => 'required|string|max:255',
             'alamat' => 'required|string|max:255',
             'no_telp' => 'required|string|max:15',
             'username' => 'required|string|unique:tb_pengguna,username',
             'email' => 'required|email|unique:tb_pengguna,email',
             'password' => 'required|string|min:6',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -68,10 +71,14 @@ class SiswaController extends Controller
 
             $pengguna = TbPengguna::create($penggunaData);
 
-            $petugasData = $request->only(['nama', 'kelas', 'jurusan', 'alamat', 'no_telp']);
-            $petugasData['id_pengguna'] = $pengguna->id_pengguna;
-
-            TbSiswa::create($petugasData);
+            $siswaData = $request->only(['nama', 'kelas', 'jurusan', 'alamat', 'no_telp', 'gender']);
+            $siswaData['id_pengguna'] = $pengguna->id_pengguna;
+            if ($request->hasFile('foto')) {
+                $image = $request->file('foto');
+                $image->storeAs('public/foto-siswa', $image->hashName());
+                $siswaData['foto'] = $image->hashName();
+            }
+            TbSiswa::create($siswaData);
 
             Alert::success("Success", "Data berhasil disimpan");
 
@@ -121,10 +128,12 @@ class SiswaController extends Controller
             'kelas' => 'required|string|max:255',
             'jurusan' => 'required|string|max:255',
             'alamat' => 'required|string|max:255',
+            'gender' => 'required|string|max:255',
             'no_telp' => 'required|string|max:15',
             'username' => 'required|string|unique:tb_pengguna,username,' . $siswa->id_pengguna . ',id_pengguna',
             'email' => 'required|email|unique:tb_pengguna,email,' . $siswa->id_pengguna . ',id_pengguna',
             'password' => 'nullable|string|min:6',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -147,6 +156,15 @@ class SiswaController extends Controller
             $siswa->jurusan = $request->jurusan;
             $siswa->alamat = $request->alamat;
             $siswa->no_telp = $request->no_telp;
+            $siswa->gender = $request->gender;
+            if ($request->hasFile('foto')) {
+                if ($siswa->foto) {
+                    Storage::delete('public/foto-siswa/' . $siswa->gambar);
+                }
+                $foto = $request->file('foto');
+                $foto->storeAs('public/foto-siswa', $foto->hashName());
+                $siswa->foto = $foto->hashName();
+            }
             $siswa->save();
 
             DB::commit();
@@ -171,6 +189,9 @@ class SiswaController extends Controller
         DB::beginTransaction();
 
         try {
+            if ($siswa->gambar) {
+                Storage::delete('public/foto-siswa/' . $siswa->gambar);
+            }
             $pengguna = TbPengguna::findOrFail($siswa->id_pengguna);
 
             $siswa->delete();
