@@ -19,7 +19,7 @@ class ArtikelController extends Controller
     public function index()
     {
         $data = TbArtikel::all();
-        $title = 'Hapus Siswa';
+        $title = 'Hapus Artikel';
         $text = "Apakah anda yakin untuk hapus?";
         confirmDelete($title, $text);
         return view('artikel/index', compact('data'));

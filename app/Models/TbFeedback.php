@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $id_siswa
  * @property int $id_petugas
  * @property string $teks_tanggapan
+ * @property string $status
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * 
@@ -41,7 +42,8 @@ class TbFeedback extends Model
 		'id_pengaduan',
 		'id_siswa',
 		'id_petugas',
-		'teks_tanggapan'
+		'teks_tanggapan',
+		'status'
 	];
 
 	public function tb_pengaduan()

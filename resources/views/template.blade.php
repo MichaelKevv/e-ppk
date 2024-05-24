@@ -72,48 +72,48 @@
                             </a>
                         </li>
                         @if (Auth::user()->role == 'kepala_sekolah')
-                        <li class="sidebar-item  has-sub">
-                            <a href="#" class='sidebar-link'>
-                                <i class="bi bi-people-fill"></i>
-                                <span>Pengguna</span>
-                            </a>
-                            <ul class="submenu ">
-                                <li class="submenu-item  ">
-                                    <a href="{{ url('siswa') }}" class="submenu-link">Siswa</a>
-                                </li>
-                                <li class="submenu-item  ">
-                                    <a href="{{ url('petugas') }}" class="submenu-link">Petugas</a>
-                                </li>
-                                <li class="submenu-item  ">
-                                    <a href="{{ url('kepsek') }}" class="submenu-link">Kepala Sekolah</a>
-                                </li>
-                                <li class="submenu-item  ">
-                                    <a href="{{ url('pengguna') }}" class="submenu-link">Pengguna</a>
-                                </li>
-                            </ul>
-                        </li>
+                            <li class="sidebar-item  has-sub">
+                                <a href="#" class='sidebar-link'>
+                                    <i class="bi bi-people-fill"></i>
+                                    <span>Pengguna</span>
+                                </a>
+                                <ul class="submenu ">
+                                    <li class="submenu-item  ">
+                                        <a href="{{ url('siswa') }}" class="submenu-link">Siswa</a>
+                                    </li>
+                                    <li class="submenu-item  ">
+                                        <a href="{{ url('petugas') }}" class="submenu-link">Petugas</a>
+                                    </li>
+                                    <li class="submenu-item  ">
+                                        <a href="{{ url('kepsek') }}" class="submenu-link">Kepala Sekolah</a>
+                                    </li>
+                                    <li class="submenu-item  ">
+                                        <a href="{{ url('pengguna') }}" class="submenu-link">Pengguna</a>
+                                    </li>
+                                </ul>
+                            </li>
                         @endif
                         @if (Auth::user()->role == 'kepala_sekolah' || Auth::user()->role == 'petugas')
-                        <li class="sidebar-item  ">
-                            <a href="{{ url('artikel') }}" class='sidebar-link'>
-                                <i class="bi bi-book-fill"></i>
-                                <span>Artikel</span>
-                            </a>
-                        </li>
+                            <li class="sidebar-item  ">
+                                <a href="{{ url('artikel') }}" class='sidebar-link'>
+                                    <i class="bi bi-book-fill"></i>
+                                    <span>Artikel</span>
+                                </a>
+                            </li>
                         @endif
                         @if (Auth::user()->role == 'siswa' || Auth::user()->role == 'kepala_sekolah' || Auth::user()->role == 'petugas')
-                        <li class="sidebar-item  ">
-                            <a href="{{ url('pengaduan') }}" class='sidebar-link'>
-                                <i class="bi bi-briefcase-fill"></i>
-                                <span>Pengaduan</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item  ">
-                            <a href="{{ url('feedback') }}" class='sidebar-link'>
-                                <i class="bi bi-chat-left-dots-fill"></i>
-                                <span>Feedback</span>
-                            </a>
-                        </li>
+                            <li class="sidebar-item  ">
+                                <a href="{{ url('pengaduan') }}" class='sidebar-link'>
+                                    <i class="bi bi-briefcase-fill"></i>
+                                    <span>Pengaduan</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item  ">
+                                <a href="{{ url('feedback') }}" class='sidebar-link'>
+                                    <i class="bi bi-chat-left-dots-fill"></i>
+                                    <span>Feedback</span>
+                                </a>
+                            </li>
                         @endif
                     </ul>
                 </div>
@@ -265,7 +265,159 @@
 
     <!-- Need: Apexcharts -->
     <script src="{{ asset('extensions/apexcharts/apexcharts.min.js') }}"></script>
-    <script src="{{ asset('static/js/pages/dashboard.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/pengaduan-data')
+                .then(response => response.json())
+                .then(data => {
+                    const maxValue = Math.max(...data);
+                    var optionsProfileVisit = {
+                        annotations: {
+                            position: "back",
+                        },
+                        dataLabels: {
+                            enabled: false,
+                        },
+                        chart: {
+                            type: "bar",
+                            height: 300,
+                        },
+                        fill: {
+                            opacity: 1,
+                        },
+                        plotOptions: {},
+                        series: [{
+                            name: "Pengaduan",
+                            data: data,
+                        }, ],
+                        colors: "#435ebe",
+                        xaxis: {
+                            categories: [
+                                "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+                            ],
+                        },
+                        yaxis: {
+                            tickAmount: maxValue,
+                            forceNiceScale: true,
+                            labels: {
+                                formatter: function(val) {
+                                    return parseInt(val);
+                                }
+                            }
+                        }
+                    };
+
+                    var chartProfileVisit = new ApexCharts(
+                        document.querySelector("#chart-pengaduan-siswa"),
+                        optionsProfileVisit
+                    );
+
+                    chartProfileVisit.render();
+                })
+                .catch(error => console.error('Error fetching data:', error));
+            fetch('/feedback-data')
+                .then(response => response.json())
+                .then(data => {
+                    const maxValue = Math.max(...data);
+                    var optionsProfileVisit = {
+                        annotations: {
+                            position: "back",
+                        },
+                        dataLabels: {
+                            enabled: false,
+                        },
+                        chart: {
+                            type: "bar",
+                            height: 300,
+                        },
+                        fill: {
+                            opacity: 1,
+                        },
+                        plotOptions: {},
+                        series: [{
+                            name: "Feedback",
+                            data: data,
+                        }, ],
+                        colors: "#435ebe",
+                        xaxis: {
+                            categories: [
+                                "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+                            ],
+                        },
+                        yaxis: {
+                            tickAmount: maxValue,
+                            forceNiceScale: true,
+                            labels: {
+                                formatter: function(val) {
+                                    return parseInt(val);
+                                }
+                            }
+                        }
+                    };
+
+                    var chartProfileVisit = new ApexCharts(
+                        document.querySelector("#chart-feedback-siswa"),
+                        optionsProfileVisit
+                    );
+
+                    chartProfileVisit.render();
+                })
+                .catch(error => console.error('Error fetching data:', error));
+            fetch('/siswa-data')
+                .then(response => response.json())
+                .then(data => {
+                    const maxValue = Math.max(...data);
+                    var optionsProfileVisit = {
+                        annotations: {
+                            position: "back",
+                        },
+                        dataLabels: {
+                            enabled: false,
+                        },
+                        chart: {
+                            type: "bar",
+                            height: 300,
+                        },
+                        fill: {
+                            opacity: 1,
+                        },
+                        plotOptions: {},
+                        series: [{
+                            name: "Siswa",
+                            data: data,
+                        }, ],
+                        colors: "#435ebe",
+                        xaxis: {
+                            categories: [
+                                "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+                            ],
+                        },
+                        yaxis: {
+                            tickAmount: maxValue,
+                            forceNiceScale: true,
+                            labels: {
+                                formatter: function(val) {
+                                    return parseInt(val);
+                                }
+                            }
+                        }
+                    };
+
+                    var chartProfileVisit = new ApexCharts(
+                        document.querySelector("#chart-total-siswa"),
+                        optionsProfileVisit
+                    );
+
+                    chartProfileVisit.render();
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        });
+    </script>
+
+    {{-- <script src="{{ asset('static/js/pages/dashboard.js') }}"></script> --}}
 
     <script src="{{ asset('extensions/simple-datatables/umd/simple-datatables.js') }}"></script>
     <script src="{{ asset('static/js/pages/simple-datatables.js') }}"></script>

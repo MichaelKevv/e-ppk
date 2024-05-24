@@ -43,11 +43,15 @@ Route::post('register', [LoginController::class, 'register']);
 Route::middleware(['auth'])->group(function () {
     Route::get('logout', [LoginController::class, 'logout'])->name('logout');
     Route::get('dashboard', [DashboardController::class, 'index']);
+    Route::get('pengaduan-data', [DashboardController::class, 'getPengaduanData']);
+    Route::get('feedback-data', [DashboardController::class, 'getFeedbackData']);
+    Route::get('siswa-data', [DashboardController::class, 'getSiswaData']);
     Route::resource('petugas', PetugasController::class);
     Route::resource('pengguna', PenggunaController::class);
     Route::resource('siswa', SiswaController::class);
     Route::resource('kepsek', KepsekController::class);
     Route::resource('pengaduan', PengaduanController::class);
+    Route::get('print-pengaduan', [PengaduanController::class, 'print']);
     Route::resource('artikel', ArtikelController::class);
     Route::resource('feedback', FeedbackController::class);
     Route::get('feedback/create/{pengaduan}', [FeedbackController::class, 'create'])->name('feedback.create');

@@ -27,7 +27,9 @@
                                     <th>Kelas</th>
                                     <th>Jurusan</th>
                                 @endif
+                                <th>Judul Pengaduan</th>
                                 <th>Feedback</th>
+                                <th>Petugas</th>
                                 <th>Tanggal</th>
                                 <th>Aksi</th>
                             </tr>
@@ -40,7 +42,9 @@
                                         <td>{{ $feedback->tb_siswa->kelas }}</td>
                                         <td>{{ $feedback->tb_siswa->jurusan }}</td>
                                     @endif
+                                    <td>{!! Str::limit($feedback->tb_pengaduan->judul, 50) !!}</td>
                                     <td>{!! Str::limit($feedback->teks_tanggapan, 50) !!}</td>
+                                    <td>{{ $feedback->tb_petuga->nama }}</td>
                                     <td>{{ \Carbon\Carbon::parse($feedback->created_at)->isoFormat('D MMMM YYYY HH:mm:ss') }}
                                     </td>
                                     <td>

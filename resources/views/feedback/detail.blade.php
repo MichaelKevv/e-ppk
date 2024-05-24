@@ -26,10 +26,12 @@
                                 <h5>{{ $pengaduan->judul }}</h5>
                             </div>
                             <div class="card-body">
-                                <strong>Feedback :</strong>
+                                <strong>Deskripsi Pengaduan :</strong>
                                 {!! $pengaduan->deskripsi !!}
                                 <strong>Feedback :</strong>
                                 {!! $feedback->teks_tanggapan !!}
+                                Pemberi Feedback : <strong>{{ $feedback->tb_petuga->nama }}</strong>
+                                <br>
                                 Tanggal Feedback :
                                 <strong>{{ \Carbon\Carbon::parse($feedback->created_at)->isoFormat('D MMMM YYYY HH:mm:ss') }}</strong>
                             </div>

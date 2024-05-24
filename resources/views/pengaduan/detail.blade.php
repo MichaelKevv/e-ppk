@@ -30,15 +30,16 @@
 
                                 Tanggal Pengaduan :
                                 <strong>{{ \Carbon\Carbon::parse($pengaduan->created_at)->isoFormat('D MMMM YYYY HH:mm:ss') }}</strong>
+                                @if (Auth::user()->role == 'petugas' && $pengaduan->status != 'ditutup')
+                                    <div class="col-12 d-flex justify-content-end">
+                                        <a href="{{ url('feedback/create/' . $pengaduan->id_pengaduan) }}"
+                                            class="btn btn-success font-weight-bold text-xs float-right">
+                                            Tambahkan Feedback
+                                        </a>
+                                    </div>
+                                @endif
                             </div>
-                            @if (Auth::user()->role == 'petugas')
-                                <div class="col-12 d-flex justify-content-end">
-                                    <a href="{{ url('feedback/create/' . $pengaduan->id_pengaduan) }}"
-                                        class="btn btn-success font-weight-bold text-xs float-right">
-                                        Tambahkan Feedback
-                                    </a>
-                                </div>
-                            @endif
+
                         </div>
                     </div>
                 </div>

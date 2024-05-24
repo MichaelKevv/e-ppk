@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\TbPengaduan;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -156,5 +157,12 @@ class PengaduanController extends Controller
             DB::rollBack();
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus data.');
         }
+    }
+
+    public function print()
+    {
+        $pengaduan = TbPengaduan::all();
+        $pdf = Pdf::loadview('pengaduan/print', ['data' => $pengaduan]);
+        return $pdf->download('laporan-pengaduan.pdf');
     }
 }
