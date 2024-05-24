@@ -51,9 +51,10 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('siswa', SiswaController::class);
     Route::resource('kepsek', KepsekController::class);
     Route::resource('pengaduan', PengaduanController::class);
-    Route::get('print-pengaduan', [PengaduanController::class, 'print']);
     Route::resource('artikel', ArtikelController::class);
     Route::resource('feedback', FeedbackController::class);
     Route::get('feedback/create/{pengaduan}', [FeedbackController::class, 'create'])->name('feedback.create');
     Route::post('feedback/store/{pengaduan}', [FeedbackController::class, 'store'])->name('feedback.store');
+
+    Route::get('print-pengaduan', [PengaduanController::class, 'print']);
 });
