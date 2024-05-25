@@ -73,14 +73,10 @@ class DashboardController extends Controller
         if (Auth::user()->role == 'siswa') {
             $id_siswa = session('userdata')->id_siswa;
             $data['totalPengaduan'] = TbPengaduan::where('id_siswa', $id_siswa)->count();
-            $data['pengaduanFeedback'] = TbPengaduan::join('tb_feedback', 'tb_pengaduan.id_pengaduan', '=', 'tb_feedback.id_pengaduan')
-                ->where('tb_pengaduan.status', 'diproses')
-                ->orWhere('tb_pengaduan.status', 'ditutup')
-                ->where('tb_feedback.id_siswa', $id_siswa)
-                ->select('tb_feedback.id_pengaduan', 'tb_feedback.status')
-                ->groupBy('tb_feedback.id_pengaduan')
-                ->groupBy('tb_feedback.status')
-                ->get();
+            $data['pengaduanFeedback'] = TbPengaduan::where('status', 'diproses')
+                ->orWhere('status', 'ditutup')
+                ->where('id_siswa', $id_siswa)
+                ->count();
         } else {
             $data['totalSiswa'] = TbSiswa::count();
             $data['totalPengaduan'] = TbPengaduan::count();

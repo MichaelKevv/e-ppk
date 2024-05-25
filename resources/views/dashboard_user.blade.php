@@ -1,7 +1,7 @@
 @extends('template_user')
 @section('content')
     <!-- Hero Section -->
-    <section id="hero" class="section hero">
+    <section id="hero" class="section hero" style="padding: 60px 0px 60px 0px !important">
 
         <div class="container">
             <div class="row gy-4">
@@ -9,14 +9,58 @@
                     <h1 class="">Merasa Lebih Lega bersama E-PPK</h1>
                     <p>Kami adalah tim pengaduan untuk masalah mu!</p>
                     <div class="d-flex">
-                        <a href="{{ url('/#about') }}" class="btn-get-started">Get Started</a>
-                        <a href="https://www.youtube.com/watch?v=LXb3EKWsInQ"
-                            class="glightbox btn-watch-video d-flex align-items-center"><i
-                                class="bi bi-play-circle"></i><span>Watch Video</span></a>
+                        <a href="{{ url('login') }}" class="btn-get-started">Adukan</a>
                     </div>
                 </div>
                 <div class="col-lg-6 order-1 order-lg-2 hero-img">
-                    <img src="{{ asset('img/hero-img.svg') }}" class="img-fluid animated" alt="">
+                    <div class="portfolio-details-slider swiper">
+
+                        <script type="application/json" class="swiper-config">
+                    {
+                      "loop": true,
+                      "speed": 600,
+                      "autoplay": {
+                        "delay": 5000
+                      },
+                      "slidesPerView": "auto",
+                      "pagination": {
+                        "el": ".swiper-pagination",
+                        "type": "bullets",
+                        "clickable": true
+                      }
+                    }
+                  </script>
+
+                        <div class="swiper-wrapper align-items-center">
+
+                            <div class="swiper-slide">
+                                <img src="{{ asset('img/sekolah/1.jpg') }}" class="img-fluid" alt="">
+                            </div>
+
+                            <div class="swiper-slide">
+                                <img src="{{ asset('img/sekolah/2.jpg') }}" class="img-fluid" alt="">
+                            </div>
+
+                            <div class="swiper-slide">
+                                <img src="{{ asset('img/sekolah/3.jpg') }}" class="img-fluid" alt="">
+                            </div>
+
+                            <div class="swiper-slide">
+                                <img src="{{ asset('img/sekolah/4.jpg') }}" class="img-fluid" alt="">
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="{{ asset('img/sekolah/5.jpg') }}" class="img-fluid" alt="">
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="{{ asset('img/sekolah/6.jpg') }}" class="img-fluid" alt="">
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="{{ asset('img/sekolah/7.jpg') }}" class="img-fluid" alt="">
+                            </div>
+
+                        </div>
+                        <div class="swiper-pagination"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -337,29 +381,36 @@
           }
         </script>
                 <div class="swiper-wrapper align-items-center">
-                    <div class="swiper-slide"><img src="{{ asset('img/clients/client-1.png') }}" class="img-fluid"
-                            alt=""></div>
-                    <div class="swiper-slide"><img src="{{ asset('img/clients/client-2.png') }}" class="img-fluid"
-                            alt=""></div>
-                    <div class="swiper-slide"><img src="{{ asset('img/clients/client-3.png') }}" class="img-fluid"
-                            alt=""></div>
-                    <div class="swiper-slide"><img src="{{ asset('img/clients/client-4.png') }}" class="img-fluid"
-                            alt=""></div>
-                    <div class="swiper-slide"><img src="{{ asset('img/clients/client-5.png') }}" class="img-fluid"
-                            alt=""></div>
-                    <div class="swiper-slide"><img src="{{ asset('img/clients/client-6.png') }}" class="img-fluid"
-                            alt=""></div>
-                    <div class="swiper-slide"><img src="{{ asset('img/clients/client-7.png') }}" class="img-fluid"
-                            alt=""></div>
-                    <div class="swiper-slide"><img src="{{ asset('img/clients/client-8.png') }}" class="img-fluid"
-                            alt=""></div>
+                    <div class="swiper-slide"><img src="{{ asset('img/sekolah/1.jpg') }}" class="img-fluid" alt="">
+                    </div>
+                    <div class="swiper-slide"><img src="{{ asset('img/sekolah/2.jpg') }}" class="img-fluid" alt="">
+                    </div>
+                    <div class="swiper-slide"><img src="{{ asset('img/sekolah/3.jpg') }}" class="img-fluid"
+                            alt="">
+                    </div>
+                    <div class="swiper-slide"><img src="{{ asset('img/sekolah/4.jpg') }}" class="img-fluid"
+                            alt="">
+                    </div>
+                    <div class="swiper-slide"><img src="{{ asset('img/sekolah/5.jpg') }}" class="img-fluid"
+                            alt="">
+                    </div>
+                    <div class="swiper-slide"><img src="{{ asset('img/sekolah/6.jpg') }}" class="img-fluid"
+                            alt="">
+                    </div>
+                    <div class="swiper-slide"><img src="{{ asset('img/sekolah/7.jpg') }}" class="img-fluid"
+                            alt="">
+                    </div>
+                    <div class="swiper-slide"><img src="{{ asset('img/sekolah/8.jpg') }}" class="img-fluid"
+                            alt="">
+                    </div>
                 </div>
                 <div class="swiper-pagination"></div>
             </div>
 
         </div>
 
-    </section><!-- /Clients Section --> --}}
+    </section> --}}
+    <!-- /Clients Section -->
 
     <!-- Contact Section -->
     {{-- <section id="contact" class="contact section">
