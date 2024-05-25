@@ -6,6 +6,7 @@ use App\Models\TbFeedback;
 use App\Models\TbPengaduan;
 use App\Models\TbSiswa;
 use App\Models\TbPengguna;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -177,5 +178,12 @@ class FeedbackController extends Controller
             DB::rollBack();
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus data.');
         }
+    }
+
+    public function export()
+    {
+        $feedback = TbFeedback::all();
+        $pdf = Pdf::loadview('feedback.export_pdf', ['data' => $feedback]);
+        return $pdf->download('laporan-feedback.pdf');
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\TbArtikel;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -168,5 +169,12 @@ class ArtikelController extends Controller
         Alert::success('Success', 'Artikel berhasil dihapus');
 
         return redirect()->route('artikel.index');
+    }
+
+    public function export()
+    {
+        $artikel = TbArtikel::all();
+        $pdf = Pdf::loadview('artikel.export_pdf', ['data' => $artikel]);
+        return $pdf->download('laporan-artikel.pdf');
     }
 }

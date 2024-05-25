@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\TbSiswa;
 use App\Models\TbPengguna;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -207,5 +208,12 @@ class SiswaController extends Controller
             DB::rollBack();
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus data.');
         }
+    }
+
+    public function export()
+    {
+        $siswa = TbSiswa::all();
+        $pdf = Pdf::loadview('siswa.export_pdf', ['data' => $siswa]);
+        return $pdf->download('laporan-siswa.pdf');
     }
 }

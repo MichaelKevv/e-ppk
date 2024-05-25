@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\TbPetuga;
 use App\Models\TbPengguna;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -202,5 +203,12 @@ class PetugasController extends Controller
             DB::rollBack();
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus data.');
         }
+    }
+
+    public function export()
+    {
+        $petugas = TbPetuga::all();
+        $pdf = Pdf::loadview('petugas.export_pdf', ['data' => $petugas]);
+        return $pdf->download('laporan-petugas.pdf');
     }
 }

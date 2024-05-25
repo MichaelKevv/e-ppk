@@ -159,10 +159,10 @@ class PengaduanController extends Controller
         }
     }
 
-    public function print()
+    public function export()
     {
         $pengaduan = TbPengaduan::all();
-        $pdf = Pdf::loadview('pengaduan/print', ['data' => $pengaduan]);
+        $pdf = Pdf::loadview('pengaduan.export_pdf', ['data' => $pengaduan]);
         return $pdf->download('laporan-pengaduan.pdf');
     }
 }

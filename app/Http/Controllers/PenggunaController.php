@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\TbPengguna;
 use App\Models\TbPetuga;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -119,5 +120,12 @@ class PenggunaController extends Controller
         Alert::success("Success", "Data berhasil dihapus");
 
         return redirect("pengguna");
+    }
+
+    public function export()
+    {
+        $pengguna = TbPengguna::all();
+        $pdf = Pdf::loadview('pengguna.export_pdf', ['data' => $pengguna]);
+        return $pdf->download('laporan-pengguna.pdf');
     }
 }

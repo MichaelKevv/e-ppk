@@ -18,9 +18,12 @@
         </div>
         <section class="section">
             <div class="card">
-                {{-- <div class="card-header">
-                        <a href="{{ url('pengguna/create') }}"><button class="btn btn-success">Tambah Data</button></a>
-                    </div> --}}
+                <div class="card-header">
+                    @if (Auth::user()->role == 'kepala_sekolah')
+                        <a href="{{ url('export/pengguna') }}" target="_blank"><button class="btn btn-success">Export
+                                PDF</button></a>
+                    @endif
+                </div>
                 <div class="card-body">
                     <table class="table table-striped" id="table1">
                         <thead>

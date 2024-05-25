@@ -3,21 +3,12 @@
 use App\Http\Controllers\ArtikelController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FeedbackController;
-use App\Http\Controllers\JamKerjaController;
-use App\Http\Controllers\KenekController;
 use App\Http\Controllers\KepsekController;
 use App\Http\Controllers\LoginController;
-use App\Http\Controllers\MesinController;
-use App\Http\Controllers\PaletController;
-use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\PengaduanController;
-use App\Http\Controllers\PenggajianController;
-use App\Http\Controllers\PresensiController;
-use App\Http\Controllers\SatpamController;
 use App\Http\Controllers\PenggunaController;
 use App\Http\Controllers\PetugasController;
 use App\Http\Controllers\SiswaController;
-use App\Http\Controllers\SupirController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -56,5 +47,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('feedback/create/{pengaduan}', [FeedbackController::class, 'create'])->name('feedback.create');
     Route::post('feedback/store/{pengaduan}', [FeedbackController::class, 'store'])->name('feedback.store');
 
-    Route::get('print-pengaduan', [PengaduanController::class, 'print']);
+    Route::get('export/artikel', [ArtikelController::class, 'export']);
+    Route::get('export/pengguna', [PenggunaController::class, 'export']);
+    Route::get('export/petugas', [PetugasController::class, 'export']);
+    Route::get('export/siswa', [SiswaController::class, 'export']);
+    Route::get('export/kepsek', [KepsekController::class, 'export']);
+    Route::get('export/pengaduan', [PengaduanController::class, 'export']);
+    Route::get('export/feedback', [FeedbackController::class, 'export']);
 });

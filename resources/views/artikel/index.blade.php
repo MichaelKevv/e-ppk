@@ -20,6 +20,9 @@
             <div class="card">
                 <div class="card-header">
                     <a href="{{ url('artikel/create') }}"><button class="btn btn-success">Tambah Data</button></a>
+                    @if (Auth::user()->role == 'kepala_sekolah')
+                        <a href="{{ url('export/artikel') }}" target="_blank"><button class="btn btn-success">Export PDF</button></a>
+                    @endif
                 </div>
                 <div class="card-body">
                     <table class="table table-striped" id="table1">
@@ -43,7 +46,8 @@
                                     <td>{{ $artikel->judul }}</td>
                                     <td>{!! $artikel->konten !!}</td>
                                     <td>{{ $artikel->kategori }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($artikel->created_at)->isoFormat('D MMMM YYYY HH:mm:ss') }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($artikel->created_at)->isoFormat('D MMMM YYYY HH:mm:ss') }}
+                                    </td>
                                     <td>{{ $artikel->author }}</td>
                                     <td>
                                         <a href="{{ route('artikel.edit', $artikel->id_artikel) }}"

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\TbKepalaSekolah;
 use App\Models\TbPengguna;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -202,5 +203,12 @@ class KepsekController extends Controller
             DB::rollBack();
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus data.');
         }
+    }
+
+    public function export()
+    {
+        $kepsek = TbKepalaSekolah::all();
+        $pdf = Pdf::loadview('kepsek.export_pdf', ['data' => $kepsek]);
+        return $pdf->download('laporan-kepala-sekolah.pdf');
     }
 }

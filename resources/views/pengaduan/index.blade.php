@@ -22,7 +22,7 @@
                     @if (Auth::user()->role == 'siswa')
                         <a href="{{ url('pengaduan/create') }}"><button class="btn btn-success">Tambah Data</button></a>
                     @elseif (Auth::user()->role == 'kepala_sekolah')
-                        <a href="{{ url('print-pengaduan') }}"><button class="btn btn-success">Export PDF</button></a>
+                        <a href="{{ url('export/pengaduan') }}" target="_blank"><button class="btn btn-success">Export PDF</button></a>
                     @endif
                 </div>
                 <div class="card-body">

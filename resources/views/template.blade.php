@@ -134,7 +134,7 @@
                         </button>
                         <div class="collapse navbar-collapse" id="navbarSupportedContent">
                             <ul class="navbar-nav ms-auto mb-lg-0">
-                                <li class="nav-item dropdown me-1">
+                                {{-- <li class="nav-item dropdown me-1">
                                     <a class="nav-link active dropdown-toggle text-gray-600" href="#"
                                         data-bs-toggle="dropdown" aria-expanded="false">
                                         <i class="bi bi-envelope bi-sub fs-4"></i>
@@ -193,7 +193,7 @@
                                             </p>
                                         </li>
                                     </ul>
-                                </li>
+                                </li> --}}
                             </ul>
                             <div class="dropdown">
                                 <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
@@ -220,7 +220,19 @@
                                         </div>
                                         <div class="user-img d-flex align-items-center">
                                             <div class="avatar avatar-md">
-                                                <img src="{{ asset('compiled/jpg/2.jpg') }}" />
+                                                @if (Auth::check())
+                                                    @if (Auth::user()->role == 'kepala_sekolah')
+                                                        <img
+                                                            src="{{ url('storage/foto-kepsek/' . session('userdata')->foto) }}" />
+                                                    @elseif (Auth::user()->role == 'petugas')
+                                                        <img
+                                                            src="{{ url('storage/foto-petugas/' . session('userdata')->foto) }}" />
+                                                    @elseif (Auth::user()->role == 'siswa')
+                                                        <img
+                                                            src="{{ url('storage/foto-siswa/' . session('userdata')->foto) }}" />
+                                                    @endif
+                                                @endif
+
                                             </div>
                                         </div>
                                     </div>
