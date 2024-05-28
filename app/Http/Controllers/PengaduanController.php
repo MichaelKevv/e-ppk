@@ -7,6 +7,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -50,7 +51,7 @@ class PengaduanController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'judul' => 'required|string|max:255',
-            'deskripsi' => 'required|string',
+            'deskripsi' => 'required|string'
         ]);
 
         if ($validator->fails()) {
@@ -61,8 +62,12 @@ class PengaduanController extends Controller
 
         try {
             $pengaduanData = $request->only(['judul', 'deskripsi']);
-
             $pengaduanData['id_siswa'] = session('userdata')->id_siswa;
+            if ($request->hasFile('foto')) {
+                $image = $request->file('foto');
+                $image->storeAs('public/foto-pengaduan', $image->hashName());
+                $pengaduanData['foto'] = $image->hashName();
+            }
             TbPengaduan::create($pengaduanData);
 
             Alert::success("Success", "Data berhasil disimpan");
@@ -109,7 +114,7 @@ class PengaduanController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'judul' => 'required|string|max:255',
-            'deskripsi' => 'required|string',
+            'deskripsi' => 'required|string'
         ]);
 
         if ($validator->fails()) {
@@ -121,6 +126,14 @@ class PengaduanController extends Controller
         try {
             $pengaduan->judul = $request->judul;
             $pengaduan->deskripsi = $request->deskripsi;
+            if ($request->hasFile('foto')) {
+                if ($pengaduan->foto) {
+                    Storage::delete('public/foto-pengaduan/' . $pengaduan->gambar);
+                }
+                $foto = $request->file('foto');
+                $foto->storeAs('public/foto-pengaduan', $foto->hashName());
+                $pengaduan->foto = $foto->hashName();
+            }
             $pengaduan->save();
 
             DB::commit();
@@ -145,7 +158,9 @@ class PengaduanController extends Controller
         DB::beginTransaction();
 
         try {
-
+            if ($pengaduan->gambar) {
+                Storage::delete('public/foto-pengaduan/' . $pengaduan->gambar);
+            }
             $pengaduan->delete();
 
             DB::commit();
@@ -164,5 +179,37 @@ class PengaduanController extends Controller
         $pengaduan = TbPengaduan::all();
         $pdf = Pdf::loadview('pengaduan.export_pdf', ['data' => $pengaduan]);
         return $pdf->download('laporan-pengaduan.pdf');
+    }
+
+    public function generateNomorSurat($pengaduan)
+    {
+        $year = $pengaduan->created_at->format('Y');
+        $month = $pengaduan->created_at->format('m');
+
+        $lastPengaduan = TbPengaduan::whereYear('created_at', $year)
+            ->whereMonth('created_at', $month)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        if ($lastPengaduan) {
+            $lastNomorSurat = $lastPengaduan->nomor_surat ?? '000';
+            $lastNumber = (int) substr($lastNomorSurat, -3);
+            $newNumber = str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
+        } else {
+            $newNumber = '001';
+        }
+
+        $nomorSurat = "{$newNumber}/137426.101.11.SMP.2.E-PPK/{$year}";
+
+        return $nomorSurat;
+    }
+
+
+    public function export_single($id)
+    {
+        $pengaduan = TbPengaduan::findOrFail($id);
+        $pengaduan['no_surat'] = $this->generateNomorSurat($pengaduan);
+        $pdf = Pdf::loadview('pengaduan.export_single', compact('pengaduan'));
+        return $pdf->download('laporan-pengaduan-' . $pengaduan->tb_siswa->nama . '.pdf');
     }
 }

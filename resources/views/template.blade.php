@@ -252,6 +252,12 @@
                                         <hr class="dropdown-divider" />
                                     </li>
                                     <li>
+                                        @if (Auth::user()->role == 'siswa')
+                                            <a class="dropdown-item" href="{{ url('siswa/edit/profile/'. session('userdata')->id_siswa) }}">
+                                                <i class="icon-mid bi bi-pencil me-2"></i>
+                                                Edit Profile
+                                            </a>
+                                        @endif
                                         <a class="dropdown-item" href="{{ route('logout') }}">
                                             <i class="icon-mid bi bi-box-arrow-left me-2"></i>
                                             Logout

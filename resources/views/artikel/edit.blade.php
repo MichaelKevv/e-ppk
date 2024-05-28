@@ -73,7 +73,7 @@
                                             </div>
                                             <div class="col-12">
                                                 <div class="form-group">
-                                                    <label for="email-id-vertical">Gambar</label>
+                                                    <label for="email-id-vertical">Gambar <small>(maks. 2 MB)</small></label>
                                                     <br>
                                                     <img src="{{ asset('storage/foto-artikel/' . $artikel->gambar) }}"
                                                         alt="{{ $artikel->judul }}"

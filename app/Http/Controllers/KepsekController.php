@@ -54,7 +54,7 @@ class KepsekController extends Controller
             'username' => 'required|string|unique:tb_pengguna,username',
             'email' => 'required|email|unique:tb_pengguna,email',
             'password' => 'required|string|min:6',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -131,7 +131,7 @@ class KepsekController extends Controller
             'username' => 'required|string|unique:tb_pengguna,username,' . $kepsek->id_pengguna . ',id_pengguna',
             'email' => 'required|email|unique:tb_pengguna,email,' . $kepsek->id_pengguna . ',id_pengguna',
             'password' => 'nullable|string|min:6',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         if ($validator->fails()) {

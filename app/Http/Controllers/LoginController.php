@@ -61,7 +61,7 @@ class LoginController extends Controller
             'username' => 'required|string|unique:tb_pengguna,username',
             'email' => 'required|email|unique:tb_pengguna,email',
             'password' => 'required|string|min:6',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         if ($validator->fails()) {

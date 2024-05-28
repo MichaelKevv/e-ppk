@@ -4,14 +4,14 @@
         <div class="page-title">
             <div class="row">
                 <div class="col-12 col-md-6 order-md-1 order-last">
-                    <h3>Edit Data Kepala Sekolah</h3>
+                    <h3>Edit Data Siswa</h3>
                 </div>
                 <div class="col-12 col-md-6 order-md-2 order-first">
                     <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="{{ url('dashboard') }}">Dashboard</a></li>
-                            <li class="breadcrumb-item"><a href="{{ url('kepsek') }}">Data Kepala Sekolah</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Edit Data Kepala Sekolah</li>
+                            <li class="breadcrumb-item"><a href="{{ url('siswa') }}">Data Siswa</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Edit Data Siswa</li>
                         </ol>
                     </nav>
                 </div>
@@ -23,7 +23,7 @@
                     <div class="card">
                         <div class="card-content">
                             <div class="card-body">
-                                <form class="form form-vertical" action="{{ route('kepsek.update', $kepsek->id_kepala) }}"
+                                <form class="form form-vertical" action="{{ url('siswa/update/profile/'. $siswa->id_siswa) }}"
                                     method="post" enctype="multipart/form-data">
                                     @csrf
                                     @method('PUT')
@@ -33,16 +33,22 @@
                                                 <div class="form-group">
                                                     <label for="email-id-vertical">Nama</label>
                                                     <input type="text" id="email-id-vertical" class="form-control"
-                                                        placeholder="Masukkan Nama" value="{{ $kepsek->nama }}"
+                                                        placeholder="Masukkan Nama" value="{{ $siswa->nama }}"
                                                         name="nama" required>
                                                 </div>
                                             </div>
                                             <div class="col-12">
                                                 <div class="form-group">
-                                                    <label for="email-id-vertical">Alamat</label>
-                                                    <input type="text" id="email-id-vertical" class="form-control"
-                                                        placeholder="Masukkan Alamat" value="{{ $kepsek->alamat }}"
-                                                        name="alamat" required>
+                                                    <label for="email-id-vertical">Kelas</label>
+                                                    <select class="form-control" name="kelas" id="kelas">
+                                                        <option value="" selected>Pilih Kelas</option>
+                                                        <option value="7" {{ $siswa->kelas == '7' ? 'selected' : '' }}>
+                                                            7</option>
+                                                        <option value="8" {{ $siswa->kelas == '8' ? 'selected' : '' }}>
+                                                            8</option>
+                                                        <option value="9" {{ $siswa->kelas == '9' ? 'selected' : '' }}>
+                                                            9</option>
+                                                    </select>
                                                 </div>
                                             </div>
                                             <div class="col-12">
@@ -51,12 +57,20 @@
                                                     <select class="form-control" name="gender" id="gender" required>
                                                         <option value="" disabled>Pilih Gender</option>
                                                         <option value="laki-laki"
-                                                            {{ $kepsek->gender == 'laki-laki' ? 'selected' : '' }}>Laki-Laki
+                                                            {{ $siswa->gender == 'laki-laki' ? 'selected' : '' }}>Laki-Laki
                                                         </option>
                                                         <option value="perempuan"
-                                                            {{ $kepsek->gender == 'perempuan' ? 'selected' : '' }}>Perempuan
+                                                            {{ $siswa->gender == 'perempuan' ? 'selected' : '' }}>Perempuan
                                                         </option>
                                                     </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="form-group">
+                                                    <label for="email-id-vertical">Alamat</label>
+                                                    <input type="text" id="email-id-vertical" class="form-control"
+                                                        placeholder="Masukkan Alamat" value="{{ $siswa->alamat }}"
+                                                        name="alamat" required>
                                                 </div>
                                             </div>
                                             <div class="col-12">
@@ -64,7 +78,7 @@
                                                     <label for="email-id-vertical">Nomor Telepon</label>
                                                     <input type="text" id="email-id-vertical" class="form-control"
                                                         placeholder="Masukkan Nomor Telepon / WA"
-                                                        value="{{ $kepsek->no_telp }}" name="no_telp" required>
+                                                        value="{{ $siswa->no_telp }}" name="no_telp" required>
                                                 </div>
                                             </div>
                                             <div class="col-12">
@@ -94,8 +108,8 @@
                                                 <div class="form-group">
                                                     <label for="email-id-vertical">Foto <small>(maks. 2 MB)</small></label>
                                                     <br>
-                                                    <img src="{{ asset('storage/foto-kepsek/' . $kepsek->foto) }}"
-                                                        alt="{{ $kepsek->nama }}"
+                                                    <img src="{{ asset('storage/foto-siswa/' . $siswa->foto) }}"
+                                                        alt="{{ $siswa->nama }}"
                                                         style="max-width: 200px; margin-top: 10px;">
                                                     <input type="file" id="email-id-vertical" class="form-control"
                                                         name="foto">

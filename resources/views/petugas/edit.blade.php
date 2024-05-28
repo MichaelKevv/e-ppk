@@ -92,7 +92,7 @@
                                             </div>
                                             <div class="col-12">
                                                 <div class="form-group">
-                                                    <label for="email-id-vertical">Foto</label>
+                                                    <label for="email-id-vertical">Foto <small>(maks. 2 MB)</small></label>
                                                     <br>
                                                     <img src="{{ asset('storage/foto-petugas/' . $petuga->foto) }}"
                                                         alt="{{ $petuga->nama }}"

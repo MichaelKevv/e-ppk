@@ -49,14 +49,14 @@ class SiswaController extends Controller
         $validator = Validator::make($request->all(), [
             'nama' => 'required|string|max:255',
             'kelas' => 'required|string|max:255',
-            'jurusan' => 'required|string|max:255',
+
             'gender' => 'required|string|max:255',
             'alamat' => 'required|string|max:255',
             'no_telp' => 'required|string|max:15',
             'username' => 'required|string|unique:tb_pengguna,username',
             'email' => 'required|email|unique:tb_pengguna,email',
             'password' => 'required|string|min:6',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -115,6 +115,13 @@ class SiswaController extends Controller
         return view('siswa/edit', compact('siswa', 'pengguna'));
     }
 
+    public function editProfile($id)
+    {
+        $siswa = TbSiswa::findOrFail($id);
+        $pengguna = TbPengguna::find($siswa->id_pengguna);
+        return view('siswa/edit_profile', compact('siswa', 'pengguna'));
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -127,14 +134,14 @@ class SiswaController extends Controller
         $validator = Validator::make($request->all(), [
             'nama' => 'required|string|max:255',
             'kelas' => 'required|string|max:255',
-            'jurusan' => 'required|string|max:255',
+
             'alamat' => 'required|string|max:255',
             'gender' => 'required|string|max:255',
             'no_telp' => 'required|string|max:15',
             'username' => 'required|string|unique:tb_pengguna,username,' . $siswa->id_pengguna . ',id_pengguna',
             'email' => 'required|email|unique:tb_pengguna,email,' . $siswa->id_pengguna . ',id_pengguna',
             'password' => 'nullable|string|min:6',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -154,7 +161,7 @@ class SiswaController extends Controller
             $pengguna->save();
             $siswa->nama = $request->nama;
             $siswa->kelas = $request->kelas;
-            $siswa->jurusan = $request->jurusan;
+
             $siswa->alamat = $request->alamat;
             $siswa->no_telp = $request->no_telp;
             $siswa->gender = $request->gender;
@@ -173,6 +180,63 @@ class SiswaController extends Controller
             Alert::success("Success", "Data berhasil diperbarui");
 
             return redirect("siswa");
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui data.')->withInput();
+        }
+    }
+
+    public function updateProfile(Request $request, $id)
+    {
+        $siswa = TbSiswa::findOrFail($id);
+        $validator = Validator::make($request->all(), [
+            'nama' => 'required|string|max:255',
+            'kelas' => 'required|string|max:255',
+            'alamat' => 'required|string|max:255',
+            'gender' => 'required|string|max:255',
+            'no_telp' => 'required|string|max:15',
+            'username' => 'required|string|unique:tb_pengguna,username,' . $siswa->id_pengguna . ',id_pengguna',
+            'email' => 'required|email|unique:tb_pengguna,email,' . $siswa->id_pengguna . ',id_pengguna',
+            'password' => 'nullable|string|min:6',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $pengguna = TbPengguna::findOrFail($siswa->id_pengguna);
+
+            $pengguna->username = $request->username;
+            $pengguna->email = $request->email;
+            if ($request->filled('password')) {
+                $pengguna->password = Hash::make($request->password);
+            }
+            $pengguna->save();
+            $siswa->nama = $request->nama;
+            $siswa->kelas = $request->kelas;
+
+            $siswa->alamat = $request->alamat;
+            $siswa->no_telp = $request->no_telp;
+            $siswa->gender = $request->gender;
+            if ($request->hasFile('foto')) {
+                if ($siswa->foto) {
+                    Storage::delete('public/foto-siswa/' . $siswa->gambar);
+                }
+                $foto = $request->file('foto');
+                $foto->storeAs('public/foto-siswa', $foto->hashName());
+                $siswa->foto = $foto->hashName();
+            }
+            $siswa->save();
+
+            DB::commit();
+
+            Alert::success("Success", "Data berhasil diperbarui");
+
+            return redirect("dashboard");
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui data.')->withInput();

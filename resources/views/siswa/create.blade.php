@@ -38,15 +38,12 @@
                                             <div class="col-12">
                                                 <div class="form-group">
                                                     <label for="email-id-vertical">Kelas</label>
-                                                    <input type="text" id="email-id-vertical" class="form-control"
-                                                        placeholder="Masukkan Kelas" name="kelas" required>
-                                                </div>
-                                            </div>
-                                            <div class="col-12">
-                                                <div class="form-group">
-                                                    <label for="email-id-vertical">Jurusan</label>
-                                                    <input type="text" id="email-id-vertical" class="form-control"
-                                                        placeholder="Masukkan Jurusan" name="jurusan" required>
+                                                    <select class="form-control" name="kelas" id="kelas">
+                                                        <option value="" selected>Pilih Kelas</option>
+                                                        <option value="7">7</option>
+                                                        <option value="8">8</option>
+                                                        <option value="9">9</option>
+                                                    </select>
                                                 </div>
                                             </div>
                                             <div class="col-12">
@@ -96,7 +93,7 @@
                                             </div>
                                             <div class="col-12">
                                                 <div class="form-group">
-                                                    <label for="email-id-vertical">Foto</label>
+                                                    <label for="email-id-vertical">Foto <small>(maks. 2 MB)</small></label>
                                                     <input type="file" id="email-id-vertical" class="form-control"
                                                         name="foto" required>
                                                 </div>

@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $judul
  * @property string $deskripsi
  * @property string|null $status
+ * @property string|null $foto
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * 
@@ -39,7 +40,8 @@ class TbPengaduan extends Model
 		'id_siswa',
 		'judul',
 		'deskripsi',
-		'status'
+		'status',
+		'foto'
 	];
 
 	public function tb_siswa()

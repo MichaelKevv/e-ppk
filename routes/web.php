@@ -40,6 +40,8 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('petugas', PetugasController::class);
     Route::resource('pengguna', PenggunaController::class);
     Route::resource('siswa', SiswaController::class);
+    Route::get('siswa/edit/profile/{id}', [SiswaController::class, 'editProfile']);
+    Route::put('siswa/update/profile/{id}', [SiswaController::class, 'updateProfile']);
     Route::resource('kepsek', KepsekController::class);
     Route::resource('pengaduan', PengaduanController::class);
     Route::resource('artikel', ArtikelController::class);
@@ -53,5 +55,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('export/siswa', [SiswaController::class, 'export']);
     Route::get('export/kepsek', [KepsekController::class, 'export']);
     Route::get('export/pengaduan', [PengaduanController::class, 'export']);
+    Route::get('export/single/pengaduan/{id}', [PengaduanController::class, 'export_single']);
     Route::get('export/feedback', [FeedbackController::class, 'export']);
 });

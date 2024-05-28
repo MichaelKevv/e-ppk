@@ -38,23 +38,37 @@
             font-size: 9pt;
             margin-bottom: 20px;
         }
+
+        .kop-surat hr {
+            border: 0;
+            border-top: 1px solid black;
+            margin: 5px 0;
+        }
+
+        .kop-surat .line {
+            border-bottom: 2px solid black;
+            margin-top: 2px;
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 
 <body>
-    <center>
-        <h5 class="mb-2">Laporan Feedback</h5>
-    </center>
-    <div class="printed-date">
-        Dicetak pada tanggal: {{ \Carbon\Carbon::now()->isoFormat('D MMMM YYYY') }}
+    <div class="kop-surat">
+        <img src="{{ public_path('images/kop_surat.png') }}" class="img-fluid">
+        <hr>
+        <div class="line"></div>
     </div>
+    <center>
+        <h5 class="mb-5">Laporan Feedback</h5>
+    </center>
+    <p>Dicetak pada tanggal: {{ \Carbon\Carbon::now()->isoFormat('D MMMM YYYY') }}</p>
     <table class='table table-bordered table-striped'>
         <thead>
             <tr>
                 <th>#</th>
                 <th>Nama Siswa</th>
                 <th>Kelas</th>
-                <th>Jurusan</th>
                 <th>Judul Pengaduan</th>
                 <th>Feedback</th>
                 <th>Petugas</th>
@@ -67,7 +81,6 @@
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $feedback->tb_siswa->nama }}</td>
                     <td>{{ $feedback->tb_siswa->kelas }}</td>
-                    <td>{{ $feedback->tb_siswa->jurusan }}</td>
                     <td>{!! Str::limit($feedback->tb_pengaduan->judul, 50) !!}</td>
                     <td>{!! Str::limit($feedback->teks_tanggapan, 50) !!}</td>
                     <td>{{ $feedback->tb_petuga->nama }}</td>

@@ -82,7 +82,7 @@
                                             </div>
                                             <div class="col-12">
                                                 <div class="form-group">
-                                                    <label for="email-id-vertical">Foto</label>
+                                                    <label for="email-id-vertical">Foto <small>(maks. 2 MB)</small></label>
                                                     <input type="file" id="email-id-vertical" class="form-control"
                                                         name="foto" required>
                                                 </div>

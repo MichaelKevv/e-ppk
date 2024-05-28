@@ -35,16 +35,15 @@
                     <form action="{{ route('register') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="form-group position-relative mb-4">
-                            <input type="text" name="nama" class="form-control "
-                                placeholder="Nama Lengkap" required>
+                            <input type="text" name="nama" class="form-control " placeholder="Nama Lengkap"
+                                required>
                         </div>
                         <div class="form-group position-relative mb-4">
-                            <input type="text" name="alamat" class="form-control "
-                                placeholder="Alamat" required>
+                            <input type="text" name="alamat" class="form-control " placeholder="Alamat" required>
                         </div>
                         <div class="form-group position-relative mb-4">
-                            <input type="text" name="no_telp" class="form-control "
-                                placeholder="Nomor Telepon / WA" required>
+                            <input type="text" name="no_telp" class="form-control " placeholder="Nomor Telepon / WA"
+                                required>
                         </div>
                         <div class="form-group mb-4">
                             <select class="form-control" name="gender" id="gender">
@@ -53,25 +52,26 @@
                                 <option value="perempuan">Perempuan</option>
                             </select>
                         </div>
-                        <div class="form-group position-relative  mb-4">
-                            <input type="text" name="kelas" class="form-control "
-                                placeholder="Kelas" required>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="email-id-vertical">Kelas</label>
+                                <select class="form-control" name="kelas" id="kelas">
+                                    <option value="" selected>Pilih Kelas</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                </select>
+                            </div>
                         </div>
                         <div class="form-group position-relative  mb-4">
-                            <input type="text" name="jurusan" class="form-control "
-                                placeholder="Jurusan" required>
+                            <input type="text" name="username" class="form-control " placeholder="Username" required>
                         </div>
                         <div class="form-group position-relative  mb-4">
-                            <input type="text" name="username" class="form-control "
-                                placeholder="Username" required>
+                            <input type="text" name="email" class="form-control " placeholder="Email" required>
                         </div>
                         <div class="form-group position-relative  mb-4">
-                            <input type="text" name="email" class="form-control "
-                                placeholder="Email" required>
-                        </div>
-                        <div class="form-group position-relative  mb-4">
-                            <input type="password" name="password" class="form-control "
-                                placeholder="Password" required>
+                            <input type="password" name="password" class="form-control " placeholder="Password"
+                                required>
                         </div>
                         <div class="col-12">
                             <div class="form-group">

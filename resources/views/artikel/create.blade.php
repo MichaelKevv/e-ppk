@@ -57,7 +57,7 @@
                                             </div>
                                             <div class="col-12">
                                                 <div class="form-group">
-                                                    <label for="email-id-vertical">Gambar</label>
+                                                    <label for="email-id-vertical">Gambar <small>(maks. 2 MB)</small></label>
                                                     <input type="file" id="email-id-vertical" class="form-control"
                                                         name="gambar" required>
                                                 </div>

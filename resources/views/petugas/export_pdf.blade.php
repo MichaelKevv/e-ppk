@@ -38,16 +38,31 @@
             font-size: 9pt;
             margin-bottom: 20px;
         }
+
+        .kop-surat hr {
+            border: 0;
+            border-top: 1px solid black;
+            margin: 5px 0;
+        }
+
+        .kop-surat .line {
+            border-bottom: 2px solid black;
+            margin-top: 2px;
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 
 <body>
-    <center>
-        <h5 class="mb-2">Laporan Petugas</h5>
-    </center>
-    <div class="printed-date">
-        Dicetak pada tanggal: {{ \Carbon\Carbon::now()->isoFormat('D MMMM YYYY') }}
+    <div class="kop-surat">
+        <img src="{{ public_path('images/kop_surat.png') }}" class="img-fluid">
+        <hr>
+        <div class="line"></div>
     </div>
+    <center>
+        <h5 class="mb-5">Laporan Petugas</h5>
+    </center>
+    <p>Dicetak pada tanggal: {{ \Carbon\Carbon::now()->isoFormat('D MMMM YYYY') }}</p>
     <table class='table table-bordered table-striped'>
         <thead>
             <tr>

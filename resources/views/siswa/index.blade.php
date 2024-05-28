@@ -34,7 +34,6 @@
                                 <th>Gender</th>
                                 <th>Nomor Telepon</th>
                                 <th>Kelas</th>
-                                <th>Jurusan</th>
                                 <th>Username</th>
                                 <th>Email</th>
                                 <th>Foto</th>
@@ -49,7 +48,6 @@
                                     <td>{{ $siswa->gender }}</td>
                                     <td>{{ $siswa->no_telp }}</td>
                                     <td>{{ $siswa->kelas }}</td>
-                                    <td>{{ $siswa->jurusan }}</td>
                                     <td>{{ $siswa->tb_pengguna->username }}</td>
                                     <td>{{ $siswa->tb_pengguna->email }}</td>
                                     <td>

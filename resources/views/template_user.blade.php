@@ -106,37 +106,19 @@
 
         <div class="container footer-top">
             <div class="row gy-4">
-                <div class="col-lg-4 col-md-6 footer-about">
-                    <a href="{{ url('/') }}" class="d-flex align-items-center">
-                        <img src="{{ asset('images/logo_eppk.png') }}" alt="" width="100">
-                    </a>
-                    <div class="footer-contact pt-3">
-                        <p>Cangakan, Kedungrejo, Kec. Bantaran</p>
-                        <p>Kabupaten Probolinggo, Jawa Timur 67261</p>
-                        <p class="mt-3"><strong>Phone:</strong> <span>+62</span></p>
-                        <p><strong>Email:</strong> <span>smpn2bantaran@gmail.com</span></p>
+                <center>
+                    <div class="col-lg-12 col-md-12 footer-about">
+                        <a href="{{ url('/') }}" class="">
+                            <img src="{{ asset('images/logo_eppk.png') }}" alt="" width="100">
+                        </a>
+                        <div class="footer-contact pt-3">
+                            <p>Jl. Tugu Pancasila Desa Kedungrejo Kec. Bantaran</p>
+                            <p>Kabupaten Probolinggo, Jawa Timur 67261</p>
+                            <p class="mt-3"><strong>Phone:</strong> <span>+6281216494265</span></p>
+                            <p><strong>Email:</strong> <span>smpn2bantaran@gmail.com</span></p>
+                        </div>
                     </div>
-                </div>
-
-                <div class="col-lg-2 col-md-3 footer-links">
-                    <h4>Useful Links</h4>
-                    <ul>
-                        <li><i class="bi bi-chevron-right"></i> <a href="{{ url('/') }}">Beranda</a></li>
-                        <li><i class="bi bi-chevron-right"></i> <a href="{{ url('showarticle') }}">Artikel</a></li>
-                        <li><i class="bi bi-chevron-right"></i> <a href="{{ url('kontak') }}">Kontak</a></li>
-                    </ul>
-                </div>
-
-                <div class="col-lg-4 col-md-12">
-                    <h4>Ikuti Kami</h4>
-                    <div class="social-links d-flex">
-                        <a href=""><i class="bi bi-twitter"></i></a>
-                        <a href=""><i class="bi bi-facebook"></i></a>
-                        <a href=""><i class="bi bi-instagram"></i></a>
-                        <a href=""><i class="bi bi-linkedin"></i></a>
-                    </div>
-                </div>
-
+                </center>
             </div>
         </div>
 
