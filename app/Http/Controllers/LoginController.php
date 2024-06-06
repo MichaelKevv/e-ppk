@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
 
+use Illuminate\Support\Facades\Session;
+
 class LoginController extends Controller
 {
     // Menampilkan form login
@@ -54,7 +56,6 @@ class LoginController extends Controller
         $validator = Validator::make($request->all(), [
             'nama' => 'required|string|max:255',
             'kelas' => 'required|string|max:255',
-            'jurusan' => 'required|string|max:255',
             'gender' => 'required|string|max:255',
             'alamat' => 'required|string|max:255',
             'no_telp' => 'required|string|max:15',
@@ -99,6 +100,7 @@ class LoginController extends Controller
 
     public function logout(Request $request)
     {
+        Session::forget('userdata');
         Auth::logout();
         return redirect('login');
     }

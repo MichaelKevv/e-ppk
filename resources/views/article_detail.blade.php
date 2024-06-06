@@ -1,36 +1,32 @@
 @extends('template_user')
 @section('content')
-    <div class="page-title" data-aos="fade">
-        <div class="container d-lg-flex justify-content-between align-items-center">
-            <h1 class="mb-2 mb-lg-0">{{ $data->judul }}</h1>
-            <nav class="breadcrumbs">
+    <!-- ======= Breadcrumbs Section ======= -->
+    <section class="breadcrumbs">
+        <div class="container">
+
+            <div class="d-flex justify-content-between align-items-center">
+                <h2></h2>
                 <ol>
-                    <li><a href="{{ url('/') }}">Home</a></li>
-                    <li class="current">Article</li>
+                    <li><a href="{{ url('/') }}">Beranda</a></li>
+                    <li><a href="{{ url('/showarticle') }}">Artikel</a></li>
+                    <li>{{ $data->judul }}</li>
                 </ol>
-            </nav>
-        </div>
-    </div>
-    <section id="portfolio-details" class="portfolio-details section">
-
-        <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-            <div class="row gy-4">
-
-                <div class="col-lg-12">
-                    <img src="{{ url('storage/foto-artikel/' . $data->gambar) }}">
-                </div>
-
-                <div class="col-lg-12">
-                    <div class="portfolio-description" data-aos="fade-up" data-aos-delay="300">
-                        <h2>{{ $data->judul }}</h2>
-                        {!! $data->konten !!}
-                    </div>
-                </div>
-
             </div>
 
         </div>
+    </section><!-- End Breadcrumbs Section -->
 
-    </section><!-- /Portfolio Details Section -->
+    <section class="inner-page portfolio section">
+        <div class="container section-title" style="padding-bottom: 0!important" data-aos="fade-up" data-aos-delay="100">
+            <h2>Artikel Mental Health</h2>
+            <p>{{ $data->judul }}</p>
+        </div>
+        <div class="container" data-aos="fade-up" data-aos-delay="100">
+            <p>{{ $data->author }} - {{ \Carbon\Carbon::parse($data->created_at)->isoFormat('D MMMM YYYY') }}</p>
+            <div class="col-lg-12 d-flex justify-content-center">
+                <img src="{{ url('storage/foto-artikel/' . $data->gambar) }}" class="img-fluid mb-4" width="50%">
+            </div>
+            {!! $data->konten !!}
+        </div>
+    </section>
 @endsection

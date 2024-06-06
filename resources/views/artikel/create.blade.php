@@ -66,7 +66,7 @@
                                                 <div class="form-group">
                                                     <label for="email-id-vertical">Author</label>
                                                     <input type="text" id="email-id-vertical" class="form-control"
-                                                        name="author" placeholder="Masukkan Nama Author" required>
+                                                        name="author" placeholder="Masukkan Nama Author" value=" {{ session('userdata')->nama }}" required readonly>
                                                 </div>
                                             </div>
                                             <div class="col-12 d-flex justify-content-end">

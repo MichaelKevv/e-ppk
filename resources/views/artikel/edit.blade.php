@@ -88,7 +88,7 @@
                                                     <label for="email-id-vertical">Author</label>
                                                     <input type="text" id="email-id-vertical" class="form-control"
                                                         name="author" placeholder="Masukkan Nama Author"
-                                                        value="{{ $artikel->author }}" required>
+                                                        value="{{ $artikel->author }}" required readonly>
                                                 </div>
                                             </div>
                                             <div class="col-12 d-flex justify-content-end">

@@ -31,6 +31,10 @@
             margin-top: 2px;
             margin-bottom: 15px;
         }
+        .img-fluid {
+  max-width: 100%;
+  height: auto;
+}
     </style>
 </head>
 

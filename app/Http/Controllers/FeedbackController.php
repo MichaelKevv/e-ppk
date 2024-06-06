@@ -28,7 +28,7 @@ class FeedbackController extends Controller
                 ->orderBy('created_at', 'DESC')
                 ->get();
         } else {
-            $data = TbFeedback::all();
+            $data = TbFeedback::orderBy('created_at', 'desc')->get();
         }
         $title = 'Hapus Pengaduan';
         $text = "Apakah anda yakin untuk hapus?";

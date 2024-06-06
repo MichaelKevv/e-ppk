@@ -20,15 +20,20 @@
     <div id="auth">
 
         <div class="row h-100">
-            <div class="col-lg-4 d-none d-lg-block">
+            <div class="col-lg-5 d-none d-lg-block">
                 <div id="auth-right" class="d-flex justify-content-center align-items-center h-100">
                     <div class="text-center">
                         <img src="{{ asset('images/logo_eppk.png') }}" alt="Logo">
                     </div>
                 </div>
             </div>
-            <div class="col-lg-8 col-12">
+            <div class="col-lg-7 col-12">
                 <div id="auth-left">
+                    <div class="text-lg fs-4">
+                        <p class="text-gray-600">
+                            <a href="{{ url('/login') }}" class="font-bold"><i class="bi bi-arrow-left"></i> Kembali</a>
+                        </p>
+                    </div>
                     <h1 class="auth-title">Register.</h1>
                     <p class="auth-subtitle mb-5">Silakan register untuk mendapatkan akses</p>
 
@@ -52,16 +57,13 @@
                                 <option value="perempuan">Perempuan</option>
                             </select>
                         </div>
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label for="email-id-vertical">Kelas</label>
-                                <select class="form-control" name="kelas" id="kelas">
-                                    <option value="" selected>Pilih Kelas</option>
-                                    <option value="7">7</option>
-                                    <option value="8">8</option>
-                                    <option value="9">9</option>
-                                </select>
-                            </div>
+                        <div class="form-group mb-4">
+                            <select class="form-control" name="kelas" id="kelas">
+                                <option value="" selected>Pilih Kelas</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                            </select>
                         </div>
                         <div class="form-group position-relative  mb-4">
                             <input type="text" name="username" class="form-control " placeholder="Username" required>

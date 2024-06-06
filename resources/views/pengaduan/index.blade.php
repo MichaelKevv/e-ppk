@@ -32,7 +32,6 @@
                                 @if (Auth::user()->role == 'petugas' || Auth::user()->role == 'kepala_sekolah')
                                     <th>Nama Siswa</th>
                                     <th>Kelas</th>
-                                    <th>Jurusan</th>
                                 @endif
                                 <th>Judul</th>
                                 <th>Deskripsi</th>
@@ -47,7 +46,6 @@
                                     @if (Auth::user()->role == 'petugas' || Auth::user()->role == 'kepala_sekolah')
                                         <td>{{ $pengaduan->tb_siswa->nama }}</td>
                                         <td>{{ $pengaduan->tb_siswa->kelas }}</td>
-                                        <td>{{ $pengaduan->tb_siswa->jurusan }}</td>
                                     @endif
                                     <td>{{ $pengaduan->judul }}</td>
                                     <td>{!! Str::limit($pengaduan->deskripsi, 50) !!}</td>

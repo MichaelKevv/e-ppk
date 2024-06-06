@@ -21,9 +21,9 @@ class PengaduanController extends Controller
     public function index()
     {
         if (Auth::user()->role == 'siswa') {
-            $data = TbPengaduan::where('id_siswa', session('userdata')->id_siswa)->get();
+            $data = TbPengaduan::where('id_siswa', session('userdata')->id_siswa)->orderBy('created_at', 'desc')->get();
         } else {
-            $data = TbPengaduan::all();
+            $data = TbPengaduan::orderBy('created_at', 'desc')->get();
         }
         $title = 'Hapus Pengaduan';
         $text = "Apakah anda yakin untuk hapus?";
