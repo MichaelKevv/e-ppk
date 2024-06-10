@@ -39,7 +39,7 @@
 
             <div class="logo">
                 <a href="{{ url('/') }}"><img src="{{ asset('images/logo_eppk.png') }}" alt=""
-                        class="img-fluid"></a>
+                        class="img-fluid" width="100" style="max-height: 100px!important"></a>
             </div>
 
             <nav id="navbar" class="navbar">

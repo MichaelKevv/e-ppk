@@ -38,11 +38,12 @@
                                             </div>
                                             <div class="col-12">
                                                 <div class="form-group">
-                                                    <label for="email-id-vertical">Feedback</label>
-                                                    <textarea type="text" id="email-id-vertical" class="form-control" name="teks_tanggapan"></textarea>
+                                                    <label for="feedback-textarea">Feedback</label>
+                                                    <textarea id="feedback-textarea" data-purpose="feedback" class="form-control" name="teks_tanggapan">
+                                                    </textarea>
                                                 </div>
                                             </div>
-                                            <div class="col-12">
+                                            {{-- <div class="col-12">
                                                 <div class="form-group">
                                                     <label for="email-id-vertical">Status</label>
                                                     <select class="form-control" name="status" id="status">
@@ -58,7 +59,7 @@
                                                         </option>
                                                     </select>
                                                 </div>
-                                            </div>
+                                            </div> --}}
                                             <div class="col-12 d-flex justify-content-end">
                                                 <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
                                             </div>

@@ -212,4 +212,13 @@ class PengaduanController extends Controller
         $pdf = Pdf::loadview('pengaduan.export_single', compact('pengaduan'));
         return $pdf->download('laporan-pengaduan-' . $pengaduan->tb_siswa->nama . '.pdf');
     }
+
+    public function pengaduanSelesai($id)
+    {
+        $pengaduan = TbPengaduan::findOrFail($id);
+        $pengaduan->status = 'ditutup';
+        $pengaduan->save();
+        Alert::success("Success", "Pengaduan anda tentang ". $pengaduan->judul ." telah selesai!");
+        return redirect("pengaduan");
+    }
 }

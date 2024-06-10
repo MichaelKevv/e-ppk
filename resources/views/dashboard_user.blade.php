@@ -14,60 +14,8 @@
                     </div>
                 </div>
                 <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="zoom-out" data-aos-delay="300">
-                    <div class="testimonials-slider swiper" data-aos="fade-up" data-aos-delay="100">
-                        <div class="swiper-wrapper">
+                    <img src="{{ asset('images/vector.PNG') }}" class="img-fluid animated" alt="">
 
-                            <div class="swiper-slide">
-                                <div class="testimonial-item">
-                                    <img src="{{ asset('img/sekolah/1.jpg') }}" class="img-fluid" alt="">
-                                </div>
-                            </div><!-- End testimonial item -->
-
-                            <div class="swiper-slide">
-                                <div class="testimonial-item">
-                                    <img src="{{ asset('img/sekolah/2.jpg') }}" class="img-fluid" alt="">
-
-                                </div>
-                            </div><!-- End testimonial item -->
-
-                            <div class="swiper-slide">
-                                <div class="testimonial-item">
-                                    <img src="{{ asset('img/sekolah/3.jpg') }}" class="img-fluid" alt="">
-
-                                </div>
-                            </div><!-- End testimonial item -->
-
-                            <div class="swiper-slide">
-                                <div class="testimonial-item">
-                                    <img src="{{ asset('img/sekolah/4.jpg') }}" class="img-fluid" alt="">
-
-                                </div>
-                            </div><!-- End testimonial item -->
-
-                            <div class="swiper-slide">
-                                <div class="testimonial-item">
-                                    <img src="{{ asset('img/sekolah/5.jpg') }}" class="img-fluid" alt="">
-
-                                </div>
-                            </div><!-- End testimonial item -->
-
-                            <div class="swiper-slide">
-                                <div class="testimonial-item">
-                                    <img src="{{ asset('img/sekolah/6.jpg') }}" class="img-fluid" alt="">
-
-                                </div>
-                            </div><!-- End testimonial item -->
-
-                            <div class="swiper-slide">
-                                <div class="testimonial-item">
-                                    <img src="{{ asset('img/sekolah/7.jpg') }}" class="img-fluid" alt="">
-
-                                </div>
-                            </div><!-- End testimonial item -->
-
-                        </div>
-                        <div class="swiper-pagination"></div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -95,9 +43,9 @@
         <div class="container-fluid">
 
             <div class="row">
-                <div class="col-xl-5 col-lg-6 " data-aos="fade-right">
-                    <img src="{{ asset('images/kepsek.JPG') }}" alt=""
-                        class="img-fluid">
+                <div class="col-xl-5 col-lg-6" data-aos="fade-right">
+                    <img src="{{ asset('images/kepsek.png') }}" alt="" width="500" class="img-fluid"
+                        style="margin-left: 50px">
                 </div>
 
                 <div class="col-xl-7 col-lg-6 icon-boxes d-flex flex-column align-items-stretch justify-content-center py-5 px-lg-5"

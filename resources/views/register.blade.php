@@ -23,7 +23,7 @@
             <div class="col-lg-5 d-none d-lg-block">
                 <div id="auth-right" class="d-flex justify-content-center align-items-center h-100">
                     <div class="text-center">
-                        <img src="{{ asset('images/logo_eppk.png') }}" alt="Logo">
+                        <img src="{{ asset('images/logo_eppk.png') }}" alt="Logo" width="500">
                     </div>
                 </div>
             </div>

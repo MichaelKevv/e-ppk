@@ -22,7 +22,8 @@
                     @if (Auth::user()->role == 'siswa')
                         <a href="{{ url('pengaduan/create') }}"><button class="btn btn-success">Tambah Data</button></a>
                     @elseif (Auth::user()->role == 'kepala_sekolah')
-                        <a href="{{ url('export/pengaduan') }}" target="_blank"><button class="btn btn-success">Export PDF</button></a>
+                        <a href="{{ url('export/pengaduan') }}" target="_blank"><button class="btn btn-success">Export
+                                PDF</button></a>
                     @endif
                 </div>
                 <div class="card-body">
@@ -69,6 +70,16 @@
                                                 class="btn btn-danger font-weight-bold text-xs" data-confirm-delete="true">
                                                 Delete
                                             </a>
+                                            @if ($pengaduan->status != 'ditutup')
+                                                <form action="{{ url('pengaduan/selesai/' . $pengaduan->id_pengaduan) }}"
+                                                    method="post">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <button type="submit" class="btn btn-success" type="button">
+                                                        Selesai
+                                                    </button>
+                                                </form>
+                                            @endif
                                         @else
                                             <a href="{{ route('pengaduan.show', $pengaduan->id_pengaduan) }}"
                                                 class="btn btn-warning font-weight-bold text-xs">

@@ -68,7 +68,7 @@ class FeedbackController extends Controller
             'id_petugas' => session('userdata')->id_petugas,
             'id_siswa' => $pengaduan->id_siswa,
             'teks_tanggapan' => $request->teks_tanggapan,
-            'status' => $request->status,
+            'status' => 'diproses',
         ]);
         Alert::success("Success", "Berhasil memberikan feedback");
 

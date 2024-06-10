@@ -22,7 +22,7 @@
                 <div class="sidebar-header position-relative">
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="logo">
-                            <a href="{{ url('dashboard') }}"><img src="{{ asset('images/logo_eppk.png') }}"
+                            <a href="{{ url('dashboard') }}"><img src="{{ asset('images/logo_black.png') }}"
                                     alt="Logo Perusahaan" style="width: 80px; height: auto;">
                             </a>
                         </div>
@@ -253,7 +253,8 @@
                                     </li>
                                     <li>
                                         @if (Auth::user()->role == 'siswa')
-                                            <a class="dropdown-item" href="{{ url('siswa/edit/profile/'. session('userdata')->id_siswa) }}">
+                                            <a class="dropdown-item"
+                                                href="{{ url('siswa/edit/profile/' . session('userdata')->id_siswa) }}">
                                                 <i class="icon-mid bi bi-pencil me-2"></i>
                                                 Edit Profile
                                             </a>
@@ -444,12 +445,45 @@
     <script script src="https://cdn.tiny.cloud/1/1n3f7wnxsqlud0ga3vqsndjt3zhzvf7skeun894b43byqkwk/tinymce/7/tinymce.min.js"
         referrerpolicy="origin"></script>
     <script>
-        tinymce.init({
-            selector: 'textarea',
-            // plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate mentions tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss markdown',
-            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
-            tinycomments_mode: 'embedded',
-            tinycomments_author: 'Author name',
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('textarea').forEach(textarea => {
+                const purpose = textarea.dataset.purpose;
+                let defaultContent = '';
+                switch (purpose) {
+                    case 'pengaduan':
+                        defaultContent = '';
+                        break;
+                    case 'artikel':
+                        defaultContent = '';
+                        break;
+                    case 'feedback':
+                        defaultContent =
+                            '<p>KETIK FEEDBACK</p>' +
+                            '<p>Jika tanggapan kurang memuaskan atau pertanyaan lanjut, silakan hubungi petugas melalui WhatsApp di <a href="https://wa.me/{{ session('userdata')->no_telp }}" target="_blank">{{ session('userdata')->no_telp }}</a>.</p>';
+                        break;
+                    default:
+                        defaultContent = '';
+                        break;
+                }
+
+                // Inisialisasi TinyMCE pada textarea tertentu
+                tinymce.init({
+                    selector: `#${textarea.id}`,
+                    height: 300,
+                    menubar: false,
+                    plugins: [
+                        'advlist autolink lists link image charmap print preview anchor',
+                        'searchreplace visualblocks code fullscreen',
+                        'insertdatetime media table paste code help wordcount'
+                    ],
+                    toolbar: 'undo redo | formatselect | bold italic backcolor | \
+                                          alignleft aligncenter alignright alignjustify | \
+                                          bullist numlist outdent indent | removeformat | help',
+                    init_instance_callback: function(editor) {
+                        editor.setContent(defaultContent);
+                    }
+                });
+            });
         });
     </script>
     <script>

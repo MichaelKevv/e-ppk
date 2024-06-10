@@ -41,7 +41,7 @@
                                             <div class="col-12">
                                                 <div class="form-group">
                                                     <label for="email-id-vertical">Deskripsi Pengaduan</label>
-                                                    <textarea type="text" id="email-id-vertical" class="form-control" name="deskripsi">{{ $pengaduan->deskripsi }}</textarea>
+                                                    <textarea type="text" id="pengaduan-textarea" data-purpose="pengaduan" class="form-control" name="deskripsi">{{ $pengaduan->deskripsi }}</textarea>
                                                 </div>
                                             </div>
                                             <div class="col-12">

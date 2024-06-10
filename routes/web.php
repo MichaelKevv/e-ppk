@@ -44,6 +44,7 @@ Route::middleware(['auth'])->group(function () {
     Route::put('siswa/update/profile/{id}', [SiswaController::class, 'updateProfile']);
     Route::resource('kepsek', KepsekController::class);
     Route::resource('pengaduan', PengaduanController::class);
+    Route::put('pengaduan/selesai/{id}', [PengaduanController::class, 'pengaduanSelesai']);
     Route::resource('artikel', ArtikelController::class);
     Route::resource('feedback', FeedbackController::class);
     Route::get('feedback/create/{pengaduan}', [FeedbackController::class, 'create'])->name('feedback.create');
