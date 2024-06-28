@@ -77,11 +77,17 @@ class PenggunaController extends Controller
      */
     public function update(Request $request, TbPengguna $pengguna)
     {
+        $messages = [
+            'required' => 'Field :attribute wajib diisi.',
+            'username.unique' => 'Username telah dipakai.',
+            'email.unique' => 'Email telah dipakai.',
+            'password.min' => 'Password harus terdiri dari minimal :min karakter.',
+        ];
         $validator = Validator::make($request->all(), [
             'username' => 'required|string|unique:tb_pengguna,username,' . $pengguna->id_pengguna . ',id_pengguna',
             'email' => 'required|email|unique:tb_pengguna,email,' . $pengguna->id_pengguna . ',id_pengguna',
             'password' => 'nullable|string|min:6',
-        ]);
+        ], $messages);
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();

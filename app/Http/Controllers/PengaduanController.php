@@ -49,10 +49,13 @@ class PengaduanController extends Controller
      */
     public function store(Request $request)
     {
+        $messages = [
+            'required' => 'Field :attribute wajib diisi.',
+        ];
         $validator = Validator::make($request->all(), [
             'judul' => 'required|string|max:255',
             'deskripsi' => 'required|string'
-        ]);
+        ], $messages);
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
@@ -112,10 +115,13 @@ class PengaduanController extends Controller
      */
     public function update(Request $request, TbPengaduan $pengaduan)
     {
+        $messages = [
+            'required' => 'Field :attribute wajib diisi.',
+        ];
         $validator = Validator::make($request->all(), [
             'judul' => 'required|string|max:255',
             'deskripsi' => 'required|string'
-        ]);
+        ], $messages);
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
@@ -218,7 +224,7 @@ class PengaduanController extends Controller
         $pengaduan = TbPengaduan::findOrFail($id);
         $pengaduan->status = 'ditutup';
         $pengaduan->save();
-        Alert::success("Success", "Pengaduan anda tentang ". $pengaduan->judul ." telah selesai!");
+        Alert::success("Success", "Pengaduan anda tentang " . $pengaduan->judul . " telah selesai!");
         return redirect("pengaduan");
     }
 }

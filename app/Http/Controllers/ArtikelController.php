@@ -56,13 +56,16 @@ class ArtikelController extends Controller
      */
     public function store(Request $request)
     {
+        $messages = [
+            'required' => 'Field :attribute wajib diisi.',
+        ];
         $validator = Validator::make($request->all(), [
             'judul' => 'required|string|max:255',
             'konten' => 'required|string',
             'kategori' => 'required|string|max:255',
             'author' => 'required|string|max:255',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ]);
+        ], $messages);
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
@@ -116,13 +119,16 @@ class ArtikelController extends Controller
      */
     public function update(Request $request, TbArtikel $artikel)
     {
+        $messages = [
+            'required' => 'Field :attribute wajib diisi.',
+        ];
         $validator = Validator::make($request->all(), [
             'judul' => 'required|string|max:255',
             'konten' => 'required|string',
             'kategori' => 'required|string|max:255',
             'author' => 'required|string|max:255',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ]);
+        ], $messages);
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();

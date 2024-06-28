@@ -6,6 +6,8 @@
             <div class="row justify-content-between">
                 <div class="col-lg-6 pt-5 pt-lg-0 order-2 order-lg-1 d-flex align-items-center">
                     <div data-aos="zoom-out">
+                        <img src="{{ asset('images/logo pemkab.png') }}" alt="" width="100" class="img-fluid">
+                        <img src="{{ asset('images/logo smp2.png') }}" alt="" width="125" class="img-fluid ms-2">
                         <h1>Merasa Lebih Lega bersama <span>E-PPK</span></h1>
                         <h2>Kami adalah tim pengaduan untuk semua masalah mu!</h2>
                         <div class="text-center text-lg-start">

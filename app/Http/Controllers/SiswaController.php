@@ -46,6 +46,12 @@ class SiswaController extends Controller
      */
     public function store(Request $request)
     {
+        $messages = [
+            'required' => 'Field :attribute wajib diisi.',
+            'username.unique' => 'Username telah dipakai.',
+            'email.unique' => 'Email telah dipakai.',
+            'password.min' => 'Password harus terdiri dari minimal :min karakter.',
+        ];
         $validator = Validator::make($request->all(), [
             'nama' => 'required|string|max:255',
             'kelas' => 'required|string|max:255',
@@ -57,7 +63,7 @@ class SiswaController extends Controller
             'email' => 'required|email|unique:tb_pengguna,email',
             'password' => 'required|string|min:6',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-        ]);
+        ], $messages);
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
@@ -131,10 +137,15 @@ class SiswaController extends Controller
      */
     public function update(Request $request, TbSiswa $siswa)
     {
+        $messages = [
+            'required' => 'Field :attribute wajib diisi.',
+            'username.unique' => 'Username telah dipakai.',
+            'email.unique' => 'Email telah dipakai.',
+            'password.min' => 'Password harus terdiri dari minimal :min karakter.',
+        ];
         $validator = Validator::make($request->all(), [
             'nama' => 'required|string|max:255',
             'kelas' => 'required|string|max:255',
-
             'alamat' => 'required|string|max:255',
             'gender' => 'required|string|max:255',
             'no_telp' => 'required|string|max:15',
@@ -142,7 +153,7 @@ class SiswaController extends Controller
             'email' => 'required|email|unique:tb_pengguna,email,' . $siswa->id_pengguna . ',id_pengguna',
             'password' => 'nullable|string|min:6',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-        ]);
+        ], $messages);
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
@@ -189,6 +200,12 @@ class SiswaController extends Controller
     public function updateProfile(Request $request, $id)
     {
         $siswa = TbSiswa::findOrFail($id);
+        $messages = [
+            'required' => 'Field :attribute wajib diisi.',
+            'username.unique' => 'Username telah dipakai.',
+            'email.unique' => 'Email telah dipakai.',
+            'password.min' => 'Password harus terdiri dari minimal :min karakter.',
+        ];
         $validator = Validator::make($request->all(), [
             'nama' => 'required|string|max:255',
             'kelas' => 'required|string|max:255',
@@ -199,7 +216,7 @@ class SiswaController extends Controller
             'email' => 'required|email|unique:tb_pengguna,email,' . $siswa->id_pengguna . ',id_pengguna',
             'password' => 'nullable|string|min:6',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-        ]);
+        ],$messages);
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();

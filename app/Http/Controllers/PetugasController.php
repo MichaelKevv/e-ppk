@@ -46,6 +46,12 @@ class PetugasController extends Controller
      */
     public function store(Request $request)
     {
+        $messages = [
+            'required' => 'Field :attribute wajib diisi.',
+            'username.unique' => 'Username telah dipakai.',
+            'email.unique' => 'Email telah dipakai.',
+            'password.min' => 'Password harus terdiri dari minimal :min karakter.',
+        ];
         $validator = Validator::make($request->all(), [
             'nama' => 'required|string|max:255',
             'alamat' => 'required|string|max:255',
@@ -55,7 +61,7 @@ class PetugasController extends Controller
             'email' => 'required|email|unique:tb_pengguna,email',
             'password' => 'required|string|min:6',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-        ]);
+        ], $messages);
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
@@ -123,6 +129,12 @@ class PetugasController extends Controller
      */
     public function update(Request $request, TbPetuga $petuga)
     {
+        $messages = [
+            'required' => 'Field :attribute wajib diisi.',
+            'username.unique' => 'Username telah dipakai.',
+            'email.unique' => 'Email telah dipakai.',
+            'password.min' => 'Password harus terdiri dari minimal :min karakter.',
+        ];
         $validator = Validator::make($request->all(), [
             'nama' => 'required|string|max:255',
             'alamat' => 'required|string|max:255',
@@ -132,7 +144,7 @@ class PetugasController extends Controller
             'email' => 'required|email|unique:tb_pengguna,email,' . $petuga->id_pengguna . ',id_pengguna',
             'password' => 'nullable|string|min:6',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-        ]);
+        ], $messages);
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();

@@ -108,6 +108,12 @@ class FeedbackController extends Controller
      */
     public function update(Request $request, TbSiswa $pengaduan)
     {
+        $messages = [
+            'required' => 'Field :attribute wajib diisi.',
+            'username.unique' => 'Username telah dipakai.',
+            'email.unique' => 'Email telah dipakai.',
+            'password.min' => 'Password harus terdiri dari minimal :min karakter.',
+        ];
         $validator = Validator::make($request->all(), [
             'nama' => 'required|string|max:255',
             'kelas' => 'required|string|max:255',
@@ -117,7 +123,7 @@ class FeedbackController extends Controller
             'username' => 'required|string|unique:tb_pengguna,username,' . $pengaduan->id_pengguna . ',id_pengguna',
             'email' => 'required|email|unique:tb_pengguna,email,' . $pengaduan->id_pengguna . ',id_pengguna',
             'password' => 'nullable|string|min:6',
-        ]);
+        ], $messages);
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();

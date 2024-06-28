@@ -39,7 +39,7 @@
 
             <div class="logo">
                 <a href="{{ url('/') }}"><img src="{{ asset('images/logo_eppk.png') }}" alt=""
-                        class="img-fluid" width="100" style="max-height: 100px!important"></a>
+                        class="img-fluid" width="200" style="max-height: 300px!important"></a>
             </div>
 
             <nav id="navbar" class="navbar">
@@ -71,11 +71,10 @@
         <div class="footer-top">
             <div class="container">
                 <div class="row justify-content-center">
-
                     <div class="col-lg-4 col-md-6">
                         <div class="footer-info">
                             <a href="{{ url('/') }}" class="">
-                                <img src="{{ asset('images/logo_eppk.png') }}" alt="" width="100" class="mb-4">
+                                <img src="{{ asset('images/logo_eppk.png') }}" alt="" width="300" class="">
                             </a>
                             <p>Jl. Tugu Pancasila Desa Kedungrejo Kec. Bantaran</p>
                             <p>Kabupaten Probolinggo, Jawa Timur 67261</p>
