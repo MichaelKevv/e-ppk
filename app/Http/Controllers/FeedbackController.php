@@ -60,7 +60,7 @@ class FeedbackController extends Controller
             'teks_tanggapan' => 'required|string',
         ]);
 
-        $pengaduan->status = $request->status;
+        $pengaduan->status = 'diproses';
         $pengaduan->save();
 
         TbFeedback::create([
@@ -117,7 +117,6 @@ class FeedbackController extends Controller
         $validator = Validator::make($request->all(), [
             'nama' => 'required|string|max:255',
             'kelas' => 'required|string|max:255',
-            'jurusan' => 'required|string|max:255',
             'alamat' => 'required|string|max:255',
             'no_telp' => 'required|string|max:15',
             'username' => 'required|string|unique:tb_pengguna,username,' . $pengaduan->id_pengguna . ',id_pengguna',
