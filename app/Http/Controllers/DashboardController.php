@@ -70,28 +70,28 @@ class DashboardController extends Controller
 
     public function index()
     {
-        if (Auth::user()->role == 'siswa') {
-            $id_siswa = session('userdata')->id_siswa;
-            $data['totalPengaduan'] = TbPengaduan::where('id_siswa', $id_siswa)->count();
-            $data['pengaduanFeedback'] = TbPengaduan::where('id_siswa', $id_siswa)
-            ->where(function($query) {
-                $query->where('status', 'diproses')
-                        ->orWhere('status', 'ditutup');
-            })
-    ->count();
-        } else {
-            $data['totalSiswa'] = TbSiswa::count();
-            $data['totalPengaduan'] = TbPengaduan::count();
-            $data['totalFeedback'] = TbFeedback::count();
-            $data['pengaduanBelumDibaca'] = TbPengaduan::where('status', 'dibuka')
-                ->orWhere('status', 'diproses')
-                ->count();
-        }
-        return view('dashboard', compact('data'));
+    //     if (Auth::user()->role == 'siswa') {
+    //         $id_siswa = session('userdata')->id_siswa;
+    //         $data['totalPengaduan'] = TbPengaduan::where('id_siswa', $id_siswa)->count();
+    //         $data['pengaduanFeedback'] = TbPengaduan::where('id_siswa', $id_siswa)
+    //         ->where(function($query) {
+    //             $query->where('status', 'diproses')
+    //                     ->orWhere('status', 'ditutup');
+    //         })
+    // ->count();
+    //     } else {
+    //         $data['totalSiswa'] = TbSiswa::count();
+    //         $data['totalPengaduan'] = TbPengaduan::count();
+    //         $data['totalFeedback'] = TbFeedback::count();
+    //         $data['pengaduanBelumDibaca'] = TbPengaduan::where('status', 'dibuka')
+    //             ->orWhere('status', 'diproses')
+    //             ->count();
+    //     }
+        return view('admin.dashboard');
     }
     public function indexUser()
     {
-        return view('dashboard_user');
+        return view('front.home');
     }
     public function kontakPetugas()
     {

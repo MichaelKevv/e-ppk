@@ -4,84 +4,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-PPK</title>
+    <title>SIPERU | Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8f9ff;
+            font-family: 'Inter', sans-serif;
+        }
 
-    <link rel="Shortcut icon" href = "{{ asset('images/logo_eppk.png') }}"alt="">
-    <link rel="stylesheet" crossorigin href="{{ asset('compiled/css/app.css') }}">
-    <link rel="stylesheet" crossorigin href="{{ asset('compiled/css/iconly.css') }}">
-    <link rel="stylesheet" href="{{ asset('extensions/simple-datatables/style.css') }}">
-    <link rel="stylesheet" crossorigin href="{{ asset('compiled/css/table-datatable.css') }}">
-    <link rel="stylesheet" crossorigin href="{{ asset('compiled/css/auth.css') }}">
+        .login-container {
+            width: 100%;
+            max-width: 1100px; /* lebih lebar */
+            background: #fff;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+        }
 
+        .login-form {
+            flex: 1;
+            padding: 70px 60px; /* lebih lega */
+        }
+
+        .login-form h4 {
+            font-weight: 700;
+            margin-bottom: 40px;
+            letter-spacing: 1px;
+        }
+
+        .login-form .form-label {
+            font-weight: 600;
+        }
+
+        .login-form .form-control {
+            border-radius: 12px;
+            padding: 14px 18px; /* lebih besar */
+            font-size: 1rem;
+        }
+
+        .login-form .btn {
+            border-radius: 12px;
+            width: 100%;
+            padding: 12px;
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+
+        .illustration {
+            flex: 1;
+            background: #f8faff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .illustration img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .text-muted a {
+            text-decoration: none;
+        }
+
+        .brand {
+            font-size: 34px; /* lebih besar */
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+
+        .brand span {
+            color: #ffb703;
+        }
+
+        @media (max-width: 992px) {
+            .login-container {
+                flex-direction: column;
+                max-width: 600px;
+            }
+
+            .illustration {
+                display: none;
+            }
+
+            .login-form {
+                padding: 50px 30px;
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <script src="{{ asset('static/js/initTheme.js') }}"></script>
-    <div id="auth">
-
-        <div class="row h-100">
-            <div class="col-lg-6 col-12">
-                <div id="auth-left">
-                    <div class="text-lg fs-4">
-                        <p class="text-gray-600">
-                            <a href="{{ url('/') }}" class="font-bold"><i class="bi bi-arrow-left"></i> Kembali</a>
-                        </p>
-                    </div>
-                    <h1 class="auth-title">Log in.</h1>
-                    <p class="auth-subtitle mb-5">Silakan log in untuk mulai mengakses web ini</p>
-
-                    <form action="{{ route('login') }}" method="POST">
-                        @csrf
-                        <div class="form-group position-relative has-icon-left mb-4">
-                            <input type="text" name="email" class="form-control form-control-xl"
-                                placeholder="Email / Username">
-                            <div class="form-control-icon">
-                                <i class="bi bi-person"></i>
-                            </div>
-                        </div>
-                        <div class="form-group position-relative has-icon-left mb-4">
-                            <input type="password" name="password" class="form-control form-control-xl"
-                                placeholder="Password">
-                            <div class="form-control-icon">
-                                <i class="bi bi-shield-lock"></i>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-block btn-lg shadow-lg mt-4">Log in</button>
-                    </form>
-                    <div class="text-center mt-4 text-lg fs-4">
-                        <p class="text-gray-600">
-                            Tidak punya akun siswa?
-                            <a href="{{ url('register') }}" class="font-bold">Register</a>.
-                        </p>
-                    </div>
-                </div>
+    <div class="login-container">
+        <div class="login-form">
+            <div class="text-center mb-4">
+                <h4 class="brand"><span>SI</span>PERU</h4>
             </div>
-            <div class="col-lg-6 d-none d-lg-block">
-                <div id="auth-right" class="d-flex justify-content-center align-items-center h-100">
-                    <div class="text-center">
-                        <img src="{{ asset('images/logo_eppk.png') }}" alt="Logo" width="500">
-                    </div>
+
+            <form method="POST" action="{{ route('login') }}">
+                @csrf
+                <div class="mb-4">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" name="email" id="email" class="form-control" placeholder="Example@gmail.com"
+                        required autofocus>
                 </div>
+
+                <div class="mb-4">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" name="password" id="password" class="form-control"
+                        placeholder="At least 8 characters" required>
+                </div>
+
+                <div class="d-flex justify-content-end mb-4">
+                    <a href="#" class="text-decoration-none small">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="btn btn-dark">Sign in</button>
+            </form>
+
+            <div class="text-center mt-4 text-muted">
+                Don't you have an account?
+                <a href="{{ route('register') }}">Sign up</a>
             </div>
         </div>
 
+        <div class="illustration">
+            <img src="{{ asset('images/vector.PNG') }}" alt="Illustration">
+        </div>
     </div>
 
-    <script src="{{ asset('static/js/components/dark.js') }}"></script>
-    <script src="{{ asset('extensions/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
-
-
-    <script src="{{ asset('compiled/js/app.js') }}"></script>
-
-    @include('sweetalert::alert')
-
-    <!-- Need: Apexcharts -->
-    <script src="{{ asset('extensions/apexcharts/apexcharts.min.js') }}"></script>
-    <script src="{{ asset('static/js/pages/dashboard.js') }}"></script>
-
-    <script src="{{ asset('extensions/simple-datatables/umd/simple-datatables.js') }}"></script>
-    <script src="{{ asset('static/js/pages/simple-datatables.js') }}"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
