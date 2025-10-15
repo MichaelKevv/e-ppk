@@ -38,20 +38,30 @@
         <div class="container d-flex align-items-center justify-content-between">
 
             <div class="logo">
-                <a href="{{ url('/') }}"><img src="{{ asset('images/logo_eppk.png') }}" alt=""
+                <a href="{{ url('/') }}"><img src="{{ asset('images/logo_black.PNG') }}" alt=""
                         class="img-fluid" width="100" style="max-height: 100px!important"></a>
             </div>
 
             <nav id="navbar" class="navbar">
                 <ul>
-                    <li><a class="nav-link" href="{{ url('/') }}" class="">Beranda</a></li>
-                    <li><a class="nav-link" href="{{ url('showarticle') }}">Edukasi</a></li>
-                    <li><a class="nav-link" href="{{ url('kontak') }}">Kontak</a></li>
+                    <li><a class="nav-link text-dark fw-bold" href="{{ url('/') }}" class="">Beranda</a>
+                    </li>
+                    <li><a class="nav-link text-dark fw-bold" href="{{ url('showarticle') }}">Edukasi</a></li>
+                    <li><a class="nav-link text-dark fw-bold" href="{{ url('kontak') }}">Kontak</a></li>
                     @if (Auth::check() && session('userdata'))
-                        <a class="btn-get-started" href="{{ url('dashboard') }}">Dashboard</a>
+                        <li>
+                            <a class="nav-link text-dark fw-bold" href="{{ url('dashboard') }}">Dashboard</a>
+                        </li>
                     @else
-                        <a class="btn-get-started" href="{{ route('login') }}">Login</a>
+                        <li>
+                            <a class="nav-link text-dark fw-bold" href="{{ route('login') }}">Login</a>
+                        </li>
                     @endif
+                    <li>
+                        <a href="" class="btn-header">
+                            <button class="btn btn-outline-dark fw-bold">Daftar</button>
+                        </a>
+                    </li>
 
                 </ul>
                 <i class="bi bi-list mobile-nav-toggle"></i>
@@ -75,7 +85,8 @@
                     <div class="col-lg-4 col-md-6">
                         <div class="footer-info">
                             <a href="{{ url('/') }}" class="">
-                                <img src="{{ asset('images/logo_eppk.png') }}" alt="" width="100" class="mb-4">
+                                <img src="{{ asset('images/logo_eppk.png') }}" alt="" width="100"
+                                    class="mb-4">
                             </a>
                             <p>Jl. Tugu Pancasila Desa Kedungrejo Kec. Bantaran</p>
                             <p>Kabupaten Probolinggo, Jawa Timur 67261</p>
