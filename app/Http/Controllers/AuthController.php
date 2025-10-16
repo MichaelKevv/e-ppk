@@ -7,7 +7,10 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\ImageManager;
 
 class AuthController extends Controller
 {
@@ -58,11 +61,11 @@ class AuthController extends Controller
 
         if ($validator->fails()) {
             $errors = $validator->errors()->all();
-            $errorMessage = "Registrasi gagal, periksa kembali data yang diinput.<br><ul>";
+            $errorMessage = "Registrasi gagal, periksa kembali data yang diinput.<br>";
             foreach ($errors as $error) {
-                $errorMessage .= "<li>$error</li>";
+                $errorMessage .= "$error";
             }
-            $errorMessage .= "</ul>";
+            $errorMessage .= "";
             return redirect()->back()
                 ->withInput()
                 ->with('error', $errorMessage);
@@ -72,12 +75,21 @@ class AuthController extends Controller
         $validated = $validator->validated();
 
         // Handle file upload
-        $fotoPath = null;
         if ($request->hasFile('foto')) {
-            $fotoPath = $request->file('foto')->store('fotosiswa', 'public');
+            $file = $request->file('foto');
+            $ext  = 'webp';
+            $filename = uniqid() . '.' . $ext;
+            $manager = new ImageManager(new Driver());
+            $sm = $manager->read($file)->scale(300, 300)->toWebp(80);
+            Storage::disk('public')->put('foto-siswa/sm/' . $filename, (string) $sm);
+            $md = $manager->read($file)->scale(600, 600)->toWebp(80);
+            Storage::disk('public')->put('foto-siswa/md/' . $filename, (string) $md);
+            $lg = $manager->read($file)->scale(1000, 1000)->toWebp(80);
+            Storage::disk('public')->put('foto-siswa/lg/' . $filename, (string) $lg);
+
+            $data['foto'] = $filename;
         }
 
-        // Buat user baru dengan role siswa
         $user = User::create([
             'username' => $validated['username'],
             'email' => $validated['email'],
@@ -93,7 +105,7 @@ class AuthController extends Controller
             'gender'      => $validated['gender'],
             'alamat'      => $validated['alamat'] ?? null,
             'no_telp'     => $validated['no_telp'] ?? null,
-            'foto'        => $fotoPath,
+            'foto'        => $data['foto'] ?? null,
         ]);
 
         return redirect()->route('login')->with('success', 'Registrasi berhasil, silakan login.');

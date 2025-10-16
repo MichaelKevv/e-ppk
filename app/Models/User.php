@@ -69,4 +69,19 @@ class User extends Authenticatable
 	{
 		return $this->hasMany(Siswa::class, 'id_pengguna');
 	}
+
+    public function getFotoSmAttribute()
+    {
+        return $this->foto ? asset('storage/foto-siswa/sm/' . $this->gambar) : null;
+    }
+
+    public function getFotoMdAttribute()
+    {
+        return $this->foto ? asset('storage/foto-siswa/md/' . $this->gambar) : null;
+    }
+
+    public function getFotoLgAttribute()
+    {
+        return $this->foto ? asset('storage/foto-siswa/lg/' . $this->gambar) : null;
+    }
 }
