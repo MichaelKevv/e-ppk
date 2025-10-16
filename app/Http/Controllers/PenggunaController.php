@@ -24,7 +24,7 @@ class PenggunaController extends Controller
         $title = 'Hapus Pengguna';
         $text = "Apakah anda yakin untuk hapus?";
         confirmDelete($title, $text);
-        return view('pengguna/index', compact('data'));
+        return view('admin.pengguna.index', compact('data'));
     }
 
     /**
@@ -65,7 +65,7 @@ class PenggunaController extends Controller
      */
     public function edit(TbPengguna $pengguna)
     {
-        return view('pengguna/edit', compact('pengguna'));
+        return view('admin.pengguna.edit', compact('pengguna'));
     }
 
     /**
@@ -101,7 +101,7 @@ class PenggunaController extends Controller
 
             Alert::success("Success", "Data berhasil diperbarui");
 
-            return redirect("pengguna");
+            return redirect("admin.pengguna");
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui data.')->withInput();
@@ -119,7 +119,7 @@ class PenggunaController extends Controller
         $pengguna->delete();
         Alert::success("Success", "Data berhasil dihapus");
 
-        return redirect("pengguna");
+        return redirect("admin.pengguna");
     }
 
     public function export()

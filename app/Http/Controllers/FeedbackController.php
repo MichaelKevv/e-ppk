@@ -33,7 +33,7 @@ class FeedbackController extends Controller
         $title = 'Hapus Pengaduan';
         $text = "Apakah anda yakin untuk hapus?";
         confirmDelete($title, $text);
-        return view('feedback/index', compact('data'));
+        return view('admin.feedback/index', compact('data'));
     }
 
     /**
@@ -43,7 +43,7 @@ class FeedbackController extends Controller
      */
     public function create(TbPengaduan $pengaduan)
     {
-        return view('feedback.create', compact('pengaduan'));
+        return view('admin.feedback.create', compact('pengaduan'));
     }
 
     /**
@@ -72,7 +72,7 @@ class FeedbackController extends Controller
         ]);
         Alert::success("Success", "Berhasil memberikan feedback");
 
-        return redirect()->route('pengaduan.show', $pengaduan->id_pengaduan);
+        return redirect()->route('admin.pengaduan.show', $pengaduan->id_pengaduan);
     }
 
     /**
@@ -84,7 +84,7 @@ class FeedbackController extends Controller
     public function show(TbFeedback $feedback)
     {
         $pengaduan = TbPengaduan::where('id_pengaduan', $feedback->id_pengaduan)->first();
-        return view('feedback.detail', compact('feedback', 'pengaduan'));
+        return view('admin.feedback.detail', compact('feedback', 'pengaduan'));
     }
 
     /**
@@ -96,7 +96,7 @@ class FeedbackController extends Controller
     public function edit(TbSiswa $pengaduan)
     {
         $pengguna = TbPengguna::find($pengaduan->id_pengguna);
-        return view('pengaduan/edit', compact('pengaduan', 'pengguna'));
+        return view('admin.pengaduan/edit', compact('pengaduan', 'pengguna'));
     }
 
     /**
@@ -145,7 +145,7 @@ class FeedbackController extends Controller
 
             Alert::success("Success", "Data berhasil diperbarui");
 
-            return redirect("pengaduan");
+            return redirect("admin.pengaduan");
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui data.')->withInput();
@@ -173,7 +173,7 @@ class FeedbackController extends Controller
 
             Alert::success("Success", "Data berhasil dihapus");
 
-            return redirect("pengaduan");
+            return redirect("admin.pengaduan");
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus data.');
@@ -183,7 +183,7 @@ class FeedbackController extends Controller
     public function export()
     {
         $feedback = TbFeedback::all();
-        $pdf = Pdf::loadview('feedback.export_pdf', ['data' => $feedback]);
+        $pdf = Pdf::loadview('admin.feedback.export_pdf', ['data' => $feedback]);
         return $pdf->download('laporan-feedback.pdf');
     }
 }

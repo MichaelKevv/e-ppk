@@ -1,4 +1,4 @@
-@extends('template')
+@extends('admin.layouts.template')
 @section('content')
     <div class="page-heading">
         <div class="page-title">
@@ -41,7 +41,7 @@
                                     <td>{{ $pengguna->username }}</td>
                                     <td>{{ $pengguna->role }}</td>
                                     <td>
-                                        <a href="{{ route('pengguna.edit', $pengguna->id_pengguna) }}"
+                                        <a href="{{ route('admin.pengguna.edit', $pengguna->id_pengguna) }}"
                                             class="text-secondary font-weight-bold text-xs" data-toggle="tooltip"
                                             data-original-title="Edit Pengguna">
                                             <button class="btn btn-primary" type="button">

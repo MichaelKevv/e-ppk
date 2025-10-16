@@ -1,4 +1,4 @@
-@extends('template')
+@extends('admin.layouts.template')
 @section('content')
     <div class="page-heading">
         <div class="page-title">
@@ -62,11 +62,11 @@
                                                     <i class="bi bi-pencil"></i>
                                                 </button>
                                             </a>
-                                            <a href="{{ route('pengaduan.show', $pengaduan->id_pengaduan) }}"
+                                            <a href="{{ route('admin.pengaduan.show', $pengaduan->id_pengaduan) }}"
                                                 class="btn btn-warning font-weight-bold text-xs">
                                                 Detail
                                             </a>
-                                            <a href="{{ route('pengaduan.destroy', $pengaduan->id_pengaduan) }}"
+                                            <a href="{{ route('admin.pengaduan.destroy', $pengaduan->id_pengaduan) }}"
                                                 class="btn btn-danger font-weight-bold text-xs" data-confirm-delete="true">
                                                 Delete
                                             </a>
@@ -81,7 +81,7 @@
                                                 </form>
                                             @endif
                                         @else
-                                            <a href="{{ route('pengaduan.show', $pengaduan->id_pengaduan) }}"
+                                            <a href="{{ route('admin.pengaduan.show', $pengaduan->id_pengaduan) }}"
                                                 class="btn btn-warning font-weight-bold text-xs">
                                                 Detail
                                             </a>

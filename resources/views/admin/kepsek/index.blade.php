@@ -1,4 +1,4 @@
-@extends('template')
+@extends('admin.layouts.template')
 @section('content')
     <div class="page-heading">
         <div class="page-title">
@@ -19,7 +19,7 @@
         <section class="section">
             <div class="card">
                 <div class="card-header">
-                    <a href="{{ url('kepsek/create') }}"><button class="btn btn-success">Tambah Data</button></a>
+                    <a href="{{ route('admin.kepsek.create') }}"><button class="btn btn-success">Tambah Data</button></a>
                     @if (Auth::user()->role == 'kepala_sekolah')
                         <a href="{{ url('export/kepsek') }}" target="_blank"><button class="btn btn-success">Export
                                 PDF</button></a>
@@ -52,14 +52,14 @@
                                         <img src="{{ url('storage/foto-kepsek/' . $kepsek->foto) }}" width="100px">
                                     </td>
                                     <td>
-                                        <a href="{{ route('kepsek.edit', $kepsek->id_kepala) }}"
+                                        <a href="{{ route('admin.kepsek.edit', $kepsek->id_kepala) }}"
                                             class="text-secondary font-weight-bold text-xs" data-toggle="tooltip"
                                             data-original-title="Edit Kepala Sekolah">
                                             <button class="btn btn-primary" type="button">
                                                 <i class="bi bi-pencil"></i>
                                             </button>
                                         </a>
-                                        <a href="{{ route('kepsek.destroy', $kepsek->id_kepala) }}"
+                                        <a href="{{ route('admin.kepsek.destroy', $kepsek->id_kepala) }}"
                                             class="btn btn-danger font-weight-bold text-xs" data-confirm-delete="true">
                                             Delete
                                         </a>

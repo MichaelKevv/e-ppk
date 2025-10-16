@@ -1,5 +1,4 @@
-@extends('template')
-
+@extends('admin.layouts.template')
 @section('content')
     <div class="page-heading">
         <div class="page-title">
@@ -25,7 +24,7 @@
                         <div class="card-content">
                             <div class="card-body">
                                 <form class="form form-vertical"
-                                    action="{{ route('artikel.update', $artikel->id_artikel) }}" method="post"
+                                    action="{{ route('admin.artikel.update', $artikel->id_artikel) }}" method="post"
                                     enctype="multipart/form-data">
                                     @csrf
                                     @method('PUT')

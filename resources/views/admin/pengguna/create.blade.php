@@ -1,4 +1,4 @@
-@extends('template')
+@extends('admin.layouts.template')
 @section('content')
     <div class="page-heading">
         <div class="page-title">
@@ -22,7 +22,7 @@
                     <div class="card">
                         <div class="card-content">
                             <div class="card-body">
-                                <form class="form form-vertical" action="{{ route('pengguna.store') }}" method="post"
+                                <form class="form form-vertical" action="{{ route('admin.pengguna.store') }}" method="post"
                                     enctype="multipart/form-data">
                                     @csrf
                                     <div class="form-body">

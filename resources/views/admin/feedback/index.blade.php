@@ -1,4 +1,4 @@
-@extends('template')
+@extends('admin.layouts.template')
 @section('content')
     <div class="page-heading">
         <div class="page-title">
@@ -53,7 +53,7 @@
                                     <td>{{ \Carbon\Carbon::parse($feedback->created_at)->isoFormat('D MMMM YYYY HH:mm:ss') }}
                                     </td>
                                     <td>
-                                        <a href="{{ route('feedback.show', $feedback->id_tanggapan) }}"
+                                        <a href="{{ route('admin.feedback.show', $feedback->id_tanggapan) }}"
                                             class="btn btn-warning font-weight-bold text-xs">
                                             Detail
                                         </a>

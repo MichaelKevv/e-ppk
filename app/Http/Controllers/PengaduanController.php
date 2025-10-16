@@ -28,7 +28,7 @@ class PengaduanController extends Controller
         $title = 'Hapus Pengaduan';
         $text = "Apakah anda yakin untuk hapus?";
         confirmDelete($title, $text);
-        return view('pengaduan/index', compact('data'));
+        return view('admin.pengaduan/index', compact('data'));
     }
 
     /**
@@ -38,7 +38,7 @@ class PengaduanController extends Controller
      */
     public function create()
     {
-        return view('pengaduan/create');
+        return view('admin.pengaduan/create');
     }
 
     /**
@@ -74,7 +74,7 @@ class PengaduanController extends Controller
 
             DB::commit();
 
-            return redirect("pengaduan");
+            return redirect("admin.pengaduan");
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data.')->withInput();
@@ -89,7 +89,7 @@ class PengaduanController extends Controller
      */
     public function show(TbPengaduan $pengaduan)
     {
-        return view('pengaduan.detail', compact('pengaduan'));
+        return view('admin.pengaduan.detail', compact('pengaduan'));
     }
 
     /**
@@ -100,7 +100,7 @@ class PengaduanController extends Controller
      */
     public function edit(TbPengaduan $pengaduan)
     {
-        return view('pengaduan/edit', compact('pengaduan'));
+        return view('admin.pengaduan/edit', compact('pengaduan'));
     }
 
     /**
@@ -140,7 +140,7 @@ class PengaduanController extends Controller
 
             Alert::success("Success", "Data berhasil diperbarui");
 
-            return redirect("pengaduan");
+            return redirect("admin.pengaduan");
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui data.')->withInput();
@@ -167,7 +167,7 @@ class PengaduanController extends Controller
 
             Alert::success("Success", "Data berhasil dihapus");
 
-            return redirect("pengaduan");
+            return redirect("admin.pengaduan");
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus data.');

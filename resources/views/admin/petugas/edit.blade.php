@@ -1,4 +1,4 @@
-@extends('template')
+@extends('admin.layouts.template')
 @section('content')
     <div class="page-heading">
         <div class="page-title">
@@ -23,7 +23,7 @@
                     <div class="card">
                         <div class="card-content">
                             <div class="card-body">
-                                <form class="form form-vertical" action="{{ route('petugas.update', $petuga->id_petugas) }}"
+                                <form class="form form-vertical" action="{{ route('admin.petugas.update', $petuga->id_petugas) }}"
                                     method="post" enctype="multipart/form-data">
                                     @csrf
                                     @method('PUT')

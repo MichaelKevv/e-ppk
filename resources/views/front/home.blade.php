@@ -1,4 +1,4 @@
-@extends('front.template')
+@extends('front.layouts.template')
 @section('content')
     <!-- ======= Hero Section ======= -->
     <section id="hero">

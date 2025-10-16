@@ -25,7 +25,7 @@ class PetugasController extends Controller
         $title = 'Hapus Petugas';
         $text = "Apakah anda yakin untuk hapus?";
         confirmDelete($title, $text);
-        return view('petugas/index', compact('data'));
+        return view('admin.petugas/index', compact('data'));
     }
 
     /**
@@ -35,7 +35,7 @@ class PetugasController extends Controller
      */
     public function create()
     {
-        return view('petugas/create');
+        return view('admin.petugas/create');
     }
 
     /**
@@ -84,7 +84,7 @@ class PetugasController extends Controller
 
             DB::commit();
 
-            return redirect("petugas");
+            return redirect("admin.petugas");
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data.')->withInput();
@@ -111,7 +111,7 @@ class PetugasController extends Controller
     public function edit(TbPetuga $petuga)
     {
         $pengguna = TbPengguna::find($petuga->id_pengguna);
-        return view('petugas/edit', compact('petuga', 'pengguna'));
+        return view('admin.petugas.edit', compact('petuga', 'pengguna'));
     }
 
     /**
@@ -167,7 +167,7 @@ class PetugasController extends Controller
 
             Alert::success("Success", "Data berhasil diperbarui");
 
-            return redirect("petugas");
+            return redirect("admin.petugas");
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui data.')->withInput();
@@ -198,7 +198,7 @@ class PetugasController extends Controller
 
             Alert::success("Success", "Data berhasil dihapus");
 
-            return redirect("petugas");
+            return redirect("admin.petugas");
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus data.');

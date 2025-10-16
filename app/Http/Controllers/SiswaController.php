@@ -25,7 +25,7 @@ class SiswaController extends Controller
         $title = 'Hapus Siswa';
         $text = "Apakah anda yakin untuk hapus?";
         confirmDelete($title, $text);
-        return view('siswa/index', compact('data'));
+        return view('admin.siswa/index', compact('data'));
     }
 
     /**
@@ -35,7 +35,7 @@ class SiswaController extends Controller
      */
     public function create()
     {
-        return view('siswa/create');
+        return view('admin.siswa/create');
     }
 
     /**
@@ -49,7 +49,6 @@ class SiswaController extends Controller
         $validator = Validator::make($request->all(), [
             'nama' => 'required|string|max:255',
             'kelas' => 'required|string|max:255',
-
             'gender' => 'required|string|max:255',
             'alamat' => 'required|string|max:255',
             'no_telp' => 'required|string|max:15',
@@ -85,7 +84,7 @@ class SiswaController extends Controller
 
             DB::commit();
 
-            return redirect("siswa");
+            return redirect("admin.siswa");
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data.')->withInput();
@@ -112,14 +111,14 @@ class SiswaController extends Controller
     public function edit(TbSiswa $siswa)
     {
         $pengguna = TbPengguna::find($siswa->id_pengguna);
-        return view('siswa/edit', compact('siswa', 'pengguna'));
+        return view('admin.siswa/edit', compact('siswa', 'pengguna'));
     }
 
     public function editProfile($id)
     {
         $siswa = TbSiswa::findOrFail($id);
         $pengguna = TbPengguna::find($siswa->id_pengguna);
-        return view('siswa/edit_profile', compact('siswa', 'pengguna'));
+        return view('admin.siswa/edit_profile', compact('siswa', 'pengguna'));
     }
 
     /**
@@ -179,7 +178,7 @@ class SiswaController extends Controller
 
             Alert::success("Success", "Data berhasil diperbarui");
 
-            return redirect("siswa");
+            return redirect("admin.siswa");
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui data.')->withInput();
@@ -236,7 +235,7 @@ class SiswaController extends Controller
 
             Alert::success("Success", "Data berhasil diperbarui");
 
-            return redirect("dashboard");
+            return redirect("admin.dashboard");
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui data.')->withInput();
@@ -267,7 +266,7 @@ class SiswaController extends Controller
 
             Alert::success("Success", "Data berhasil dihapus");
 
-            return redirect("siswa");
+            return redirect("admin.siswa");
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus data.');

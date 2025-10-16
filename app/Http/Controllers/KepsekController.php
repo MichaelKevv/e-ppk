@@ -25,7 +25,7 @@ class KepsekController extends Controller
         $title = 'Hapus Kepala Sekolah';
         $text = "Apakah anda yakin untuk hapus?";
         confirmDelete($title, $text);
-        return view('kepsek/index', compact('data'));
+        return view('admin.kepsek/index', compact('data'));
     }
 
     /**
@@ -35,7 +35,7 @@ class KepsekController extends Controller
      */
     public function create()
     {
-        return view('kepsek/create');
+        return view('admin.kepsek/create');
     }
 
     /**
@@ -84,7 +84,7 @@ class KepsekController extends Controller
 
             DB::commit();
 
-            return redirect("kepsek");
+            return redirect("admin.kepsek");
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data.')->withInput();
@@ -111,7 +111,7 @@ class KepsekController extends Controller
     public function edit(TbKepalaSekolah $kepsek)
     {
         $pengguna = TbPengguna::find($kepsek->id_pengguna);
-        return view('kepsek/edit', compact('kepsek', 'pengguna'));
+        return view('admin.kepsek/edit', compact('kepsek', 'pengguna'));
     }
 
     /**
@@ -167,7 +167,7 @@ class KepsekController extends Controller
 
             Alert::success("Success", "Data berhasil diperbarui");
 
-            return redirect("kepsek");
+            return redirect("admin.kepsek");
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui data.')->withInput();
@@ -198,7 +198,7 @@ class KepsekController extends Controller
 
             Alert::success("Success", "Data berhasil dihapus");
 
-            return redirect("kepsek");
+            return redirect("admin.kepsek");
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus data.');
