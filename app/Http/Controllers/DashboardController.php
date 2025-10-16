@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\TbFeedback;
-use App\Models\TbPengaduan;
+use App\Models\Feedback;
+use App\Models\Pengaduan;
 use App\Models\TbPetuga;
-use App\Models\TbSiswa;
+use App\Models\Siswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,14 +14,14 @@ class DashboardController extends Controller
     public function getPengaduanData()
     {
         if (Auth::user()->role == 'siswa') {
-            $pengaduanData = TbPengaduan::selectRaw('MONTH(created_at) as month, COUNT(*) as count')
+            $pengaduanData = Pengaduan::selectRaw('MONTH(created_at) as month, COUNT(*) as count')
                 ->where('id_siswa', session('userdata')->id_siswa)
                 ->groupBy('month')
                 ->get()
                 ->pluck('count', 'month')
                 ->toArray();
         } else {
-            $pengaduanData = TbPengaduan::selectRaw('MONTH(created_at) as month, COUNT(*) as count')
+            $pengaduanData = Pengaduan::selectRaw('MONTH(created_at) as month, COUNT(*) as count')
                 ->groupBy('month')
                 ->get()
                 ->pluck('count', 'month')
@@ -38,7 +38,7 @@ class DashboardController extends Controller
 
     public function getSiswaData()
     {
-        $siswaData = TbSiswa::selectRaw('MONTH(created_at) as month, COUNT(*) as count')
+        $siswaData = Siswa::selectRaw('MONTH(created_at) as month, COUNT(*) as count')
             ->groupBy('month')
             ->get()
             ->pluck('count', 'month')
@@ -54,7 +54,7 @@ class DashboardController extends Controller
 
     public function getFeedbackData()
     {
-        $feedbackData = TbFeedback::selectRaw('MONTH(created_at) as month, COUNT(*) as count')
+        $feedbackData = Feedback::selectRaw('MONTH(created_at) as month, COUNT(*) as count')
             ->groupBy('month')
             ->get()
             ->pluck('count', 'month')
@@ -72,18 +72,18 @@ class DashboardController extends Controller
     {
     //     if (Auth::user()->role == 'siswa') {
     //         $id_siswa = session('userdata')->id_siswa;
-    //         $data['totalPengaduan'] = TbPengaduan::where('id_siswa', $id_siswa)->count();
-    //         $data['pengaduanFeedback'] = TbPengaduan::where('id_siswa', $id_siswa)
+    //         $data['totalPengaduan'] = Pengaduan::where('id_siswa', $id_siswa)->count();
+    //         $data['pengaduanFeedback'] = Pengaduan::where('id_siswa', $id_siswa)
     //         ->where(function($query) {
     //             $query->where('status', 'diproses')
     //                     ->orWhere('status', 'ditutup');
     //         })
     // ->count();
     //     } else {
-    //         $data['totalSiswa'] = TbSiswa::count();
-    //         $data['totalPengaduan'] = TbPengaduan::count();
-    //         $data['totalFeedback'] = TbFeedback::count();
-    //         $data['pengaduanBelumDibaca'] = TbPengaduan::where('status', 'dibuka')
+    //         $data['totalSiswa'] = Siswa::count();
+    //         $data['totalPengaduan'] = Pengaduan::count();
+    //         $data['totalFeedback'] = Feedback::count();
+    //         $data['pengaduanBelumDibaca'] = Pengaduan::where('status', 'dibuka')
     //             ->orWhere('status', 'diproses')
     //             ->count();
     //     }
@@ -93,9 +93,9 @@ class DashboardController extends Controller
     {
         return view('front.home');
     }
-    public function kontakPetugas()
-    {
-        $data = TbPetuga::all();
-        return view('kontak_user', compact('data'));
-    }
+    // public function kontakPetugas()
+    // {
+    //     $data = TbPetuga::all();
+    //     return view('kontak_user', compact('data'));
+    // }
 }

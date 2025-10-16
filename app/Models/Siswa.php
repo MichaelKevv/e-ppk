@@ -11,28 +11,27 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class TbSiswa
+ * Class Siswa
  * 
  * @property int $id_siswa
  * @property int $id_pengguna
  * @property string $nama
  * @property string $kelas
- * @property string $jurusan
  * @property string $gender
- * @property string $alamat
- * @property string $no_telp
- * @property string $foto
- * @property Carbon $created_at
- * @property Carbon $updated_at
+ * @property string|null $alamat
+ * @property string|null $no_telp
+ * @property string|null $foto
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * 
- * @property TbPengguna $tb_pengguna
- * @property Collection|TbPengaduan[] $tb_pengaduans
+ * @property User $user
+ * @property Collection|Pengaduan[] $pengaduans
  *
  * @package App\Models
  */
-class TbSiswa extends Model
+class Siswa extends Model
 {
-	protected $table = 'tb_siswa';
+	protected $table = 'siswa';
 	protected $primaryKey = 'id_siswa';
 
 	protected $casts = [
@@ -43,20 +42,19 @@ class TbSiswa extends Model
 		'id_pengguna',
 		'nama',
 		'kelas',
-		'jurusan',
 		'gender',
 		'alamat',
 		'no_telp',
 		'foto'
 	];
 
-	public function tb_pengguna()
+	public function user()
 	{
-		return $this->belongsTo(TbPengguna::class, 'id_pengguna');
+		return $this->belongsTo(User::class, 'id_pengguna');
 	}
 
-	public function tb_pengaduans()
+	public function pengaduans()
 	{
-		return $this->hasMany(TbPengaduan::class, 'id_siswa');
+		return $this->hasMany(Pengaduan::class, 'id_siswa');
 	}
 }

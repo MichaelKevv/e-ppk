@@ -4,7 +4,7 @@ use App\Http\Controllers\ArtikelController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\KepsekController;
-use App\Http\Controllers\LoginController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PengaduanController;
 use App\Http\Controllers\PenggunaController;
 use App\Http\Controllers\PetugasController;
@@ -26,11 +26,11 @@ Route::get('/', [DashboardController::class, 'indexUser']);
 Route::get('showarticle', [ArtikelController::class, 'indexUser']);
 Route::get('kontak', [DashboardController::class, 'kontakPetugas']);
 Route::get('article_detail/{id}', [ArtikelController::class, 'articleDetail']);
-Route::get('register', [LoginController::class, 'showRegisterForm'])->name('register');
-Route::get('login', [LoginController::class, 'showLoginForm'])->name('login')->middleware('guest');
-Route::post('login', [LoginController::class, 'login']);
-Route::get('register', [LoginController::class, 'showRegisterForm'])->name('register')->middleware('guest');
-Route::post('register', [LoginController::class, 'register']);
+Route::get('register', [AuthController::class, 'showRegisterForm'])->name('register');
+Route::get('login', [AuthController::class, 'showLoginForm'])->name('login')->middleware('guest');
+Route::post('login', [AuthController::class, 'login']);
+Route::get('register', [AuthController::class, 'showRegisterForm'])->name('register')->middleware('guest');
+Route::post('register', [AuthController::class, 'register']);
 
 Route::middleware(['auth'])->group(function () {
     Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
@@ -59,6 +59,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('export/pengaduan', [PengaduanController::class, 'export']);
         Route::get('export/single/pengaduan/{id}', [PengaduanController::class, 'export_single']);
         Route::get('export/feedback', [FeedbackController::class, 'export']);
-        Route::get('logout', [LoginController::class, 'logout'])->name('logout');
+        Route::get('logout', [AuthController::class, 'logout'])->name('logout');
     });
 });

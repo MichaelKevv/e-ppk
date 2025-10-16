@@ -10,23 +10,29 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class TbArtikel
+ * Class Artikel
  * 
  * @property int $id_artikel
- * @property string $author
+ * @property int $author
  * @property string $judul
  * @property string $konten
  * @property string $kategori
- * @property string $gambar
- * @property Carbon $created_at
- * @property Carbon $updated_at
+ * @property string|null $gambar
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * 
+ * @property Admin $admin
  *
  * @package App\Models
  */
-class TbArtikel extends Model
+class Artikel extends Model
 {
-	protected $table = 'tb_artikel';
+	protected $table = 'artikel';
 	protected $primaryKey = 'id_artikel';
+
+	protected $casts = [
+		'author' => 'int'
+	];
 
 	protected $fillable = [
 		'author',
@@ -35,4 +41,9 @@ class TbArtikel extends Model
 		'kategori',
 		'gambar'
 	];
+
+	public function admin()
+	{
+		return $this->belongsTo(Admin::class, 'author');
+	}
 }

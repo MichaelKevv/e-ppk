@@ -1,44 +1,72 @@
 <?php
 
+/**
+ * Created by Reliese Model.
+ */
+
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * Class User
+ *
+ * @property int $id_pengguna
+ * @property string $username
+ * @property string $password
+ * @property string $role
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ *
+ * @property Collection|Admin[] $admins
+ * @property Collection|Dinso[] $dinsos
+ * @property Collection|EvaluasiTam[] $evaluasi_tams
+ * @property Collection|Gurubk[] $gurubks
+ * @property Collection|Siswa[] $siswas
+ *
+ * @package App\Models
+ */
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+	protected $table = 'users';
+	protected $primaryKey = 'id_pengguna';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+	protected $hidden = [
+		'password'
+	];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+	protected $fillable = [
+		'username',
+		'email',
+		'password',
+		'role'
+	];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+	public function admins()
+	{
+		return $this->hasMany(Admin::class, 'id_pengguna');
+	}
+
+	public function dinsos()
+	{
+		return $this->hasMany(Dinso::class, 'id_pengguna');
+	}
+
+	public function evaluasi_tams()
+	{
+		return $this->hasMany(EvaluasiTam::class, 'id_pengguna');
+	}
+
+	public function gurubks()
+	{
+		return $this->hasMany(Gurubk::class, 'id_pengguna');
+	}
+
+	public function siswas()
+	{
+		return $this->hasMany(Siswa::class, 'id_pengguna');
+	}
 }

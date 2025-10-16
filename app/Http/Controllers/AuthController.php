@@ -2,83 +2,100 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Siswa;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    // Menampilkan form login
+    public function showLoginForm()
     {
-        //
+        return view('login');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function showRegisterForm()
     {
-        //
+        return view('register');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function login(Request $request)
     {
-        //
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+
+        if (auth()->attempt($credentials)) {
+            $request->session()->regenerate();
+            return redirect()->intended('admin/dashboard')->with('success', 'Anda berhasil login');
+        }
+
+        return redirect()->back()
+            ->onlyInput('email')
+            ->with('error', 'Email atau password yang Anda masukkan salah');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function register(Request $request)
     {
-        //
-    }
+        $validator = Validator::make($request->all(), [
+            'username' => 'required|string|unique:users,username',
+            'email' => 'required|string|unique:users,email',
+            'password' => 'required|string|min:6',
+            'nama' => 'required|string|max:255',
+            'kelas' => 'required|string|max:10',
+            'gender' => 'required|in:L,P',
+            'alamat' => 'required|string|max:255',
+            'no_telp' => 'required|string|max:20',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errorMessage = "Registrasi gagal, periksa kembali data yang diinput.<br><ul>";
+            foreach ($errors as $error) {
+                $errorMessage .= "<li>$error</li>";
+            }
+            $errorMessage .= "</ul>";
+            return redirect()->back()
+                ->withInput()
+                ->with('error', $errorMessage);
+        }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
+        // Ambil data yang sudah divalidasi
+        $validated = $validator->validated();
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        // Handle file upload
+        $fotoPath = null;
+        if ($request->hasFile('foto')) {
+            $fotoPath = $request->file('foto')->store('fotosiswa', 'public');
+        }
+
+        // Buat user baru dengan role siswa
+        $user = User::create([
+            'username' => $validated['username'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+            'role'     => 'siswa',
+        ]);
+
+        // Buat data siswa
+        Siswa::create([
+            'id_pengguna' => $user->id_pengguna,
+            'nama'        => $validated['nama'],
+            'kelas'       => $validated['kelas'],
+            'gender'      => $validated['gender'],
+            'alamat'      => $validated['alamat'] ?? null,
+            'no_telp'     => $validated['no_telp'] ?? null,
+            'foto'        => $fotoPath,
+        ]);
+
+        return redirect()->route('login')->with('success', 'Registrasi berhasil, silakan login.');
     }
 }

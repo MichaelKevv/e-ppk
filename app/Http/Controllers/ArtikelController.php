@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\TbArtikel;
+use App\Models\Artikel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -13,7 +13,7 @@ class ArtikelController extends Controller
 {
     public function index()
     {
-        $data = TbArtikel::all();
+        $data = Artikel::all();
         $title = 'Hapus Artikel';
         $text = "Apakah anda yakin untuk hapus?";
         confirmDelete($title, $text);
@@ -22,13 +22,13 @@ class ArtikelController extends Controller
 
     public function indexUser()
     {
-        $data = TbArtikel::all();
+        $data = Artikel::all();
         return view('article_user', compact('data'));
     }
 
     public function articleDetail($id)
     {
-        $data = TbArtikel::findOrFail($id);
+        $data = Artikel::findOrFail($id);
         return view('article_detail', compact('data'));
     }
 
@@ -61,19 +61,19 @@ class ArtikelController extends Controller
 
         $data['created_at'] = now();
 
-        TbArtikel::create($data);
+        Artikel::create($data);
 
         Alert::success('Success', 'Artikel berhasil disimpan');
 
         return redirect()->route('admin.artikel.index');
     }
 
-    public function edit(TbArtikel $artikel)
+    public function edit(Artikel $artikel)
     {
         return view('admin.artikel.edit', compact('artikel'));
     }
 
-    public function update(Request $request, TbArtikel $artikel)
+    public function update(Request $request, Artikel $artikel)
     {
         $validator = Validator::make($request->all(), [
             'judul' => 'required|string|max:255',
@@ -108,7 +108,7 @@ class ArtikelController extends Controller
         return redirect()->route('admin.artikel.index');
     }
 
-    public function destroy(TbArtikel $artikel)
+    public function destroy(Artikel $artikel)
     {
         if ($artikel->gambar) {
             Storage::delete('public/foto-artikel/' . $artikel->gambar);
@@ -123,7 +123,7 @@ class ArtikelController extends Controller
 
     public function export()
     {
-        $artikel = TbArtikel::all();
+        $artikel = Artikel::all();
         $pdf = Pdf::loadview('admin.artikel.export_pdf', ['data' => $artikel]);
         return $pdf->download('laporan-artikel.pdf');
     }
