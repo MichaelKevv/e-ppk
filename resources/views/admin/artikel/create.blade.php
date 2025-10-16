@@ -3,8 +3,10 @@
 @section('breadcrumb')
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="{{ route('admin.artikel.index') }}">Data Artikel</a></li>
+            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark"
+                    href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="{{ route('admin.artikel.index') }}">Data
+                    Artikel</a></li>
             <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Tambah Artikel</li>
         </ol>
     </nav>
@@ -26,15 +28,15 @@
                                 <div class="col-12">
                                     <div class="input-group input-group-static mb-4">
                                         <label for="judul" class="ms-0">Judul Artikel</label>
-                                        <input type="text" class="form-control" id="judul" 
-                                               placeholder="Masukkan judul artikel" name="judul" required>
+                                        <input type="text" class="form-control" id="judul"
+                                            placeholder="Masukkan judul artikel" name="judul" required>
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="input-group input-group-static mb-4">
                                         <label for="konten" class="ms-0">Konten Artikel</label>
-                                        <textarea id="konten" name="konten" class="form-control" rows="10" 
-                                                  placeholder="Tulis konten artikel disini..." data-purpose="artikel"></textarea>
+                                        <textarea id="konten" name="konten" class="form-control" rows="10" placeholder="Tulis konten artikel disini..."
+                                            data-purpose="artikel"></textarea>
                                     </div>
                                 </div>
                                 <div class="col-12">
@@ -53,17 +55,14 @@
                                 </div>
                                 <div class="col-12">
                                     <div class="input-group input-group-static mb-4">
-                                        <label for="gambar" class="ms-0">Gambar Artikel <small class="text-muted">(maks. 2 MB)</small></label>
-                                        <input type="file" class="form-control" id="gambar" name="gambar" 
-                                               accept="image/*" required>
-                                        <div class="form-text">Format yang didukung: JPG, JPEG, PNG, GIF</div>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label for="author" class="ms-0">Author</label>
-                                        <input type="text" class="form-control" id="author" name="author" 
-                                               value="{{ session('userdata')->nama }}" readonly>
+                                        <label for="gambar" class="ms-0">Gambar Artikel <small class="text-muted">(maks.
+                                                2 MB)</small></label>
+                                        <input type="file" class="form-control" id="gambar" name="gambar"
+                                            accept="image/*" required>
+                                        <div class="col-12 form-text" id="format">
+                                            Format yang didukung: JPG, JPEG, PNG, GIF
+                                        </div>
+                                        <div id="image-preview" class="mt-2"></div>
                                     </div>
                                 </div>
                                 <div class="col-12">
@@ -87,15 +86,27 @@
 
 @push('styles')
     <style>
+        .form-control {
+            padding-left: 0.75rem !important;
+            padding-right: 0.75rem !important;
+        }
+
+        .form-control::placeholder {
+            color: #9ca3af;
+            opacity: 1;
+        }
+
         .input-group.input-group-static label {
             font-weight: 600;
             margin-bottom: 0.5rem;
             color: #344767;
         }
+
         .form-control:focus {
             border-color: #e91e63;
             box-shadow: 0 0 0 2px rgba(233, 30, 99, 0.25);
         }
+
         .card {
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             border: 0;
@@ -105,43 +116,41 @@
 
 @push('scripts')
     <script>
-        // Preview gambar sebelum upload
-        document.getElementById('gambar').addEventListener('change', function(e) {
+        const inputGambar = document.getElementById('gambar');
+        const previewContainer = document.getElementById('image-preview');
+        const maxSize = 2 * 1024 * 1024; // 2MB
+
+        inputGambar.addEventListener('change', function(e) {
             const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    // Hapus preview sebelumnya jika ada
-                    const existingPreview = document.getElementById('image-preview');
-                    if (existingPreview) {
-                        existingPreview.remove();
-                    }
-                    
-                    // Buat elemen preview baru
-                    const preview = document.createElement('div');
-                    preview.id = 'image-preview';
-                    preview.className = 'mt-2';
-                    preview.innerHTML = `
-                        <img src="${e.target.result}" class="img-thumbnail" style="max-height: 200px;" alt="Preview">
-                        <small class="text-muted d-block mt-1">Preview gambar</small>
-                    `;
-                    
-                    // Sisipkan preview setelah input file
-                    document.getElementById('gambar').parentNode.appendChild(preview);
-                }
-                reader.readAsDataURL(file);
+            previewContainer.innerHTML = ''; // kosongkan preview lama
+
+            if (!file) return;
+
+            if (file.size > maxSize) {
+                alert('Ukuran file terlalu besar. Maksimal 2MB.');
+                inputGambar.value = '';
+                return;
             }
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                previewContainer.innerHTML = `
+                <img src="${event.target.result}" class="img-thumbnail" style="max-height: 200px;" alt="Preview">
+                <small class="text-muted d-block mt-1">Preview gambar</small>
+            `;
+            };
+            reader.readAsDataURL(file);
         });
 
         // Validasi file size
         document.getElementById('gambar').addEventListener('change', function(e) {
             const file = e.target.files[0];
             const maxSize = 2 * 1024 * 1024; // 2MB in bytes
-            
+
             if (file && file.size > maxSize) {
                 alert('Ukuran file terlalu besar. Maksimal 2MB.');
                 this.value = '';
-                
+
                 // Hapus preview jika ada
                 const preview = document.getElementById('image-preview');
                 if (preview) {

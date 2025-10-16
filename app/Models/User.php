@@ -72,16 +72,16 @@ class User extends Authenticatable
 
     public function getFotoSmAttribute()
     {
-        return $this->foto ? asset('storage/foto-siswa/sm/' . $this->gambar) : null;
+        return $this->foto ? asset('storage/foto-siswa/sm/' . $this->foto) : null;
     }
 
     public function getFotoMdAttribute()
     {
-        return $this->foto ? asset('storage/foto-siswa/md/' . $this->gambar) : null;
+        return $this->foto ? asset('storage/foto-siswa/md/' . $this->foto) : null;
     }
 
     public function getFotoLgAttribute()
     {
-        return $this->foto ? asset('storage/foto-siswa/lg/' . $this->gambar) : null;
+        return $this->foto ? asset('storage/foto-siswa/lg/' . $this->foto) : null;
     }
 }

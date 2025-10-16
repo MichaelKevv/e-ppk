@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Artikel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\ImageManager;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class ArtikelController extends Controller
@@ -14,22 +17,7 @@ class ArtikelController extends Controller
     public function index()
     {
         $data = Artikel::all();
-        $title = 'Hapus Artikel';
-        $text = "Apakah anda yakin untuk hapus?";
-        confirmDelete($title, $text);
         return view('admin.artikel.index', compact('data'));
-    }
-
-    public function indexUser()
-    {
-        $data = Artikel::all();
-        return view('article_user', compact('data'));
-    }
-
-    public function articleDetail($id)
-    {
-        $data = Artikel::findOrFail($id);
-        return view('article_detail', compact('data'));
     }
 
     public function create()
@@ -43,7 +31,6 @@ class ArtikelController extends Controller
             'judul' => 'required|string|max:255',
             'konten' => 'required|string',
             'kategori' => 'required|string|max:255',
-            'author' => 'required|string|max:255',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
@@ -51,21 +38,28 @@ class ArtikelController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $data = $request->only(['judul', 'konten', 'kategori', 'author']);
+        $data = $request->only(['judul', 'konten', 'kategori']);
 
         if ($request->hasFile('gambar')) {
-            $image = $request->file('gambar');
-            $image->storeAs('public/foto-artikel', $image->hashName());
-            $data['gambar'] = $image->hashName();
+            $file = $request->file('gambar');
+            $ext  = 'webp';
+            $filename = uniqid() . '.' . $ext;
+            $manager = new ImageManager(new Driver());
+            $sm = $manager->read($file)->scale(300, 300)->toWebp(80);
+            Storage::disk('public')->put('artikel/gambar/sm/' . $filename, (string) $sm);
+            $md = $manager->read($file)->scale(600, 600)->toWebp(80);
+            Storage::disk('public')->put('artikel/gambar/md/' . $filename, (string) $md);
+            $lg = $manager->read($file)->scale(1000, 1000)->toWebp(80);
+            Storage::disk('public')->put('artikel/gambar/lg/' . $filename, (string) $lg);
+
+            $data['gambar'] = $filename;
         }
 
-        $data['created_at'] = now();
+        $data['author'] = Auth::user()->admins->first()->id_admin;
 
         Artikel::create($data);
 
-        Alert::success('Success', 'Artikel berhasil disimpan');
-
-        return redirect()->route('admin.artikel.index');
+        return redirect()->route('admin.artikel.index')->with('success', 'Artikel berhasil ditambahkan');
     }
 
     public function edit(Artikel $artikel)
