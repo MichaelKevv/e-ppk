@@ -1,4 +1,5 @@
 @extends('front.layouts.template')
+
 @section('content')
     <!-- ======= Hero Section ======= -->
     <section id="hero">
@@ -21,28 +22,26 @@
                 </div>
                 <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="zoom-out" data-aos-delay="300">
                     <img src="{{ asset('images/vector.PNG') }}" width="550px" class="img-fluid animated" alt="">
-
                 </div>
             </div>
         </div>
 
-        <svg class="hero-waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-            viewBox="0 24 150 28 " preserveAspectRatio="none">
+        <svg class="hero-waves" xmlns="http://www.w3.org/2000/svg" viewBox="0 24 150 28" preserveAspectRatio="none">
             <defs>
-                <path id="wave-path" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z">
+                <path id="wave-path" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z"></path>
             </defs>
             <g class="wave1">
-                <use xlink:href="#wave-path" x="50" y="3" fill="rgba(255,255,255, .1)">
+                <use xlink:href="#wave-path" x="50" y="3" fill="rgba(255,255,255, .1)"></use>
             </g>
             <g class="wave2">
-                <use xlink:href="#wave-path" x="50" y="0" fill="rgba(255,255,255, .2)">
+                <use xlink:href="#wave-path" x="50" y="0" fill="rgba(255,255,255, .2)"></use>
             </g>
             <g class="wave3">
-                <use xlink:href="#wave-path" x="50" y="9" fill="#fff">
+                <use xlink:href="#wave-path" x="50" y="9" fill="#fff"></use>
             </g>
         </svg>
-
-    </section><!-- End Hero -->
+    </section>
+    <!-- End Hero -->
 
     <!-- ======= Articles Section ======= -->
     <section id="articles" class="features">
@@ -53,44 +52,38 @@
                 <p>Top Articles</p>
             </div>
 
-            <div class="row" data-aos="fade-left">
-                @php
-                    $articles = [
-                        [
-                            'title' => 'Cara Mengatasi Perundungan di Sekolah',
-                            'excerpt' => 'Pelajari langkah-langkah sederhana untuk menghadapi dan melaporkan perundungan.',
-                            'image' => 'images/article1.jpg',
-                            'url' => '#'
-                        ],
-                        [
-                            'title' => 'Pentingnya Berani Bicara',
-                            'excerpt' => 'Mengapa suara kamu sangat berarti dalam menciptakan lingkungan yang aman.',
-                            'image' => 'images/article2.jpg',
-                            'url' => '#'
-                        ],
-                        [
-                            'title' => 'Tips Mendukung Teman yang Terkena Bullying',
-                            'excerpt' => 'Bagaimana cara membantu teman yang menjadi korban perundungan.',
-                            'image' => 'images/article3.jpg',
-                            'url' => '#'
-                        ],
-                    ];
-                @endphp
+            @php
+                $articles = []; // Kosongkan untuk simulasi empty state
+            @endphp
 
-                @foreach($articles as $article)
-                    <div class="col-lg-4 col-md-4 mb-4">
-                        <div class="card h-100 shadow-sm">
-                            <img src="{{ asset($article['image']) }}" class="card-img-top" alt="{{ $article['title'] }}">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ $article['title'] }}</h5>
-                                <p class="card-text">{{ $article['excerpt'] }}</p>
-                                <a href="{{ $article['url'] }}" class="btn btn-primary">Baca Selengkapnya</a>
+            @if (count($articles) > 0)
+                <div class="row" data-aos="fade-left">
+                    @foreach ($articles as $article)
+                        <div class="col-lg-4 col-md-4 mb-4">
+                            <div class="card h-100 shadow-sm">
+                                <img src="{{ asset($article['image']) }}" class="card-img-top" alt="{{ $article['title'] }}">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ $article['title'] }}</h5>
+                                    <p class="card-text">{{ $article['excerpt'] }}</p>
+                                    <a href="{{ $article['url'] }}" class="btn btn-primary">Baca Selengkapnya</a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                @endforeach
-            </div>
+                    @endforeach
+                </div>
+            @else
+                <!-- Empty State -->
+                <div class="text-center py-5" data-aos="fade-up">
+                    <img src="{{ asset('admin/img/landscape-placeholder.svg') }}" alt="No Articles" width="220" class="mb-3 opacity-75">
+                    <h5 class="fw-bold text-secondary">Belum Ada Artikel</h5>
+                    <p class="text-muted">Artikel akan segera hadir untuk menambah wawasan dan edukasi kamu.</p>
+                    <a href="{{ url('/') }}" class="btn btn-outline-primary mt-3">
+                        <i class="fas fa-arrow-left me-2"></i>Kembali ke Beranda
+                    </a>
+                </div>
+            @endif
 
         </div>
-    </section><!-- End Articles Section -->
+    </section>
+    <!-- End Articles Section -->
 @endsection

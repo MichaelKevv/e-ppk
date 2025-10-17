@@ -18,78 +18,149 @@
                             <h6 class="text-white text-capitalize ps-3">Data Feedback</h6>
                             @if (Auth::user()->role == 'kepala_sekolah')
                                 <a href="{{ url('export/feedback') }}" target="_blank" class="btn btn-success btn-sm me-3">
-                                    <i class="bi bi-file-earmark-pdf"></i> Export PDF
+                                    <i class="bi bi-file-earmark-pdf"></i> <span class="d-none d-md-inline">Export PDF</span>
                                 </a>
                             @endif
                         </div>
                     </div>
                     <div class="card-body px-0 pb-2">
-                        <div class="table-responsive p-0">
-                            <table class="table align-items-center mb-0">
-                                <thead>
-                                    <tr>
-                                        @if (Auth::user()->role == 'petugas' || Auth::user()->role == 'kepala_sekolah')
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                Nama Siswa</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                Kelas</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                Jurusan</th>
-                                        @endif
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                            Judul Pengaduan</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                            Feedback</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                            Petugas</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                            Tanggal</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                            Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($data as $feedback)
+                        <!-- Desktop View -->
+                        <div class="d-none d-md-block">
+                            <div class="table-responsive p-0">
+                                <table class="table align-items-center mb-0">
+                                    <thead>
                                         <tr>
                                             @if (Auth::user()->role == 'petugas' || Auth::user()->role == 'kepala_sekolah')
+                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                    Nama Siswa</th>
+                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                    Kelas</th>
+                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                    Jurusan</th>
+                                            @endif
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                Judul Pengaduan</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                Feedback</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                Petugas</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                Tanggal</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($data as $feedback)
+                                            <tr>
+                                                @if (Auth::user()->role == 'petugas' || Auth::user()->role == 'kepala_sekolah')
+                                                    <td>
+                                                        <div class="d-flex flex-column justify-content-center">
+                                                            <h6 class="mb-0 text-sm">{{ $feedback->tb_siswa->nama }}</h6>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="text-xs text-secondary mb-0">{{ $feedback->tb_siswa->kelas }}</span>
+                                                    </td>
+                                                    <td>
+                                                        <span class="text-xs text-secondary mb-0">{{ $feedback->tb_siswa->jurusan }}</span>
+                                                    </td>
+                                                @endif
                                                 <td>
-                                                    <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm">{{ $feedback->tb_siswa->nama }}</h6>
+                                                    <span class="text-xs font-weight-bold mb-0">{{ Str::limit($feedback->tb_pengaduan->judul, 30) }}</span>
+                                                </td>
+                                                <td>
+                                                    <span class="text-xs font-weight-bold mb-0">{!! Str::limit($feedback->teks_tanggapan, 50) !!}</span>
+                                                </td>
+                                                <td>
+                                                    <span class="text-xs font-weight-bold mb-0">{{ $feedback->tb_petuga->nama }}</span>
+                                                </td>
+                                                <td>
+                                                    <span class="text-secondary text-xs font-weight-bold">
+                                                        {{ \Carbon\Carbon::parse($feedback->created_at)->isoFormat('D MMMM YYYY HH:mm:ss') }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex flex-row gap-1">
+                                                        <a href="{{ route('admin.feedback.show', $feedback->id_tanggapan) }}"
+                                                            class="btn btn-warning btn-sm font-weight-bold text-xs">
+                                                            Detail
+                                                        </a>
                                                     </div>
                                                 </td>
-                                                <td>
-                                                    <span class="text-xs text-secondary mb-0">{{ $feedback->tb_siswa->kelas }}</span>
-                                                </td>
-                                                <td>
-                                                    <span class="text-xs text-secondary mb-0">{{ $feedback->tb_siswa->jurusan }}</span>
-                                                </td>
-                                            @endif
-                                            <td>
-                                                <span class="text-xs font-weight-bold mb-0">{{ Str::limit($feedback->tb_pengaduan->judul, 30) }}</span>
-                                            </td>
-                                            <td>
-                                                <span class="text-xs font-weight-bold mb-0">{!! Str::limit($feedback->teks_tanggapan, 50) !!}</span>
-                                            </td>
-                                            <td>
-                                                <span class="text-xs font-weight-bold mb-0">{{ $feedback->tb_petuga->nama }}</span>
-                                            </td>
-                                            <td>
-                                                <span class="text-secondary text-xs font-weight-bold">
-                                                    {{ \Carbon\Carbon::parse($feedback->created_at)->isoFormat('D MMMM YYYY HH:mm:ss') }}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <div class="d-flex flex-row gap-1">
-                                                    <a href="{{ route('admin.feedback.show', $feedback->id_tanggapan) }}"
-                                                        class="btn btn-warning btn-sm font-weight-bold text-xs">
-                                                        Detail
-                                                    </a>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Mobile View -->
+                        <div class="d-md-none">
+                            <div class="row px-3">
+                                @foreach ($data as $feedback)
+                                <div class="col-12 mb-3">
+                                    <div class="card shadow-sm">
+                                        <div class="card-body p-3">
+                                            <!-- Header dengan informasi utama -->
+                                            <div class="mb-3">
+                                                <h6 class="mb-2 text-sm font-weight-bold text-primary">
+                                                    {{ Str::limit($feedback->tb_pengaduan->judul, 60) }}
+                                                </h6>
+                                                
+                                                @if (Auth::user()->role == 'petugas' || Auth::user()->role == 'kepala_sekolah')
+                                                <div class="d-flex flex-wrap gap-2 mb-2">
+                                                    <div>
+                                                        <small class="text-muted">Siswa:</small>
+                                                        <div class="text-xs font-weight-bold">{{ $feedback->tb_siswa->nama }}</div>
+                                                    </div>
+                                                    <div>
+                                                        <small class="text-muted">Kelas:</small>
+                                                        <div class="text-xs font-weight-bold">{{ $feedback->tb_siswa->kelas }}</div>
+                                                    </div>
+                                                    <div>
+                                                        <small class="text-muted">Jurusan:</small>
+                                                        <div class="text-xs font-weight-bold">{{ $feedback->tb_siswa->jurusan }}</div>
+                                                    </div>
                                                 </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                                @endif
+                                            </div>
+                                            
+                                            <!-- Feedback content -->
+                                            <div class="mb-3">
+                                                <small class="text-muted">Feedback:</small>
+                                                <div class="text-xs mb-1 p-2 bg-light rounded">
+                                                    {!! Str::limit($feedback->teks_tanggapan, 100) !!}
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Footer info -->
+                                            <div class="d-flex justify-content-between align-items-center flex-wrap">
+                                                <div class="d-flex flex-column">
+                                                    <small class="text-muted">Petugas:</small>
+                                                    <span class="text-xs font-weight-bold">{{ $feedback->tb_petuga->nama }}</span>
+                                                </div>
+                                                
+                                                <div class="d-flex flex-column text-end">
+                                                    <small class="text-muted">Tanggal:</small>
+                                                    <span class="text-xs font-weight-bold">
+                                                        {{ \Carbon\Carbon::parse($feedback->created_at)->isoFormat('D MMM YYYY') }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Action button -->
+                                            <div class="d-flex justify-content-end mt-3">
+                                                <a href="{{ route('admin.feedback.show', $feedback->id_tanggapan) }}"
+                                                    class="btn btn-warning btn-sm font-weight-bold text-xs">
+                                                    <i class="bi bi-eye me-1"></i> Detail
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
                 </div>
