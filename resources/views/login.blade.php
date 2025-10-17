@@ -1,182 +1,166 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('front.layouts.auth')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIPERU | Login</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #f8f9ff;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .login-container {
-            width: 100%;
-            max-width: 1100px;
-            /* lebih lebar */
-            background: #fff;
-            border-radius: 25px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            display: flex;
-        }
-
-        .login-form {
-            flex: 1;
-            padding: 70px 60px;
-            /* lebih lega */
-        }
-
-        .login-form h4 {
-            font-weight: 700;
-            margin-bottom: 40px;
-            letter-spacing: 1px;
-        }
-
-        .login-form .form-label {
-            font-weight: 600;
-        }
-
-        .login-form .form-control {
-            border-radius: 12px;
-            padding: 14px 18px;
-            /* lebih besar */
-            font-size: 1rem;
-        }
-
-        .login-form .btn {
-            border-radius: 12px;
-            width: 100%;
-            padding: 12px;
-            font-weight: 600;
-            font-size: 1.05rem;
-        }
-
-        .illustration {
-            flex: 1;
-            background: #f8faff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 40px;
-        }
-
-        .illustration img {
-            max-width: 100%;
-            height: auto;
-        }
-
-        .text-muted a {
-            text-decoration: none;
-        }
-
-        .brand {
-            font-size: 34px;
-            /* lebih besar */
-            font-weight: 800;
-            letter-spacing: 2px;
-        }
-
-        .brand span {
-            color: #ffb703;
-        }
-
-        @media (max-width: 992px) {
-            .login-container {
-                flex-direction: column;
-                max-width: 600px;
-            }
-
-            .illustration {
-                display: none;
-            }
-
-            .login-form {
-                padding: 50px 30px;
-            }
-        }
-    </style>
-</head>
-
-<body>
-    <div class="login-container">
-        <div class="login-form">
-            <div class="text-center mb-4">
-                <h4 class="brand"><span>SI</span>PERU</h4>
-            </div>
-
-            <form method="POST" action="{{ route('login') }}">
-                @csrf
-                <div class="mb-4">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" name="email" id="email" class="form-control"
-                        placeholder="Example@gmail.com" required autofocus>
-                </div>
-
-                <div class="mb-4">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" name="password" id="password" class="form-control"
-                        placeholder="At least 8 characters" required>
-                </div>
-
-                <div class="d-flex justify-content-end mb-4">
-                    <a href="#" class="text-decoration-none small">Forgot Password?</a>
-                </div>
-
-                <button type="submit" class="btn btn-dark">Sign in</button>
-            </form>
-
-            <div class="text-center mt-4 text-muted">
-                Don't you have an account?
-                <a href="{{ route('register') }}">Sign up</a>
-            </div>
+@section('title', 'Login - SIPERU')
+@section('content')
+<div class="login-container">
+    <div class="login-form">
+        <div class="text-center mb-4">
+            <h4 class="brand"><span>SI</span>PERU</h4>
         </div>
 
-        <div class="illustration">
-            <img src="{{ asset('images/vector.PNG') }}" alt="Illustration">
+        <form method="POST" action="{{ route('login') }}">
+            @csrf
+            <div class="mb-4">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" name="email" id="email" class="form-control"
+                    placeholder="Example@gmail.com" required autofocus>
+            </div>
+
+            <div class="mb-4 position-relative">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" name="password" id="password" class="form-control"
+                    placeholder="At least 8 characters" required>
+                <span class="toggle-password" onclick="togglePassword()">
+                    <i class="bi bi-eye" id="toggleIcon"></i>
+                </span>
+            </div>
+
+            <div class="d-flex justify-content-end mb-4">
+                <a href="#" class="text-decoration-none small">Forgot Password?</a>
+            </div>
+
+            <button type="submit" class="btn btn-dark">Sign in</button>
+        </form>
+
+        <div class="text-center mt-4 text-muted">
+            Don't you have an account?
+            <a href="{{ route('register') }}">Sign up</a>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    @if (session('success'))
-        <script>
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil',
-                text: '{{ session('success') }}',
-                confirmButtonColor: '#3085d6',
-            });
-        </script>
-    @endif
+    <div class="illustration">
+        <img src="{{ asset('images/vector.PNG') }}" alt="Illustration">
+    </div>
+</div>
+@endsection
 
-    @if (session('error'))
-        <script>
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                html: '{!! session('error') !!}',
-                confirmButtonColor: '#d33',
-            });
-        </script>
-    @endif
+@push('scripts')
+<!-- Bootstrap Icons -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
-    @if (session('warning'))
-        <script>
-            Swal.fire({
-                icon: 'warning',
-                title: 'Perhatian',
-                text: '{{ session('warning') }}',
-                confirmButtonColor: '#f1c40f',
-            });
-        </script>
-    @endif
-</body>
+<script>
+function togglePassword() {
+    const passwordField = document.getElementById("password");
+    const icon = document.getElementById("toggleIcon");
 
-</html>
+    if (passwordField.type === "password") {
+        passwordField.type = "text";
+        icon.classList.remove("bi-eye");
+        icon.classList.add("bi-eye-slash");
+    } else {
+        passwordField.type = "password";
+        icon.classList.remove("bi-eye-slash");
+        icon.classList.add("bi-eye");
+    }
+}
+</script>
+@endpush
+@push('styles')
+<style>
+    body {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f8f9ff;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .login-container {
+        width: 100%;
+        max-width: 1100px;
+        background: #fff;
+        border-radius: 25px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        display: flex;
+    }
+
+    .login-form {
+        flex: 1;
+        padding: 70px 60px;
+    }
+
+    .login-form h4 {
+        font-weight: 700;
+        margin-bottom: 40px;
+        letter-spacing: 1px;
+    }
+
+    .login-form .form-label {
+        font-weight: 600;
+    }
+
+    .login-form .form-control {
+        border-radius: 12px;
+        padding: 14px 18px;
+        font-size: 1rem;
+    }
+
+    .login-form .btn {
+        border-radius: 12px;
+        width: 100%;
+        padding: 12px;
+        font-weight: 600;
+        font-size: 1.05rem;
+    }
+
+    .illustration {
+        flex: 1;
+        background: #f8faff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px;
+    }
+
+    .illustration img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .brand {
+        font-size: 34px;
+        font-weight: 800;
+        letter-spacing: 2px;
+    }
+
+    .brand span {
+        color: #ffb703;
+    }
+
+    @media (max-width: 992px) {
+        .login-container {
+            flex-direction: column;
+            max-width: 600px;
+        }
+
+        .illustration {
+            display: none;
+        }
+
+        .login-form {
+            padding: 50px 30px;
+        }
+    }
+
+    .toggle-password {
+        cursor: pointer;
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #888;
+    }
+</style>
+@endpush

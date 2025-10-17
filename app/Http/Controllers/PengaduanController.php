@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\TbPengaduan;
+use App\Models\Pengaduan;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,9 +21,9 @@ class PengaduanController extends Controller
     public function index()
     {
         if (Auth::user()->role == 'siswa') {
-            $data = TbPengaduan::where('id_siswa', session('userdata')->id_siswa)->orderBy('created_at', 'desc')->get();
+            $data = Pengaduan::where('id_siswa', session('userdata')->id_siswa)->orderBy('created_at', 'desc')->get();
         } else {
-            $data = TbPengaduan::orderBy('created_at', 'desc')->get();
+            $data = Pengaduan::orderBy('created_at', 'desc')->get();
         }
         $title = 'Hapus Pengaduan';
         $text = "Apakah anda yakin untuk hapus?";
@@ -68,7 +68,7 @@ class PengaduanController extends Controller
                 $image->storeAs('public/foto-pengaduan', $image->hashName());
                 $pengaduanData['foto'] = $image->hashName();
             }
-            TbPengaduan::create($pengaduanData);
+            Pengaduan::create($pengaduanData);
 
             Alert::success("Success", "Data berhasil disimpan");
 
@@ -87,7 +87,7 @@ class PengaduanController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(TbPengaduan $pengaduan)
+    public function show(Pengaduan $pengaduan)
     {
         return view('admin.pengaduan.detail', compact('pengaduan'));
     }
@@ -98,7 +98,7 @@ class PengaduanController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(TbPengaduan $pengaduan)
+    public function edit(Pengaduan $pengaduan)
     {
         return view('admin.pengaduan/edit', compact('pengaduan'));
     }
@@ -110,7 +110,7 @@ class PengaduanController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, TbPengaduan $pengaduan)
+    public function update(Request $request, Pengaduan $pengaduan)
     {
         $validator = Validator::make($request->all(), [
             'judul' => 'required|string|max:255',
@@ -128,7 +128,7 @@ class PengaduanController extends Controller
             $pengaduan->deskripsi = $request->deskripsi;
             if ($request->hasFile('foto')) {
                 if ($pengaduan->foto) {
-                    Storage::delete('public/foto-pengaduan/' . $pengaduan->gambar);
+                    Storage::delete('public/foto-pengaduan/' . $pengaduan->foto);
                 }
                 $foto = $request->file('foto');
                 $foto->storeAs('public/foto-pengaduan', $foto->hashName());
@@ -153,13 +153,13 @@ class PengaduanController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(TbPengaduan $pengaduan)
+    public function destroy(Pengaduan $pengaduan)
     {
         DB::beginTransaction();
 
         try {
-            if ($pengaduan->gambar) {
-                Storage::delete('public/foto-pengaduan/' . $pengaduan->gambar);
+            if ($pengaduan->foto) {
+                Storage::delete('public/foto-pengaduan/' . $pengaduan->foto);
             }
             $pengaduan->delete();
 
@@ -176,7 +176,7 @@ class PengaduanController extends Controller
 
     public function export()
     {
-        $pengaduan = TbPengaduan::all();
+        $pengaduan = Pengaduan::all();
         $pdf = Pdf::loadview('pengaduan.export_pdf', ['data' => $pengaduan]);
         return $pdf->download('laporan-pengaduan.pdf');
     }
@@ -186,7 +186,7 @@ class PengaduanController extends Controller
         $year = $pengaduan->created_at->format('Y');
         $month = $pengaduan->created_at->format('m');
 
-        $lastPengaduan = TbPengaduan::whereYear('created_at', $year)
+        $lastPengaduan = Pengaduan::whereYear('created_at', $year)
             ->whereMonth('created_at', $month)
             ->orderBy('created_at', 'desc')
             ->first();
@@ -207,7 +207,7 @@ class PengaduanController extends Controller
 
     public function export_single($id)
     {
-        $pengaduan = TbPengaduan::findOrFail($id);
+        $pengaduan = Pengaduan::findOrFail($id);
         $pengaduan['no_surat'] = $this->generateNomorSurat($pengaduan);
         $pdf = Pdf::loadview('pengaduan.export_single', compact('pengaduan'));
         return $pdf->download('laporan-pengaduan-' . $pengaduan->tb_siswa->nama . '.pdf');
@@ -215,7 +215,7 @@ class PengaduanController extends Controller
 
     public function pengaduanSelesai($id)
     {
-        $pengaduan = TbPengaduan::findOrFail($id);
+        $pengaduan = Pengaduan::findOrFail($id);
         $pengaduan->status = 'ditutup';
         $pengaduan->save();
         Alert::success("Success", "Pengaduan anda tentang ". $pengaduan->judul ." telah selesai!");

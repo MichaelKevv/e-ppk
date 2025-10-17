@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\TbSiswa;
-use App\Models\TbPengguna;
+use App\Models\Siswa;
+use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -21,7 +21,7 @@ class SiswaController extends Controller
      */
     public function index()
     {
-        $data = TbSiswa::all();
+        $data = Siswa::all();
         $title = 'Hapus Siswa';
         $text = "Apakah anda yakin untuk hapus?";
         confirmDelete($title, $text);
@@ -69,7 +69,7 @@ class SiswaController extends Controller
             $penggunaData['password'] = Hash::make($request->password);
             $penggunaData['role'] = 'siswa';
 
-            $pengguna = TbPengguna::create($penggunaData);
+            $pengguna = User::create($penggunaData);
 
             $siswaData = $request->only(['nama', 'kelas', 'jurusan', 'alamat', 'no_telp', 'gender']);
             $siswaData['id_pengguna'] = $pengguna->id_pengguna;
@@ -78,7 +78,7 @@ class SiswaController extends Controller
                 $image->storeAs('public/foto-siswa', $image->hashName());
                 $siswaData['foto'] = $image->hashName();
             }
-            TbSiswa::create($siswaData);
+            Siswa::create($siswaData);
 
             Alert::success("Success", "Data berhasil disimpan");
 
@@ -108,16 +108,16 @@ class SiswaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(TbSiswa $siswa)
+    public function edit(Siswa $siswa)
     {
-        $pengguna = TbPengguna::find($siswa->id_pengguna);
+        $pengguna = User::find($siswa->id_pengguna);
         return view('admin.siswa/edit', compact('siswa', 'pengguna'));
     }
 
     public function editProfile($id)
     {
-        $siswa = TbSiswa::findOrFail($id);
-        $pengguna = TbPengguna::find($siswa->id_pengguna);
+        $siswa = Siswa::findOrFail($id);
+        $pengguna = User::find($siswa->id_pengguna);
         return view('admin.siswa/edit_profile', compact('siswa', 'pengguna'));
     }
 
@@ -128,12 +128,11 @@ class SiswaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, TbSiswa $siswa)
+    public function update(Request $request, Siswa $siswa)
     {
         $validator = Validator::make($request->all(), [
             'nama' => 'required|string|max:255',
             'kelas' => 'required|string|max:255',
-
             'alamat' => 'required|string|max:255',
             'gender' => 'required|string|max:255',
             'no_telp' => 'required|string|max:15',
@@ -150,7 +149,7 @@ class SiswaController extends Controller
         DB::beginTransaction();
 
         try {
-            $pengguna = TbPengguna::findOrFail($siswa->id_pengguna);
+            $pengguna = User::findOrFail($siswa->id_pengguna);
 
             $pengguna->username = $request->username;
             $pengguna->email = $request->email;
@@ -187,7 +186,7 @@ class SiswaController extends Controller
 
     public function updateProfile(Request $request, $id)
     {
-        $siswa = TbSiswa::findOrFail($id);
+        $siswa = Siswa::findOrFail($id);
         $validator = Validator::make($request->all(), [
             'nama' => 'required|string|max:255',
             'kelas' => 'required|string|max:255',
@@ -207,7 +206,7 @@ class SiswaController extends Controller
         DB::beginTransaction();
 
         try {
-            $pengguna = TbPengguna::findOrFail($siswa->id_pengguna);
+            $pengguna = User::findOrFail($siswa->id_pengguna);
 
             $pengguna->username = $request->username;
             $pengguna->email = $request->email;
@@ -248,7 +247,7 @@ class SiswaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(TbSiswa $siswa)
+    public function destroy(Siswa $siswa)
     {
         DB::beginTransaction();
 
@@ -256,7 +255,7 @@ class SiswaController extends Controller
             if ($siswa->gambar) {
                 Storage::delete('public/foto-siswa/' . $siswa->gambar);
             }
-            $pengguna = TbPengguna::findOrFail($siswa->id_pengguna);
+            $pengguna = User::findOrFail($siswa->id_pengguna);
 
             $siswa->delete();
 
@@ -275,7 +274,7 @@ class SiswaController extends Controller
 
     public function export()
     {
-        $siswa = TbSiswa::all();
+        $siswa = Siswa::all();
         $pdf = Pdf::loadview('siswa.export_pdf', ['data' => $siswa]);
         return $pdf->download('laporan-siswa.pdf');
     }

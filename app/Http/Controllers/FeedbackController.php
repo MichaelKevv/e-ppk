@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\TbFeedback;
-use App\Models\TbPengaduan;
-use App\Models\TbSiswa;
-use App\Models\TbPengguna;
+use App\Models\Feedback;
+use App\Models\Pengaduan;
+use App\Models\Siswa;
+use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,11 +24,11 @@ class FeedbackController extends Controller
     public function index()
     {
         if (Auth::user()->role == 'siswa') {
-            $data = TbFeedback::where('id_siswa', session('userdata')->id_siswa)
+            $data = Feedback::where('id_siswa', session('userdata')->id_siswa)
                 ->orderBy('created_at', 'DESC')
                 ->get();
         } else {
-            $data = TbFeedback::orderBy('created_at', 'desc')->get();
+            $data = Feedback::orderBy('created_at', 'desc')->get();
         }
         $title = 'Hapus Pengaduan';
         $text = "Apakah anda yakin untuk hapus?";
@@ -41,7 +41,7 @@ class FeedbackController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(TbPengaduan $pengaduan)
+    public function create(Pengaduan $pengaduan)
     {
         return view('admin.feedback.create', compact('pengaduan'));
     }
@@ -52,26 +52,25 @@ class FeedbackController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $pengaduanId)
+    // FeedbackController.php
+    public function store(Request $request, Pengaduan $pengaduan)
     {
-        $pengaduan = TbPengaduan::findOrFail($pengaduanId);
-
         $request->validate([
             'teks_tanggapan' => 'required|string',
         ]);
 
-        $pengaduan->status = $request->status;
+        $pengaduan->status = $request->status ?? 'diproses';
         $pengaduan->save();
 
-        TbFeedback::create([
+        Feedback::create([
             'id_pengaduan' => $pengaduan->id_pengaduan,
             'id_petugas' => session('userdata')->id_petugas,
             'id_siswa' => $pengaduan->id_siswa,
             'teks_tanggapan' => $request->teks_tanggapan,
             'status' => 'diproses',
         ]);
-        Alert::success("Success", "Berhasil memberikan feedback");
 
+        Alert::success("Success", "Berhasil memberikan feedback");
         return redirect()->route('admin.pengaduan.show', $pengaduan->id_pengaduan);
     }
 
@@ -81,9 +80,9 @@ class FeedbackController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(TbFeedback $feedback)
+    public function show(Feedback $feedback)
     {
-        $pengaduan = TbPengaduan::where('id_pengaduan', $feedback->id_pengaduan)->first();
+        $pengaduan = Pengaduan::where('id_pengaduan', $feedback->id_pengaduan)->first();
         return view('admin.feedback.detail', compact('feedback', 'pengaduan'));
     }
 
@@ -93,9 +92,9 @@ class FeedbackController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(TbSiswa $pengaduan)
+    public function edit(Siswa $pengaduan)
     {
-        $pengguna = TbPengguna::find($pengaduan->id_pengguna);
+        $pengguna = User::find($pengaduan->id_pengguna);
         return view('admin.pengaduan/edit', compact('pengaduan', 'pengguna'));
     }
 
@@ -106,7 +105,7 @@ class FeedbackController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, TbSiswa $pengaduan)
+    public function update(Request $request, Siswa $pengaduan)
     {
         $validator = Validator::make($request->all(), [
             'nama' => 'required|string|max:255',
@@ -126,7 +125,7 @@ class FeedbackController extends Controller
         DB::beginTransaction();
 
         try {
-            $pengguna = TbPengguna::findOrFail($pengaduan->id_pengguna);
+            $pengguna = User::findOrFail($pengaduan->id_pengguna);
 
             $pengguna->username = $request->username;
             $pengguna->email = $request->email;
@@ -158,12 +157,12 @@ class FeedbackController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(TbSiswa $pengaduan)
+    public function destroy(Siswa $pengaduan)
     {
         DB::beginTransaction();
 
         try {
-            $pengguna = TbPengguna::findOrFail($pengaduan->id_pengguna);
+            $pengguna = User::findOrFail($pengaduan->id_pengguna);
 
             $pengaduan->delete();
 
@@ -182,7 +181,7 @@ class FeedbackController extends Controller
 
     public function export()
     {
-        $feedback = TbFeedback::all();
+        $feedback = Feedback::all();
         $pdf = Pdf::loadview('admin.feedback.export_pdf', ['data' => $feedback]);
         return $pdf->download('laporan-feedback.pdf');
     }
