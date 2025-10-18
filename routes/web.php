@@ -59,5 +59,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/decision-tree/proses', [DecisionTreeController::class, 'proses'])->name('decision-tree.proses');
         Route::get('/tam', [TAMController::class, 'index'])->name('tam.index');
         Route::post('/tam/hitung', [TAMController::class, 'hitung'])->name('tam.hitung');
+
+        Route::post('logout', [AuthController::class, 'logout'])->name('logout');
     });
 });
