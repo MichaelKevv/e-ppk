@@ -21,113 +21,212 @@
                             <h6 class="text-white text-capitalize ps-3">Data Dinsos</h6>
                             <div class="d-flex gap-2 me-3">
                                 <a href="{{ route('admin.dinsos.create') }}" class="btn btn-success btn-sm">
-                                    <i class="bi bi-plus-circle"></i> Tambah Dinsos
+                                    <i class="bi bi-plus-circle"></i> <span class="d-none d-md-inline">Tambah Dinsos</span>
                                 </a>
                             </div>
                         </div>
                     </div>
                     <div class="card-body px-0 pb-2">
-                        <div class="table-responsive p-0">
-                            <table class="table align-items-center mb-0">
-                                <thead>
-                                    <tr>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Foto</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nama</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">NIP</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Gender</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No. Telp</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Akun</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Dibuat</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse ($data as $dinsos)
+                        <!-- Desktop View -->
+                        <div class="d-none d-md-block">
+                            <div class="table-responsive p-0">
+                                <table class="table align-items-center mb-0">
+                                    <thead>
                                         <tr>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    @if ($dinsos->foto)
-                                                        <picture>
-                                                            <source srcset="{{ asset($dinsos->foto_sm) }}" media="(max-width: 480px)">
-                                                            <source srcset="{{ asset($dinsos->foto_md) }}" media="(max-width: 1024px)">
-                                                            <img src="{{ asset($dinsos->foto_lg) }}"
-                                                                 alt="{{ $dinsos->nama }}"
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Foto</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nama</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">NIP</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Gender</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No. Telp</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Akun</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Dibuat</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse ($data as $dinsos)
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        @if ($dinsos->foto)
+                                                            <picture>
+                                                                <source srcset="{{ asset($dinsos->foto_sm) }}" media="(max-width: 480px)">
+                                                                <source srcset="{{ asset($dinsos->foto_md) }}" media="(max-width: 1024px)">
+                                                                <img src="{{ asset($dinsos->foto_lg) }}"
+                                                                     alt="{{ $dinsos->nama }}"
+                                                                     class="img-fluid rounded-circle"
+                                                                     width="70" height="70"
+                                                                     style="object-fit: cover;">
+                                                            </picture>
+                                                        @else
+                                                            <img src="{{ asset('assets/img/default-avatar.png') }}"
+                                                                 alt="Default Avatar"
                                                                  class="img-fluid rounded-circle"
-                                                                 width="70" height="70"
-                                                                 style="object-fit: cover;">
-                                                        </picture>
+                                                                 width="70" height="70">
+                                                        @endif
+                                                    </div>
+                                                </td>
+
+                                                <td>
+                                                    <h6 class="mb-0 text-sm">{{ $dinsos->nama }}</h6>
+                                                </td>
+
+                                                <td>
+                                                    <span class="text-xs font-weight-bold mb-0">
+                                                        {{ $dinsos->nip }}
+                                                    </span>
+                                                </td>
+
+                                                <td>
+                                                    <span class="badge badge-sm {{ $dinsos->gender == 'Laki-laki' ? 'bg-gradient-info' : 'bg-gradient-warning' }}">
+                                                        {{ $dinsos->gender }}
+                                                    </span>
+                                                </td>
+
+                                                <td>
+                                                    <span class="text-xs font-weight-bold mb-0">
+                                                        {{ $dinsos->no_telp ?? '-' }}
+                                                    </span>
+                                                </td>
+
+                                                <td>
+                                                    <span class="text-xs font-weight-bold mb-0">
+                                                        {{ $dinsos->user->email ?? '-' }}
+                                                    </span>
+                                                </td>
+
+                                                <td>
+                                                    <span class="text-secondary text-xs font-weight-bold">
+                                                        {{ \Carbon\Carbon::parse($dinsos->created_at)->isoFormat('D MMMM YYYY HH:mm') }}
+                                                    </span>
+                                                </td>
+
+                                                <td>
+                                                    <div class="d-flex flex-row gap-1">
+                                                        <a href="{{ route('admin.dinsos.edit', $dinsos->id_dinsos) }}"
+                                                           class="btn btn-warning btn-sm"
+                                                           data-bs-toggle="tooltip" title="Edit Dinsos">
+                                                            <i class="material-symbols-rounded">edit</i>
+                                                        </a>
+                                                        <button type="button"
+                                                                class="btn btn-danger btn-sm btnDelete"
+                                                                data-bs-toggle="tooltip" title="Hapus Dinsos">
+                                                            <i class="material-symbols-rounded">delete</i>
+                                                        </button>
+                                                        <form action="{{ route('admin.dinsos.destroy', $dinsos->id_dinsos) }}"
+                                                              method="POST" class="d-none deleteForm">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                        </form>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="8" class="text-center text-muted py-4">
+                                                    Tidak ada data dinsos
+                                                </td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Mobile View -->
+                        <div class="d-md-none">
+                            <div class="row px-3">
+                                @forelse ($data as $dinsos)
+                                <div class="col-12 mb-3">
+                                    <div class="card shadow-sm">
+                                        <div class="card-body p-3">
+                                            <!-- Header dengan foto dan info utama -->
+                                            <div class="d-flex align-items-start mb-3">
+                                                <div class="me-3 flex-shrink-0">
+                                                    @if ($dinsos->foto)
+                                                        <img src="{{ asset($dinsos->foto_sm) }}"
+                                                             alt="{{ $dinsos->nama }}"
+                                                             class="rounded-circle"
+                                                             width="60" height="60"
+                                                             style="object-fit: cover;">
                                                     @else
                                                         <img src="{{ asset('assets/img/default-avatar.png') }}"
                                                              alt="Default Avatar"
-                                                             class="img-fluid rounded-circle"
-                                                             width="70" height="70">
+                                                             class="rounded-circle"
+                                                             width="60" height="60">
                                                     @endif
                                                 </div>
-                                            </td>
-
-                                            <td>
-                                                <h6 class="mb-0 text-sm">{{ $dinsos->nama }}</h6>
-                                            </td>
-
-                                            <td>
-                                                <span class="text-xs font-weight-bold mb-0">
-                                                    {{ $dinsos->nip }}
-                                                </span>
-                                            </td>
-
-                                            <td>
-                                                <span class="text-xs font-weight-bold mb-0">
-                                                    {{ $dinsos->gender }}
-                                                </span>
-                                            </td>
-
-                                            <td>
-                                                <span class="text-xs font-weight-bold mb-0">
-                                                    {{ $dinsos->no_telp ?? '-' }}
-                                                </span>
-                                            </td>
-
-                                            <td>
-                                                <span class="text-xs font-weight-bold mb-0">
-                                                    {{ $dinsos->user->email ?? '-' }}
-                                                </span>
-                                            </td>
-
-                                            <td>
-                                                <span class="text-secondary text-xs font-weight-bold">
-                                                    {{ \Carbon\Carbon::parse($dinsos->created_at)->isoFormat('D MMMM YYYY HH:mm') }}
-                                                </span>
-                                            </td>
-
-                                            <td>
-                                                <div class="d-flex flex-row gap-1">
-                                                    <a href="{{ route('admin.dinsos.edit', $dinsos->id_dinsos) }}"
-                                                       class="btn btn-warning"
-                                                       data-bs-toggle="tooltip" title="Edit Dinsos">
-                                                        <i class="material-symbols-rounded">edit</i>
-                                                    </a>
-                                                    <button type="button"
-                                                            class="btn btn-danger btnDelete"
-                                                            data-bs-toggle="tooltip" title="Hapus Dinsos">
-                                                        <i class="material-symbols-rounded">delete</i>
-                                                    </button>
-                                                    <form action="{{ route('admin.dinsos.destroy', $dinsos->id_dinsos) }}"
-                                                          method="POST" class="d-none deleteForm">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                    </form>
+                                                <div class="flex-grow-1">
+                                                    <h6 class="mb-1 text-sm font-weight-bold">{{ $dinsos->nama }}</h6>
+                                                    <div class="d-flex flex-wrap gap-2 align-items-center">
+                                                        <span class="badge badge-sm bg-gradient-primary">
+                                                            NIP: {{ $dinsos->nip }}
+                                                        </span>
+                                                        <span class="badge badge-sm {{ $dinsos->gender == 'Laki-laki' ? 'bg-gradient-info' : 'bg-gradient-warning' }}">
+                                                            {{ $dinsos->gender }}
+                                                        </span>
+                                                    </div>
                                                 </div>
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="7" class="text-center text-muted py-4">
-                                                Tidak ada data dinsos
-                                            </td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
+                                            </div>
+                                            
+                                            <!-- Informasi kontak dan akun -->
+                                            <div class="row mb-3">
+                                                <div class="col-6">
+                                                    <small class="text-muted">Telepon</small>
+                                                    <div class="text-xs font-weight-bold">
+                                                        {{ $dinsos->no_telp ?? '-' }}
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <small class="text-muted">Email</small>
+                                                    <div class="text-xs font-weight-bold text-truncate">
+                                                        {{ $dinsos->user->email ?? '-' }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Tanggal dibuat -->
+                                            <div class="mb-3">
+                                                <small class="text-muted">Bergabung</small>
+                                                <div class="text-xs font-weight-bold">
+                                                    {{ \Carbon\Carbon::parse($dinsos->created_at)->isoFormat('D MMMM YYYY') }}
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Tombol aksi -->
+                                            <div class="d-flex justify-content-end gap-1">
+                                                <a href="{{ route('admin.dinsos.edit', $dinsos->id_dinsos) }}"
+                                                   class="btn btn-warning btn-sm"
+                                                   data-bs-toggle="tooltip" title="Edit Dinsos">
+                                                    <i class="material-symbols-rounded" style="font-size: 18px;">edit</i>
+                                                    <span class="d-none d-sm-inline ms-1">Edit</span>
+                                                </a>
+                                                <button type="button"
+                                                        class="btn btn-danger btn-sm btnDelete"
+                                                        data-bs-toggle="tooltip" title="Hapus Dinsos">
+                                                    <i class="material-symbols-rounded" style="font-size: 18px;">delete</i>
+                                                    <span class="d-none d-sm-inline ms-1">Hapus</span>
+                                                </button>
+                                                <form action="{{ route('admin.dinsos.destroy', $dinsos->id_dinsos) }}"
+                                                      method="POST" class="d-none deleteForm">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @empty
+                                <div class="col-12">
+                                    <div class="card shadow-sm">
+                                        <div class="card-body text-center text-muted py-5">
+                                            <i class="material-symbols-rounded mb-2" style="font-size: 48px; opacity: 0.5;">account_circle</i>
+                                            <p class="mb-0">Tidak ada data dinsos</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endforelse
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -140,9 +239,11 @@
     <script>
         document.querySelectorAll('.btnDelete').forEach(btn => {
             btn.addEventListener('click', function() {
-                const form = this.closest('td').querySelector('.deleteForm');
+                const form = this.closest('.card-body').querySelector('.deleteForm') || 
+                            this.closest('td').querySelector('.deleteForm');
+                
                 Swal.fire({
-                    title: 'Yakin hapus dinsos ini?',
+                    title: 'Yakin hapus data dinsos ini?',
                     text: "Data yang dihapus tidak dapat dikembalikan.",
                     icon: 'warning',
                     showCancelButton: true,

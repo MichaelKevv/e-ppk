@@ -84,6 +84,25 @@
                     <span class="nav-link-text ms-1">Artikel</span>
                 </a>
             </li>
+            {{-- Decision Tree --}}
+            <li class="nav-item">
+                <a class="nav-link {{ request()->is('admin/decision-tree*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
+                    href="{{ route('admin.decision-tree.index') }}">
+                    <i class="material-symbols-rounded opacity-5">article</i>
+                    <span class="nav-link-text ms-1">Decision Tree</span>
+                </a>
+            </li> 
+            
+            {{-- TAM --}}
+            <li class="nav-item">
+                <a class="nav-link {{ request()->is('admin/tam*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
+                    href="{{ route('admin.tam.index') }}">
+                    <i class="material-symbols-rounded opacity-5">assessment</i>
+                    <span class="nav-link-text ms-1">TAM</span>
+                </a>
+            </li>
+                </a>
+            </li>
 
         </ul>
     </div>

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\TbPengguna;
-use App\Models\TbPetuga;
+use App\Models\Dinso;
+use App\Models\Siswa;
+use App\Models\Admin;
+use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -14,72 +16,46 @@ use RealRashid\SweetAlert\Facades\Alert;
 class PenggunaController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * Tampilkan semua pengguna dari tabel siswa, admin, dan dinso
      */
     public function index()
     {
-        $data = TbPengguna::all();
+        $data = User::with('admins')->get();
+
         $title = 'Hapus Pengguna';
         $text = "Apakah anda yakin untuk hapus?";
         confirmDelete($title, $text);
+
         return view('admin.pengguna.index', compact('data'));
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+     * Form edit pengguna berdasarkan tipe
      */
-    public function create()
+    public function edit($tipe, $id)
     {
+        if ($tipe === 'siswa') {
+            $pengguna = Siswa::findOrFail($id);
+        } elseif ($tipe === 'admin') {
+            $pengguna = Admin::findOrFail($id);
+        } else {
+            $pengguna = Dinso::findOrFail($id);
+        }
+
+        return view('admin.pengguna.edit', compact('pengguna', 'tipe'));
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * Update data pengguna berdasarkan tipe
      */
-    public function store(Request $request)
+    public function update(Request $request, $tipe, $id)
     {
-    }
+        $model = $tipe === 'siswa' ? new Siswa : ($tipe === 'admin' ? new Admin : new Dinso);
+        $pengguna = $model->findOrFail($id);
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(TbPengguna $pengguna)
-    {
-        return view('admin.pengguna.edit', compact('pengguna'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, TbPengguna $pengguna)
-    {
         $validator = Validator::make($request->all(), [
-            'username' => 'required|string|unique:tb_pengguna,username,' . $pengguna->id_pengguna . ',id_pengguna',
-            'email' => 'required|email|unique:tb_pengguna,email,' . $pengguna->id_pengguna . ',id_pengguna',
+            'username' => 'required|string',
+            'email' => 'required|email',
             'password' => 'nullable|string|min:6',
         ]);
 
@@ -90,18 +66,19 @@ class PenggunaController extends Controller
         DB::beginTransaction();
 
         try {
-            $pengguna->username = $request->username;
+            $pengguna->nama = $request->username;
             $pengguna->email = $request->email;
+
             if ($request->filled('password')) {
                 $pengguna->password = Hash::make($request->password);
             }
+
             $pengguna->save();
 
             DB::commit();
 
-            Alert::success("Success", "Data berhasil diperbarui");
-
-            return redirect("admin.pengguna");
+            Alert::success("Success", "Data pengguna berhasil diperbarui");
+            return redirect()->route('admin.pengguna.index');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui data.')->withInput();
@@ -109,23 +86,35 @@ class PenggunaController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Hapus pengguna berdasarkan tipe
      */
-    public function destroy(TbPengguna $pengguna)
+    public function destroy($tipe, $id)
     {
-        $pengguna->delete();
-        Alert::success("Success", "Data berhasil dihapus");
+        if ($tipe === 'siswa') {
+            $pengguna = Siswa::findOrFail($id);
+        } elseif ($tipe === 'admin') {
+            $pengguna = Admin::findOrFail($id);
+        } else {
+            $pengguna = Dinso::findOrFail($id);
+        }
 
-        return redirect("admin.pengguna");
+        $pengguna->delete();
+
+        Alert::success("Success", "Data pengguna berhasil dihapus");
+        return redirect()->route('admin.pengguna.index');
     }
 
+    /**
+     * Export semua pengguna ke PDF
+     */
     public function export()
     {
-        $pengguna = TbPengguna::all();
-        $pdf = Pdf::loadview('pengguna.export_pdf', ['data' => $pengguna]);
+        $data = collect()
+            ->merge(Siswa::select('nama as username', 'email', DB::raw("'siswa' as tipe"))->get())
+            ->merge(Admin::select('nama as username', 'email', DB::raw("'admin' as tipe"))->get())
+            ->merge(Dinso::select('nama as username', 'email', DB::raw("'dinso' as tipe"))->get());
+
+        $pdf = Pdf::loadview('pengguna.export_pdf', ['data' => $data]);
         return $pdf->download('laporan-pengguna.pdf');
     }
 }

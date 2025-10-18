@@ -11,6 +11,8 @@ use App\Http\Controllers\PengaduanController;
 use App\Http\Controllers\PenggunaController;
 use App\Http\Controllers\PetugasController;
 use App\Http\Controllers\SiswaController;
+use App\Http\Controllers\DecisionTreeController;
+use App\Http\Controllers\TAMController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -52,7 +54,10 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('feedback', FeedbackController::class);
         Route::get('feedback/create/{pengaduan}', [FeedbackController::class, 'create'])->name('feedback.create');
         Route::post('feedback/store/{pengaduan}', [FeedbackController::class, 'store'])->name('feedback.store');
-
         Route::get('logout', [AuthController::class, 'logout'])->name('logout');
+        Route::get('/decision-tree', [DecisionTreeController::class, 'index'])->name('decision-tree.index');
+        Route::post('/decision-tree/proses', [DecisionTreeController::class, 'proses'])->name('decision-tree.proses');
+        Route::get('/tam', [TAMController::class, 'index'])->name('tam.index');
+        Route::post('/tam/hitung', [TAMController::class, 'hitung'])->name('tam.hitung');
     });
 });
