@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\KepsekController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DinsosController;
 use App\Http\Controllers\PengaduanController;
 use App\Http\Controllers\PenggunaController;
 use App\Http\Controllers\PetugasController;
@@ -40,6 +41,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('feedback-data', [DashboardController::class, 'getFeedbackData']);
         Route::get('siswa-data', [DashboardController::class, 'getSiswaData']);
         Route::resource('admin', AdminController::class);
+        Route::resource('dinsos', DinsosController::class);
         Route::resource('pengguna', PenggunaController::class);
         Route::resource('siswa', SiswaController::class);
         Route::get('siswa/edit/profile/{id}', [SiswaController::class, 'editProfile']);
@@ -51,14 +53,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('feedback/create/{pengaduan}', [FeedbackController::class, 'create'])->name('feedback.create');
         Route::post('feedback/store/{pengaduan}', [FeedbackController::class, 'store'])->name('feedback.store');
 
-        Route::get('export/artikel', [ArtikelController::class, 'export']);
-        Route::get('export/pengguna', [PenggunaController::class, 'export']);
-        Route::get('export/petugas', [PetugasController::class, 'export']);
-        Route::get('export/siswa', [SiswaController::class, 'export']);
-        Route::get('export/kepsek', [KepsekController::class, 'export']);
-        Route::get('export/pengaduan', [PengaduanController::class, 'export']);
-        Route::get('export/single/pengaduan/{id}', [PengaduanController::class, 'export_single']);
-        Route::get('export/feedback', [FeedbackController::class, 'export']);
         Route::get('logout', [AuthController::class, 'logout'])->name('logout');
     });
 });

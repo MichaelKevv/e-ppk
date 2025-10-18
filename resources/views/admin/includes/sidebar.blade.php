@@ -55,7 +55,15 @@
                 <a class="nav-link {{ request()->is('admin/admin*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
                     href="{{ route('admin.admin.index') }}">
                     <i class="material-symbols-rounded opacity-5">badge</i>
-                    <span class="nav-link-text ms-1">Petugas</span>
+                    <span class="nav-link-text ms-1">Admin</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link {{ request()->is('admin/dinsos*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
+                    href="{{ route('admin.dinsos.index') }}">
+                    <i class="material-symbols-rounded opacity-5">badge</i>
+                    <span class="nav-link-text ms-1">Dinsos</span>
                 </a>
             </li>
 
