@@ -55,7 +55,8 @@ class ArtikelController extends Controller
             $data['gambar'] = $filename;
         }
 
-        $data['author'] = Auth::user()->admins->first()->id_admin;
+        // $data['author'] = Auth::user()->admins->first()->id_admin;
+        $data['author'] = optional(Auth::user()->admins->first())->id_admin;
 
         Artikel::create($data);
 
