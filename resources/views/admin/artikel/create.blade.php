@@ -84,36 +84,6 @@
     </div>
 @endsection
 
-@push('styles')
-    <style>
-        .form-control {
-            padding-left: 0.75rem !important;
-            padding-right: 0.75rem !important;
-        }
-
-        .form-control::placeholder {
-            color: #9ca3af;
-            opacity: 1;
-        }
-
-        .input-group.input-group-static label {
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: #344767;
-        }
-
-        .form-control:focus {
-            border-color: #e91e63;
-            box-shadow: 0 0 0 2px rgba(233, 30, 99, 0.25);
-        }
-
-        .card {
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            border: 0;
-        }
-    </style>
-@endpush
-
 @push('scripts')
     <script>
         const inputGambar = document.getElementById('gambar');

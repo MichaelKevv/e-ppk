@@ -73,7 +73,6 @@ class ArtikelController extends Controller
             'judul' => 'required|string|max:255',
             'konten' => 'required|string',
             'kategori' => 'required|string|max:255',
-            'author' => 'required|string|max:255',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
@@ -88,37 +87,39 @@ class ArtikelController extends Controller
 
         if ($request->hasFile('gambar')) {
             if ($artikel->gambar) {
-                Storage::delete('public/foto-artikel/' . $artikel->gambar);
+                $filename = basename($artikel->gambar);
+                Storage::disk('public')->delete('artikel/gambar/sm/' . $filename);
+                Storage::disk('public')->delete('artikel/gambar/md/' . $filename);
+                Storage::disk('public')->delete('artikel/gambar/lg/' . $filename);
             }
-            $gambar = $request->file('gambar');
-            $gambar->storeAs('public/foto-artikel', $gambar->hashName());
-            $artikel->gambar = $gambar->hashName();
+            $file = $request->file('gambar');
+            $ext  = 'webp';
+            $filename = uniqid() . '.' . $ext;
+            $manager = new ImageManager(new Driver());
+            $sm = $manager->read($file)->scale(300, 300)->toWebp(80);
+            Storage::disk('public')->put('artikel/gambar/sm/' . $filename, (string) $sm);
+            $md = $manager->read($file)->scale(600, 600)->toWebp(80);
+            Storage::disk('public')->put('artikel/gambar/md/' . $filename, (string) $md);
+            $lg = $manager->read($file)->scale(1000, 1000)->toWebp(80);
+            Storage::disk('public')->put('artikel/gambar/lg/' . $filename, (string) $lg);
+            $artikel->gambar = $filename;
         }
 
         $artikel->save();
 
-        Alert::success('Success', 'Artikel berhasil diupdate');
-
-        return redirect()->route('admin.artikel.index');
+        return redirect()->route('admin.artikel.index')->with('success', 'Artikel berhasil diupdate');
     }
 
     public function destroy(Artikel $artikel)
     {
         if ($artikel->gambar) {
-            Storage::delete('public/foto-artikel/' . $artikel->gambar);
+            Storage::disk('public')->delete('artikel/gambar/sm/' . $artikel->gambar);
+            Storage::disk('public')->delete('artikel/gambar/md/' . $artikel->gambar);
+            Storage::disk('public')->delete('artikel/gambar/lg/' . $artikel->gambar);
         }
 
         $artikel->delete();
 
-        Alert::success('Success', 'Artikel berhasil dihapus');
-
-        return redirect()->route('admin.artikel.index');
-    }
-
-    public function export()
-    {
-        $artikel = Artikel::all();
-        $pdf = Pdf::loadview('admin.artikel.export_pdf', ['data' => $artikel]);
-        return $pdf->download('laporan-artikel.pdf');
+        return redirect()->route('admin.artikel.index')->with('success', 'Artikel berhasil dihapus');
     }
 }

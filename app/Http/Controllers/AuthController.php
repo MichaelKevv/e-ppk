@@ -65,7 +65,7 @@ class AuthController extends Controller
             foreach ($errors as $error) {
                 $errorMessage .= "$error";
             }
-            $errorMessage .= "";
+            $errorMessage .= "<br>";
             return redirect()->back()
                 ->withInput()
                 ->with('error', $errorMessage);

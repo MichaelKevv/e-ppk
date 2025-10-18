@@ -125,9 +125,9 @@
                     </div>
                 </div>
                 <hr class="horizontal dark my-sm-4">
-                </div>
             </div>
         </div>
+    </div>
     </div>
     <!--   Core JS Files   -->
     <script src="{{ asset('admin/js/core/popper.min.js') }}"></script>
@@ -400,7 +400,7 @@
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                text: '{{ session('error') }}',
+                html: '{!! session('error') !!}',
                 confirmButtonColor: '#d33',
             });
         </script>

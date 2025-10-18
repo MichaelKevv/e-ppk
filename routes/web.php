@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ArtikelController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FeedbackController;
@@ -38,12 +39,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('pengaduan-data', [DashboardController::class, 'getPengaduanData']);
         Route::get('feedback-data', [DashboardController::class, 'getFeedbackData']);
         Route::get('siswa-data', [DashboardController::class, 'getSiswaData']);
-        Route::resource('petugas', PetugasController::class);
+        Route::resource('admin', AdminController::class);
         Route::resource('pengguna', PenggunaController::class);
         Route::resource('siswa', SiswaController::class);
         Route::get('siswa/edit/profile/{id}', [SiswaController::class, 'editProfile']);
         Route::put('siswa/update/profile/{id}', [SiswaController::class, 'updateProfile']);
-        Route::resource('kepsek', KepsekController::class);
         Route::resource('pengaduan', PengaduanController::class);
         Route::put('pengaduan/selesai/{id}', [PengaduanController::class, 'pengaduanSelesai']);
         Route::resource('artikel', ArtikelController::class);

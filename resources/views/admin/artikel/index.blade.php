@@ -115,3 +115,26 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        document.querySelectorAll('.btnDelete').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const form = this.closest('td').querySelector('.deleteForm');
+                Swal.fire({
+                    title: 'Yakin hapus artikel ini?',
+                    text: "Data yang dihapus tidak dapat dikembalikan.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, hapus!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+    </script>
+@endpush

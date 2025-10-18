@@ -52,8 +52,8 @@
 
             {{-- Petugas --}}
             <li class="nav-item">
-                <a class="nav-link {{ request()->is('admin/petugas*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
-                    href="{{ route('admin.petugas.index') }}">
+                <a class="nav-link {{ request()->is('admin/admin*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
+                    href="{{ route('admin.admin.index') }}">
                     <i class="material-symbols-rounded opacity-5">badge</i>
                     <span class="nav-link-text ms-1">Petugas</span>
                 </a>
@@ -65,15 +65,6 @@
                     href="{{ route('admin.pengguna.index') }}">
                     <i class="material-symbols-rounded opacity-5">group</i>
                     <span class="nav-link-text ms-1">Pengguna</span>
-                </a>
-            </li>
-
-            {{-- Kepala Sekolah --}}
-            <li class="nav-item">
-                <a class="nav-link {{ request()->is('admin/kepsek*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
-                    href="{{ route('admin.kepsek.index') }}">
-                    <i class="material-symbols-rounded opacity-5">account_circle</i>
-                    <span class="nav-link-text ms-1">Kepala Sekolah</span>
                 </a>
             </li>
 

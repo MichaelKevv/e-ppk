@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Admin
- * 
+ *
  * @property int $id_admin
  * @property int $id_pengguna
  * @property string $nama
@@ -21,7 +21,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $foto
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * 
+ *
  * @property User $user
  * @property Collection|Artikel[] $artikels
  *
@@ -53,4 +53,19 @@ class Admin extends Model
 	{
 		return $this->hasMany(Artikel::class, 'author');
 	}
+
+    public function getFotoSmAttribute()
+    {
+        return $this->foto ? asset('storage/admin/foto/sm/' . $this->foto) : null;
+    }
+
+    public function getFotoMdAttribute()
+    {
+        return $this->foto ? asset('storage/admin/foto/md/' . $this->foto) : null;
+    }
+
+    public function getFotoLgAttribute()
+    {
+        return $this->foto ? asset('storage/admin/foto/lg/' . $this->foto) : null;
+    }
 }
