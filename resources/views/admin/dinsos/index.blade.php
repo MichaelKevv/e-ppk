@@ -52,7 +52,7 @@
                                                             <source srcset="{{ asset($dinsos->foto_md) }}" media="(max-width: 1024px)">
                                                             <img src="{{ asset($dinsos->foto_lg) }}"
                                                                  alt="{{ $dinsos->nama }}"
-                                                                 class="img-fluid rounded-circle"
+                                                                 class="img-fluid"
                                                                  width="70" height="70"
                                                                  style="object-fit: cover;">
                                                         </picture>

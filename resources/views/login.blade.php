@@ -13,13 +13,13 @@
             <div class="mb-4">
                 <label for="email" class="form-label">Email</label>
                 <input type="email" name="email" id="email" class="form-control"
-                    placeholder="Example@gmail.com" required autofocus>
+                    placeholder="Masukkan email anda" required autofocus>
             </div>
 
             <div class="mb-4 position-relative">
                 <label for="password" class="form-label">Password</label>
                 <input type="password" name="password" id="password" class="form-control"
-                    placeholder="At least 8 characters" required>
+                    placeholder="Masukkan password anda" required>
                 <span class="toggle-password" onclick="togglePassword()">
                     <i class="bi bi-eye" id="toggleIcon"></i>
                 </span>
@@ -157,9 +157,9 @@ function togglePassword() {
     .toggle-password {
         cursor: pointer;
         position: absolute;
-        right: 15px;
-        top: 50%;
-        transform: translateY(-50%);
+        right: 20px;
+        top: 52%;
+        font-size: 20px;
         color: #888;
     }
 </style>

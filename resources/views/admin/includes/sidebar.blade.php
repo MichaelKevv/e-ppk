@@ -4,14 +4,15 @@
         <i class="fas fa-times p-3 cursor-pointer text-dark opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
             aria-hidden="true" id="iconSidenav"></i>
         <a class="navbar-brand px-4 py-3 m-0" href="{{ route('admin.dashboard') }}">
-            <img src="{{ asset('images/logo_black.PNG') }}" class="navbar-brand-img" width="35" height="42" alt="main_logo">
+            <img src="{{ asset('images/logo_black.PNG') }}" class="navbar-brand-img" width="35" height="42"
+                alt="main_logo">
             <span class="ms-1 text-sm text-dark"><span style="color: #ffb703">SI</span>PERU</span>
         </a>
     </div>
 
     <hr class="horizontal dark mt-0 mb-2">
 
-    <div class="collapse navbar-collapse w-auto" id="sidenav-collapse-main">
+    <div class="collapse navbar-collapse w-auto" id="sidenav-collapse-main" style="height: auto;">
         <ul class="navbar-nav">
 
             {{-- Dashboard --}}
@@ -39,6 +40,79 @@
                     <i class="material-symbols-rounded opacity-5">forum</i>
                     <span class="nav-link-text ms-1">Feedback</span>
                 </a>
+            </li>
+
+            <li class="nav-item">
+                <a data-bs-toggle="collapse" href="#profileExamples" class="nav-link text-dark collapsed"
+                    aria-controls="profileExamples" role="button" aria-expanded="false">
+                    <i
+                        class="material-symbols-rounded opacity-5 {% if page.brand == 'RTL' %}ms-2{% else %} me-2{% endif %}">group</i>
+                    <span class="nav-link-text ms-1 ps-1">Team</span>
+                </a>
+                <div class="collapse" id="profileExamples" style="">
+                    <ul class="nav ">
+                        <li class="nav-item ">
+                            <a class="nav-link text-dark " href="../../pages/team/all-projects.html">
+                                <span class="sidenav-mini-icon"> A </span>
+                                <span class="sidenav-normal  ms-1  ps-1"> All Projects </span>
+                            </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link text-dark " href="../../pages/team/messages.html">
+                                <span class="sidenav-mini-icon"> M </span>
+                                <span class="sidenav-normal  ms-1  ps-1"> Messages </span>
+                            </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link text-dark " href="../../pages/team/new-user.html">
+                                <span class="sidenav-mini-icon"> N </span>
+                                <span class="sidenav-normal  ms-1  ps-1"> New User </span>
+                            </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link text-dark " href="../../pages/team/profile-overview.html">
+                                <span class="sidenav-mini-icon"> P </span>
+                                <span class="sidenav-normal  ms-1  ps-1"> Profile Overview </span>
+                            </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link text-dark " href="../../pages/team/reports.html">
+                                <span class="sidenav-mini-icon"> R </span>
+                                <span class="sidenav-normal  ms-1  ps-1"> Reports </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a data-bs-toggle="collapse" href="#projectsExamples" class="nav-link text-dark "
+                    aria-controls="projectsExamples" role="button" aria-expanded="false">
+                    <i
+                        class="material-symbols-rounded opacity-5 {% if page.brand == 'RTL' %}ms-2{% else %} me-2{% endif %}">widgets</i>
+                    <span class="nav-link-text ms-1 ps-1">Projects</span>
+                </a>
+                <div class="collapse " id="projectsExamples">
+                    <ul class="nav ">
+                        <li class="nav-item ">
+                            <a class="nav-link text-dark " href="../../pages/projects/general.html">
+                                <span class="sidenav-mini-icon"> G </span>
+                                <span class="sidenav-normal  ms-1  ps-1"> General </span>
+                            </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link text-dark " href="../../pages/projects/timeline.html">
+                                <span class="sidenav-mini-icon"> T </span>
+                                <span class="sidenav-normal  ms-1  ps-1"> Timeline </span>
+                            </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link text-dark " href="../../pages/projects/new-project.html">
+                                <span class="sidenav-mini-icon"> N </span>
+                                <span class="sidenav-normal  ms-1  ps-1"> New Project </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </li>
 
             {{-- Siswa --}}

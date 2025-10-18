@@ -384,6 +384,31 @@
 
     <script src="{{ asset('admin/js/material-dashboard.min.js') }}?v=3.2.0"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Event delegation: menangkap klik di seluruh dokumen
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('#logoutBtn')) {
+                    e.preventDefault();
+
+                    Swal.fire({
+                        title: 'Apakah anda yakin ingin logout?',
+                        text: "Pilih Logout jika Anda ingin mengakhiri sesi.",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#aaa',
+                        confirmButtonText: 'Logout',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            document.getElementById('logout-form').submit();
+                        }
+                    });
+                }
+            });
+        });
+    </script>
     @if (session('success'))
         <script>
             Swal.fire({

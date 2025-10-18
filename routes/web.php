@@ -53,6 +53,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('feedback/create/{pengaduan}', [FeedbackController::class, 'create'])->name('feedback.create');
         Route::post('feedback/store/{pengaduan}', [FeedbackController::class, 'store'])->name('feedback.store');
 
-        Route::get('logout', [AuthController::class, 'logout'])->name('logout');
+        Route::post('logout', [AuthController::class, 'logout'])->name('logout');
     });
 });

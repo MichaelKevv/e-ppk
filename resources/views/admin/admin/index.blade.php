@@ -51,7 +51,7 @@
                                                             <source srcset="{{ asset('storage/admin/foto/md/' . $admin->foto) }}" media="(max-width: 1024px)">
                                                             <img src="{{ asset('storage/admin/foto/lg/' . $admin->foto) }}"
                                                                  alt="{{ $admin->nama }}"
-                                                                 class="img-fluid rounded-circle"
+                                                                 class="img-fluid"
                                                                  width="70" height="70"
                                                                  style="object-fit: cover;">
                                                         </picture>
