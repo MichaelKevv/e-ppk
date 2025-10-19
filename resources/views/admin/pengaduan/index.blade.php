@@ -32,9 +32,11 @@
                                                     Kelas</th>
                                             @endif
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                Judul</th>
+                                                Bentuk Perundungan</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                Deskripsi</th>
+                                                Frekuensi</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                Klasifikasi</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                 Tanggal</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
@@ -49,19 +51,31 @@
                                                 @if (Auth::user()->role == 'petugas' || Auth::user()->role == 'kepala_sekolah')
                                                     <td>
                                                         <div class="d-flex flex-column justify-content-center">
-                                                            <h6 class="mb-0 text-sm">{{ $pengaduan->tb_siswa->nama }}</h6>
+                                                            <h6 class="mb-0 text-sm">{{ $pengaduan->siswa->nama ?? 'N/A' }}</h6>
                                                         </div>
                                                     </td>
                                                     <td>
-                                                        <span
-                                                            class="text-xs text-secondary mb-0">{{ $pengaduan->tb_siswa->kelas }}</span>
+                                                        <span class="text-xs text-secondary mb-0">{{ $pengaduan->siswa->kelas ?? 'N/A' }}</span>
                                                     </td>
                                                 @endif
                                                 <td>
-                                                    <span class="text-xs font-weight-bold mb-0">{{ $pengaduan->judul }}</span>
+                                                    <span class="text-xs font-weight-bold mb-0 text-capitalize">
+                                                        {{ str_replace('_', ' ', $pengaduan->bentuk_perundungan) }}
+                                                    </span>
                                                 </td>
                                                 <td>
-                                                    {!! Str::limit($pengaduan->deskripsi, 50) !!}
+                                                    <span class="text-xs font-weight-bold mb-0 text-capitalize">
+                                                        {{ str_replace('_', ' ', $pengaduan->frekuensi_kejadian) }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="badge badge-sm 
+                                                        @if($pengaduan->klasifikasi == 'ringan') bg-gradient-success
+                                                        @elseif($pengaduan->klasifikasi == 'sedang') bg-gradient-warning
+                                                        @else bg-gradient-danger
+                                                        @endif">
+                                                        {{ $pengaduan->klasifikasi }}
+                                                    </span>
                                                 </td>
                                                 <td>
                                                     <span class="text-secondary text-xs font-weight-bold">
@@ -69,9 +83,8 @@
                                                     </span>
                                                 </td>
                                                 <td>
-                                                    <span
-                                                        class="badge badge-sm {{ $pengaduan->status == 'ditutup' ? 'bg-gradient-secondary' : 'bg-gradient-success' }}">
-                                                        {{ $pengaduan->status }}
+                                                    <span class="badge badge-sm {{ $pengaduan->status == 'ditutup' ? 'bg-gradient-secondary' : 'bg-gradient-info' }}">
+                                                        {{ $pengaduan->status ?? 'diproses' }}
                                                     </span>
                                                 </td>
                                                 <td>
@@ -84,19 +97,18 @@
                                                                     <i class="bi bi-pencil"></i>
                                                                 </button>
                                                             </a>
-                                                            <a href="{{ route('admin.pengaduan.show', $pengaduan->id_pengaduan) }}"
+                                                            <a href="{{ route('pengaduan.show', $pengaduan->id_pengaduan) }}"
                                                                 class="btn btn-warning btn-sm font-weight-bold text-xs">
                                                                 Detail
                                                             </a>
-                                                            <a href="{{ route('admin.pengaduan.destroy', $pengaduan->id_pengaduan) }}"
+                                                            <a href="{{ route('pengaduan.destroy', $pengaduan->id_pengaduan) }}"
                                                                 class="btn btn-danger btn-sm font-weight-bold text-xs"
                                                                 data-confirm-delete="true">
-                                                                Delete
+                                                                Hapus
                                                             </a>
                                                             @if ($pengaduan->status != 'ditutup')
-                                                                <form
-                                                                    action="{{ url('pengaduan/selesai/' . $pengaduan->id_pengaduan) }}"
-                                                                    method="post" style="display:inline;">
+                                                                <form action="{{ route('pengaduan.selesai', $pengaduan->id_pengaduan) }}"
+                                                                    method="POST" style="display:inline;">
                                                                     @csrf
                                                                     @method('PUT')
                                                                     <button type="submit" class="btn btn-success btn-sm">
@@ -126,13 +138,13 @@
                                 <div class="col-12 mb-3">
                                     <div class="card shadow-sm">
                                         <div class="card-body p-3">
-                                            <!-- Header dengan judul dan status -->
+                                            <!-- Header dengan bentuk perundungan dan status -->
                                             <div class="d-flex justify-content-between align-items-start mb-2">
-                                                <h6 class="mb-0 text-sm font-weight-bold text-primary flex-grow-1 me-2">
-                                                    {{ Str::limit($pengaduan->judul, 60) }}
+                                                <h6 class="mb-0 text-sm font-weight-bold text-primary flex-grow-1 me-2 text-capitalize">
+                                                    {{ str_replace('_', ' ', $pengaduan->bentuk_perundungan) }}
                                                 </h6>
-                                                <span class="badge badge-sm {{ $pengaduan->status == 'ditutup' ? 'bg-gradient-secondary' : 'bg-gradient-success' }} flex-shrink-0">
-                                                    {{ $pengaduan->status }}
+                                                <span class="badge badge-sm {{ $pengaduan->status == 'ditutup' ? 'bg-gradient-secondary' : 'bg-gradient-info' }} flex-shrink-0">
+                                                    {{ $pengaduan->status ?? 'diproses' }}
                                                 </span>
                                             </div>
                                             
@@ -141,22 +153,42 @@
                                             <div class="d-flex flex-wrap gap-3 mb-2">
                                                 <div>
                                                     <small class="text-muted">Siswa:</small>
-                                                    <div class="text-xs font-weight-bold">{{ $pengaduan->tb_siswa->nama }}</div>
+                                                    <div class="text-xs font-weight-bold">{{ $pengaduan->siswa->nama ?? 'N/A' }}</div>
                                                 </div>
                                                 <div>
                                                     <small class="text-muted">Kelas:</small>
-                                                    <div class="text-xs font-weight-bold">{{ $pengaduan->tb_siswa->kelas }}</div>
+                                                    <div class="text-xs font-weight-bold">{{ $pengaduan->siswa->kelas ?? 'N/A' }}</div>
                                                 </div>
                                             </div>
                                             @endif
                                             
-                                            <!-- Deskripsi pengaduan -->
-                                            <div class="mb-3">
-                                                <small class="text-muted">Deskripsi:</small>
-                                                <div class="text-xs mb-1 p-2 bg-light rounded">
-                                                    {!! Str::limit(strip_tags($pengaduan->deskripsi), 80) !!}
+                                            <!-- Info pengaduan -->
+                                            <div class="d-flex flex-wrap gap-3 mb-2">
+                                                <div>
+                                                    <small class="text-muted">Frekuensi:</small>
+                                                    <div class="text-xs font-weight-bold text-capitalize">
+                                                        {{ str_replace('_', ' ', $pengaduan->frekuensi_kejadian) }}
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <small class="text-muted">Klasifikasi:</small>
+                                                    <span class="badge badge-xs 
+                                                        @if($pengaduan->klasifikasi == 'ringan') bg-gradient-success
+                                                        @elseif($pengaduan->klasifikasi == 'sedang') bg-gradient-warning
+                                                        @else bg-gradient-danger
+                                                        @endif">
+                                                        {{ $pengaduan->klasifikasi }}
+                                                    </span>
                                                 </div>
                                             </div>
+                                            
+                                            <!-- Lokasi -->
+                                            @if($pengaduan->lokasi)
+                                            <div class="mb-2">
+                                                <small class="text-muted">Lokasi:</small>
+                                                <div class="text-xs font-weight-bold">{{ $pengaduan->lokasi }}</div>
+                                            </div>
+                                            @endif
                                             
                                             <!-- Tanggal -->
                                             <div class="mb-3">
@@ -176,21 +208,20 @@
                                                         <i class="bi bi-pencil"></i>
                                                         <span class="d-none d-sm-inline ms-1">Edit</span>
                                                     </a>
-                                                    <a href="{{ route('admin.pengaduan.show', $pengaduan->id_pengaduan) }}"
+                                                    <a href="{{ route('pengaduan.show', $pengaduan->id_pengaduan) }}"
                                                         class="btn btn-warning btn-sm text-xs">
                                                         <i class="bi bi-eye"></i>
                                                         <span class="d-none d-sm-inline ms-1">Detail</span>
                                                     </a>
-                                                    <a href="{{ route('admin.pengaduan.destroy', $pengaduan->id_pengaduan) }}"
+                                                    <a href="{{ route('pengaduan.destroy', $pengaduan->id_pengaduan) }}"
                                                         class="btn btn-danger btn-sm text-xs"
                                                         data-confirm-delete="true">
                                                         <i class="bi bi-trash"></i>
                                                         <span class="d-none d-sm-inline ms-1">Hapus</span>
                                                     </a>
                                                     @if ($pengaduan->status != 'ditutup')
-                                                        <form
-                                                            action="{{ url('pengaduan/selesai/' . $pengaduan->id_pengaduan) }}"
-                                                            method="post" class="d-inline">
+                                                        <form action="{{ route('pengaduan.selesai', $pengaduan->id_pengaduan) }}"
+                                                            method="POST" class="d-inline">
                                                             @csrf
                                                             @method('PUT')
                                                             <button type="submit" class="btn btn-success btn-sm text-xs">

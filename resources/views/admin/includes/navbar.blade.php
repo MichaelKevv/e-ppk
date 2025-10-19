@@ -1,5 +1,9 @@
 <nav class="navbar navbar-main navbar-expand-lg px-0 shadow-none border-radius-xl" id="navbarBlur" data-scroll="true">
     <div class="container-fluid py-1 px-3">
+        {{-- Tombol Hamburger untuk toggle sidebar --}}
+        <button class="btn btn-link text-dark px-2 mb-0" id="sidebarToggle">
+            <i class="material-symbols-rounded" style="font-size: 28px;">menu</i>
+        </button>
         @yield('breadcrumb')
         <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
             <div class="ms-md-auto pe-md-3 d-flex align-items-center">
@@ -153,3 +157,48 @@
         </div>
     </div>
 </nav>
+<style>
+    #sidenav-main {
+        transition: all 0.3s ease;
+        width: 250px;
+    }
+
+    #sidenav-main.collapsed {
+        margin-left: -250px;
+    }
+
+    /* Jika kamu ingin konten utama ikut bergeser */
+    .main-content {
+        transition: margin-left 0.3s ease;
+        margin-left: 250px;
+    }
+
+    .main-content.expanded {
+        margin-left: 0;
+    }
+
+    /* Sesuaikan untuk layar kecil */
+    @media (max-width: 992px) {
+        #sidenav-main {
+            position: fixed;
+            z-index: 1031;
+            height: 100%;
+        }
+    }
+</style>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const sidebar = document.getElementById('sidenav-main');
+        const toggleBtn = document.getElementById('sidebarToggle');
+        const mainContent = document.querySelector('.main-content'); // jika kamu punya div utama untuk konten
+
+        toggleBtn.addEventListener('click', function () {
+            sidebar.classList.toggle('collapsed');
+
+            // Jika ingin konten utama bergeser
+            if (mainContent) {
+                mainContent.classList.toggle('expanded');
+            }
+        });
+    });
+</script>

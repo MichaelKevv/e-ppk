@@ -23,66 +23,133 @@
                         <form action="{{ route('admin.pengaduan.store') }}" method="post" enctype="multipart/form-data">
                             @csrf
                             <div class="row">
-                                <div class="col-12">
+                                <!-- Bentuk Perundungan -->
+                                <div class="col-md-6">
                                     <div class="input-group input-group-static mb-4">
-                                        <label for="judul" class="ms-0">Judul Pengaduan</label>
-                                        <input type="text" class="form-control" id="judul" 
-                                               placeholder="Masukkan judul pengaduan" name="judul" required>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label for="deskripsi" class="ms-0">Deskripsi Pengaduan</label>
-                                        <textarea class="form-control" id="deskripsi" name="deskripsi" 
-                                                  rows="6" placeholder="Jelaskan detail pengaduan Anda di sini..." 
-                                                  data-purpose="pengaduan" required></textarea>
-                                        <div class="form-text">Jelaskan pengaduan Anda dengan jelas dan lengkap.</div>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label for="kategori" class="ms-0">Kategori Pengaduan</label>
-                                        <select class="form-control" name="kategori" id="kategori" required>
-                                            <option value="" selected disabled>Pilih Kategori</option>
-                                            <option value="akademik">Akademik</option>
-                                            <option value="fasilitas">Fasilitas Sekolah</option>
-                                            <option value="sarana">Sarana Prasarana</option>
+                                        <label for="bentuk_perundungan" class="ms-0">Bentuk Perundungan <span class="text-danger">*</span></label>
+                                        <select class="form-control" name="bentuk_perundungan" id="bentuk_perundungan" required>
+                                            <option value="" selected disabled>Pilih Bentuk Perundungan</option>
+                                            <option value="verbal">Verbal</option>
+                                            <option value="fisik">Fisik</option>
                                             <option value="sosial">Sosial</option>
-                                            <option value="lainnya">Lainnya</option>
+                                            <option value="siber">Siber</option>
+                                            <option value="seksual">Seksual</option>
                                         </select>
                                     </div>
                                 </div>
+
+                                <!-- Frekuensi Kejadian -->
+                                <div class="col-md-6">
+                                    <div class="input-group input-group-static mb-4">
+                                        <label for="frekuensi_kejadian" class="ms-0">Frekuensi Kejadian <span class="text-danger">*</span></label>
+                                        <select class="form-control" name="frekuensi_kejadian" id="frekuensi_kejadian" required>
+                                            <option value="" selected disabled>Pilih Frekuensi</option>
+                                            <option value="sekali">Sekali</option>
+                                            <option value="2-3_kali">2-3 Kali</option>
+                                            <option value="sering">Sering</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Lokasi -->
                                 <div class="col-12">
                                     <div class="input-group input-group-static mb-4">
-                                        <label for="urgensi" class="ms-0">Tingkat Urgensi</label>
-                                        <select class="form-control" name="urgensi" id="urgensi" required>
-                                            <option value="" selected disabled>Pilih Tingkat Urgensi</option>
-                                            <option value="rendah">Rendah</option>
+                                        <label for="lokasi" class="ms-0">Lokasi Kejadian</label>
+                                        <input type="text" class="form-control" id="lokasi" 
+                                               placeholder="Contoh: Ruang kelas, Lapangan, Kantin, dll." 
+                                               name="lokasi">
+                                        <div class="form-text">Tempat dimana kejadian berlangsung (opsional)</div>
+                                    </div>
+                                </div>
+
+                                <!-- Checkbox Group -->
+                                <div class="col-12">
+                                    <div class="row">
+                                        <div class="col-md-3 col-6">
+                                            <div class="form-check mb-3">
+                                                <input class="form-check-input" type="checkbox" name="trauma_mental" id="trauma_mental" value="1">
+                                                <label class="form-check-label" for="trauma_mental">
+                                                    Trauma Mental
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 col-6">
+                                            <div class="form-check mb-3">
+                                                <input class="form-check-input" type="checkbox" name="luka_fisik" id="luka_fisik" value="1">
+                                                <label class="form-check-label" for="luka_fisik">
+                                                    Luka Fisik
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 col-6">
+                                            <div class="form-check mb-3">
+                                                <input class="form-check-input" type="checkbox" name="pelaku_lebih_dari_satu" id="pelaku_lebih_dari_satu" value="1">
+                                                <label class="form-check-label" for="pelaku_lebih_dari_satu">
+                                                    Pelaku Lebih dari Satu
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 col-6">
+                                            <div class="form-check mb-3">
+                                                <input class="form-check-input" type="checkbox" name="konten_digital" id="konten_digital" value="1">
+                                                <label class="form-check-label" for="konten_digital">
+                                                    Konten Digital
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Jenis Kata -->
+                                <div class="col-12">
+                                    <div class="input-group input-group-static mb-4">
+                                        <label for="jenis_kata" class="ms-0">Jenis Kata/Kalimat yang Digunakan</label>
+                                        <input type="text" class="form-control" id="jenis_kata" 
+                                               placeholder="Contoh: Kata-kata kasar, ancaman, dll." 
+                                               name="jenis_kata">
+                                        <div class="form-text">Jenis kata atau kalimat yang digunakan pelaku (opsional)</div>
+                                    </div>
+                                </div>
+
+                                <!-- Klasifikasi -->
+                                <div class="col-md-6">
+                                    <div class="input-group input-group-static mb-4">
+                                        <label for="klasifikasi" class="ms-0">Klasifikasi <span class="text-danger">*</span></label>
+                                        <select class="form-control" name="klasifikasi" id="klasifikasi" required>
+                                            <option value="" selected disabled>Pilih Klasifikasi</option>
+                                            <option value="ringan">Ringan</option>
                                             <option value="sedang">Sedang</option>
-                                            <option value="tinggi">Tinggi</option>
+                                            <option value="berat">Berat</option>
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-12">
+
+                                <!-- Foto Bukti -->
+                                <div class="col-md-6">
                                     <div class="input-group input-group-static mb-4">
                                         <label for="foto" class="ms-0">Foto Bukti <small class="text-muted">(maks. 2 MB, opsional)</small></label>
                                         <input type="file" class="form-control" id="foto" name="foto" 
                                                accept="image/*">
-                                        <div class="form-text">Format yang didukung: JPG, JPEG, PNG, GIF. Maksimal 2MB.</div>
                                     </div>
                                     <div id="image-preview" class="mt-2"></div>
                                 </div>
+
+
+                                <!-- Informasi -->
                                 <div class="col-12">
                                     <div class="alert alert-info">
                                         <div class="d-flex align-items-center">
                                             <i class="bi bi-info-circle me-2"></i>
                                             <div>
-                                                <strong>Informasi:</strong> Pengaduan Anda akan diproses dalam 1-3 hari kerja. 
-                                                Pastikan data yang dimasukkan sudah benar.
+                                                <strong>Informasi Penting:</strong> 
+                                                Pengaduan Anda akan dijaga kerahasiaannya dan diproses secara profesional. 
+                                                Pastikan data yang dimasukkan sudah benar dan sesuai fakta.
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- Tombol Aksi -->
                                 <div class="col-12">
                                     <div class="d-flex justify-content-end gap-2">
                                         <a href="{{ route('admin.pengaduan.index') }}" class="btn btn-secondary">
@@ -125,12 +192,18 @@
         .alert-info {
             background-color: #e8f4fd;
             border-color: #b6e0fe;
-            color: #055160;
+            color: #122f35ff;
         }
-        /* Styling untuk textarea */
-        #deskripsi {
-            resize: vertical;
-            min-height: 120px;
+        .form-check-label {
+            font-weight: 500;
+            color: #344767;
+        }
+        .form-check-input:checked {
+            background-color: #e91e63;
+            border-color: #e91e63;
+        }
+        .text-danger {
+            color: #e91e63 !important;
         }
     </style>
 @endpush
@@ -188,15 +261,29 @@
 
         // Validasi form sebelum submit
         document.querySelector('form').addEventListener('submit', function(e) {
-            const judul = document.getElementById('judul').value.trim();
+            const bentukPerundungan = document.getElementById('bentuk_perundungan').value;
+            const frekuensiKejadian = document.getElementById('frekuensi_kejadian').value;
+            const klasifikasi = document.getElementById('klasifikasi').value;
             const deskripsi = document.getElementById('deskripsi').value.trim();
-            const kategori = document.getElementById('kategori').value;
-            const urgensi = document.getElementById('urgensi').value;
 
-            if (!judul) {
+            if (!bentukPerundungan) {
                 e.preventDefault();
-                alert('Judul pengaduan harus diisi.');
-                document.getElementById('judul').focus();
+                alert('Bentuk perundungan harus dipilih.');
+                document.getElementById('bentuk_perundungan').focus();
+                return;
+            }
+
+            if (!frekuensiKejadian) {
+                e.preventDefault();
+                alert('Frekuensi kejadian harus dipilih.');
+                document.getElementById('frekuensi_kejadian').focus();
+                return;
+            }
+
+            if (!klasifikasi) {
+                e.preventDefault();
+                alert('Klasifikasi harus dipilih.');
+                document.getElementById('klasifikasi').focus();
                 return;
             }
 
@@ -207,17 +294,10 @@
                 return;
             }
 
-            if (!kategori) {
+            if (deskripsi.length < 10) {
                 e.preventDefault();
-                alert('Kategori pengaduan harus dipilih.');
-                document.getElementById('kategori').focus();
-                return;
-            }
-
-            if (!urgensi) {
-                e.preventDefault();
-                alert('Tingkat urgensi harus dipilih.');
-                document.getElementById('urgensi').focus();
+                alert('Deskripsi pengaduan minimal 10 karakter.');
+                document.getElementById('deskripsi').focus();
                 return;
             }
 
@@ -233,10 +313,15 @@
             const counter = document.getElementById('char-counter') || createCharCounter();
             counter.textContent = `${charCount} karakter`;
             
-            if (charCount > 1000) {
+            if (charCount > 2000) {
                 counter.classList.add('text-danger');
+                counter.innerHTML = `${charCount} karakter <span class="text-danger">(Terlalu panjang!)</span>`;
+            } else if (charCount > 1000) {
+                counter.classList.add('text-warning');
+                counter.innerHTML = `${charCount} karakter`;
             } else {
-                counter.classList.remove('text-danger');
+                counter.classList.remove('text-danger', 'text-warning');
+                counter.innerHTML = `${charCount} karakter`;
             }
         });
 
@@ -252,6 +337,20 @@
         // Initialize char counter
         document.addEventListener('DOMContentLoaded', function() {
             createCharCounter();
+            
+            // Set default value untuk checkbox (0)
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    if (!this.checked) {
+                        this.value = '0';
+                    } else {
+                        this.value = '1';
+                    }
+                });
+                // Set initial value
+                checkbox.value = checkbox.checked ? '1' : '0';
+            });
         });
     </script>
 @endpush

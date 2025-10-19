@@ -52,8 +52,8 @@ class SiswaController extends Controller
             'gender' => 'required|string|max:255',
             'alamat' => 'required|string|max:255',
             'no_telp' => 'required|string|max:15',
-            'username' => 'required|string|unique:tb_pengguna,username',
-            'email' => 'required|email|unique:tb_pengguna,email',
+            'username' => 'required|string|unique:users,username',
+            'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
