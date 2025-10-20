@@ -4,184 +4,98 @@ namespace App\Http\Controllers;
 
 use App\Models\Feedback;
 use App\Models\Pengaduan;
-use App\Models\Siswa;
-use App\Models\User;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class FeedbackController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
+        // Ambil semua data feedback sesuai role user
         if (Auth::user()->role == 'siswa') {
-            $data = Feedback::where('id_siswa', session('userdata')->id_siswa)
-                ->orderBy('created_at', 'DESC')
+            $data = Feedback::where('id_user', Auth::id())
+                ->with(['pengaduan', 'user'])
+                ->orderBy('created_at', 'desc')
                 ->get();
         } else {
-            $data = Feedback::orderBy('created_at', 'desc')->get();
+            $data = Feedback::with(['pengaduan', 'gurubk', 'user'])
+                ->orderBy('created_at', 'desc')
+                ->get();
         }
-        $title = 'Hapus Pengaduan';
-        $text = "Apakah anda yakin untuk hapus?";
+
+        // Tambahkan kolom virtual 'judul_pengaduan'
+        foreach ($data as $item) {
+            if ($item->pengaduan) {
+                $p = $item->pengaduan;
+                $item->judul_pengaduan = implode(' | ', [
+                    "ID: {$p->id_pengaduan}",
+                    "Siswa: {$p->id_siswa}",
+                    "Bentuk: {$p->bentuk_perundungan}",
+                    "Frekuensi: {$p->frekuensi_kejadian}",
+                    "Lokasi: {$p->lokasi}",
+                    "Trauma: {$p->trauma_mental}",
+                    "Luka: {$p->luka_fisik}",
+                    "Pelaku: {$p->pelaku_lebih_dari_satu}",
+                    "Konten: {$p->konten_digital}",
+                    "Kata: {$p->jenis_kata}",
+                    "Klasifikasi: {$p->klasifikasi}"
+                ]);
+            } else {
+                $item->judul_pengaduan = '-';
+            }
+        }
+
+        $title = 'Hapus Feedback';
+        $text = 'Apakah anda yakin ingin menghapus feedback ini?';
         confirmDelete($title, $text);
-        return view('admin.feedback/index', compact('data'));
+
+        return view('admin.feedback.index', compact('data'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create(Pengaduan $pengaduan)
     {
         return view('admin.feedback.create', compact('pengaduan'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    // FeedbackController.php
     public function store(Request $request, Pengaduan $pengaduan)
     {
         $request->validate([
-            'teks_tanggapan' => 'required|string',
+            'isi_tanggapan' => 'required|string',
+        ]);
+
+        Feedback::create([
+            'id_pengaduan' => $pengaduan->id_pengaduan,
+            'nip' => Auth::user()->nip ?? null,
+            'id_user' => Auth::id(),
+            'isi_tanggapan' => $request->isi_tanggapan,
+            'created_at' => now(),
         ]);
 
         $pengaduan->status = $request->status ?? 'diproses';
         $pengaduan->save();
 
-        Feedback::create([
-            'id_pengaduan' => $pengaduan->id_pengaduan,
-            'id_petugas' => session('userdata')->id_petugas,
-            'id_siswa' => $pengaduan->id_siswa,
-            'teks_tanggapan' => $request->teks_tanggapan,
-            'status' => 'diproses',
-        ]);
-
-        Alert::success("Success", "Berhasil memberikan feedback");
+        Alert::success('Berhasil', 'Feedback berhasil dikirim');
         return redirect()->route('admin.pengaduan.show', $pengaduan->id_pengaduan);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show(Feedback $feedback)
     {
-        $pengaduan = Pengaduan::where('id_pengaduan', $feedback->id_pengaduan)->first();
-        return view('admin.feedback.detail', compact('feedback', 'pengaduan'));
+        $feedback->load(['pengaduan', 'gurubk', 'user']);
+        return view('admin.feedback.detail', compact('feedback'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Siswa $pengaduan)
+    public function destroy(Feedback $feedback)
     {
-        $pengguna = User::find($pengaduan->id_pengguna);
-        return view('admin.pengaduan/edit', compact('pengaduan', 'pengguna'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Siswa $pengaduan)
-    {
-        $validator = Validator::make($request->all(), [
-            'nama' => 'required|string|max:255',
-            'kelas' => 'required|string|max:255',
-            'jurusan' => 'required|string|max:255',
-            'alamat' => 'required|string|max:255',
-            'no_telp' => 'required|string|max:15',
-            'username' => 'required|string|unique:tb_pengguna,username,' . $pengaduan->id_pengguna . ',id_pengguna',
-            'email' => 'required|email|unique:tb_pengguna,email,' . $pengaduan->id_pengguna . ',id_pengguna',
-            'password' => 'nullable|string|min:6',
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
-
-        DB::beginTransaction();
-
-        try {
-            $pengguna = User::findOrFail($pengaduan->id_pengguna);
-
-            $pengguna->username = $request->username;
-            $pengguna->email = $request->email;
-            if ($request->filled('password')) {
-                $pengguna->password = Hash::make($request->password);
-            }
-            $pengguna->save();
-            $pengaduan->nama = $request->nama;
-            $pengaduan->kelas = $request->kelas;
-            $pengaduan->jurusan = $request->jurusan;
-            $pengaduan->alamat = $request->alamat;
-            $pengaduan->no_telp = $request->no_telp;
-            $pengaduan->save();
-
-            DB::commit();
-
-            Alert::success("Success", "Data berhasil diperbarui");
-
-            return redirect("admin.pengaduan");
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui data.')->withInput();
-        }
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Siswa $pengaduan)
-    {
-        DB::beginTransaction();
-
-        try {
-            $pengguna = User::findOrFail($pengaduan->id_pengguna);
-
-            $pengaduan->delete();
-
-            $pengguna->delete();
-
-            DB::commit();
-
-            Alert::success("Success", "Data berhasil dihapus");
-
-            return redirect("admin.pengaduan");
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus data.');
-        }
+        $feedback->delete();
+        Alert::success('Berhasil', 'Feedback berhasil dihapus');
+        return redirect()->route('admin.feedback.index');
     }
 
     public function export()
     {
-        $feedback = Feedback::all();
+        $feedback = Feedback::with(['pengaduan', 'gurubk', 'user'])->get();
         $pdf = Pdf::loadview('admin.feedback.export_pdf', ['data' => $feedback]);
         return $pdf->download('laporan-feedback.pdf');
     }

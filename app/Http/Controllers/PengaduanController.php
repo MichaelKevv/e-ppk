@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pengaduan;
-use App\Models\Siswa; // Tambahkan model Siswa
+use App\Models\Siswa;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -23,19 +23,19 @@ class PengaduanController extends Controller
     {
         if (Auth::user()->role == 'siswa') {
             $data = Pengaduan::where('id_siswa', session('userdata')->id_siswa)
-                            ->with('siswa') // Eager load relasi siswa
-                            ->orderBy('created_at', 'desc')
-                            ->get();
+                ->with('siswa')
+                ->orderBy('created_at', 'desc')
+                ->get();
         } else {
-            $data = Pengaduan::with('siswa') // Eager load relasi siswa
-                            ->orderBy('created_at', 'desc')
-                            ->get();
+            $data = Pengaduan::with('siswa')
+                ->orderBy('created_at', 'desc')
+                ->get();
         }
-        
+
         $title = 'Hapus Pengaduan';
         $text = "Apakah anda yakin untuk hapus?";
         confirmDelete($title, $text);
-        return view('admin.pengaduan.index', compact('data')); // Perbaiki penulisan path view
+        return view('admin.pengaduan.index', compact('data'));
     }
 
     /**
@@ -77,34 +77,34 @@ class PengaduanController extends Controller
 
         try {
             $pengaduanData = $request->only([
-                'bentuk_perundungan', 
-                'frekuensi_kejadian', 
-                'lokasi', 
-                'trauma_mental', 
-                'luka_fisik', 
-                'pelaku_lebih_dari_satu', 
-                'konten_digital', 
-                'jenis_kata', 
+                'bentuk_perundungan',
+                'frekuensi_kejadian',
+                'lokasi',
+                'trauma_mental',
+                'luka_fisik',
+                'pelaku_lebih_dari_satu',
+                'konten_digital',
+                'jenis_kata',
                 'klasifikasi',
                 'deskripsi'
             ]);
-            
+
             $pengaduanData['id_siswa'] = session('userdata')->id_siswa;
-            
+
             // Handle upload foto jika ada field foto
             if ($request->hasFile('foto')) {
                 $image = $request->file('foto');
                 $image->storeAs('public/foto-pengaduan', $image->hashName());
                 $pengaduanData['foto'] = $image->hashName();
             }
-            
+
             Pengaduan::create($pengaduanData);
 
             Alert::success("Success", "Data berhasil disimpan");
 
             DB::commit();
 
-            return redirect()->route('pengaduan.index'); // Perbaiki redirect
+            return redirect()->route('admin.pengaduan.index'); // Perbaiki redirect ke admin.pengaduan.index
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data.')->withInput();
@@ -132,13 +132,13 @@ class PengaduanController extends Controller
     public function edit($id)
     {
         $pengaduan = Pengaduan::findOrFail($id);
-        
-        // Cek authorization - hanya siswa pemilik yang bisa edit
+
+        // Cek authorization - hanya siswa pemilik atau admin yang bisa edit
         if (Auth::user()->role == 'siswa' && $pengaduan->id_siswa != session('userdata')->id_siswa) {
             Alert::error("Error", "Anda tidak memiliki akses untuk mengedit pengaduan ini.");
-            return redirect()->route('pengaduan.index');
+            return redirect()->route('admin.pengaduan.index');
         }
-        
+
         return view('admin.pengaduan.edit', compact('pengaduan'));
     }
 
@@ -152,11 +152,11 @@ class PengaduanController extends Controller
     public function update(Request $request, $id)
     {
         $pengaduan = Pengaduan::findOrFail($id);
-        
-        // Cek authorization
+
+        // Cek authorization - hanya siswa pemilik atau admin yang bisa edit
         if (Auth::user()->role == 'siswa' && $pengaduan->id_siswa != session('userdata')->id_siswa) {
             Alert::error("Error", "Anda tidak memiliki akses untuk mengedit pengaduan ini.");
-            return redirect()->route('pengaduan.index');
+            return redirect()->route('admin.pengaduan.index');
         }
 
         $validator = Validator::make($request->all(), [
@@ -189,25 +189,25 @@ class PengaduanController extends Controller
             $pengaduan->jenis_kata = $request->jenis_kata;
             $pengaduan->klasifikasi = $request->klasifikasi;
             $pengaduan->deskripsi = $request->deskripsi;
-            
+
             if ($request->hasFile('foto')) {
                 // Hapus foto lama jika ada
                 if ($pengaduan->foto) {
                     Storage::delete('public/foto-pengaduan/' . $pengaduan->foto);
                 }
-                
+
                 $foto = $request->file('foto');
                 $foto->storeAs('public/foto-pengaduan', $foto->hashName());
                 $pengaduan->foto = $foto->hashName();
             }
-            
+
             $pengaduan->save();
 
             DB::commit();
 
             Alert::success("Success", "Data berhasil diperbarui");
 
-            return redirect()->route('pengaduan.index'); // Perbaiki redirect
+            return redirect()->route('admin.pengaduan.index'); // Perbaiki redirect ke admin.pengaduan.index
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui data.')->withInput();
@@ -223,11 +223,11 @@ class PengaduanController extends Controller
     public function destroy($id)
     {
         $pengaduan = Pengaduan::findOrFail($id);
-        
-        // Cek authorization
+
+        // Cek authorization - hanya siswa pemilik atau admin yang bisa hapus
         if (Auth::user()->role == 'siswa' && $pengaduan->id_siswa != session('userdata')->id_siswa) {
             Alert::error("Error", "Anda tidak memiliki akses untuk menghapus pengaduan ini.");
-            return redirect()->route('pengaduan.index');
+            return redirect()->route('admin.pengaduan.index');
         }
 
         DB::beginTransaction();
@@ -242,7 +242,7 @@ class PengaduanController extends Controller
 
             Alert::success("Success", "Data berhasil dihapus");
 
-            return redirect()->route('pengaduan.index'); // Perbaiki redirect
+            return redirect()->route('admin.pengaduan.index'); // Perbaiki redirect ke admin.pengaduan.index
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus data.');
@@ -252,7 +252,7 @@ class PengaduanController extends Controller
     public function export()
     {
         $pengaduan = Pengaduan::with('siswa')->get();
-        $pdf = Pdf::loadview('admin.pengaduan.export_pdf', ['data' => $pengaduan]); // Perbaiki path view
+        $pdf = Pdf::loadview('admin.pengaduan.export_pdf', ['data' => $pengaduan]);
         return $pdf->download('laporan-pengaduan.pdf');
     }
 
@@ -283,24 +283,32 @@ class PengaduanController extends Controller
     {
         $pengaduan = Pengaduan::with('siswa')->findOrFail($id);
         $pengaduan['no_surat'] = $this->generateNomorSurat($pengaduan);
-        $pdf = Pdf::loadview('admin.pengaduan.export_single', compact('pengaduan')); // Perbaiki path view
+        $pdf = Pdf::loadview('admin.pengaduan.export_single', compact('pengaduan'));
         return $pdf->download('laporan-pengaduan-' . $pengaduan->siswa->nama . '.pdf');
     }
 
     public function pengaduanSelesai($id)
     {
         $pengaduan = Pengaduan::findOrFail($id);
-        
-        // Cek authorization
+
+        // Cek authorization - siswa hanya bisa menutup pengaduannya sendiri, admin bisa menutup semua
         if (Auth::user()->role == 'siswa' && $pengaduan->id_siswa != session('userdata')->id_siswa) {
             Alert::error("Error", "Anda tidak memiliki akses untuk mengubah status pengaduan ini.");
-            return redirect()->route('pengaduan.index');
+            return redirect()->route('admin.pengaduan.index');
         }
-        
-        $pengaduan->status = 'ditutup';
-        $pengaduan->save();
-        
-        Alert::success("Success", "Pengaduan telah ditandai sebagai selesai!");
-        return redirect()->route('pengaduan.index'); // Perbaiki redirect
+
+        // Admin bisa menutup semua pengaduan
+        if (Auth::user()->role == 'admin' || 
+            (Auth::user()->role == 'siswa' && $pengaduan->id_siswa == session('userdata')->id_siswa)) {
+            
+            $pengaduan->status = 'ditutup';
+            $pengaduan->save();
+
+            Alert::success("Success", "Pengaduan telah ditandai sebagai selesai!");
+            return redirect()->route('admin.pengaduan.index');
+        }
+
+        Alert::error("Error", "Anda tidak memiliki akses untuk mengubah status pengaduan ini.");
+        return redirect()->route('admin.pengaduan.index');
     }
 }

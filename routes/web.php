@@ -37,7 +37,7 @@ Route::get('register', [AuthController::class, 'showRegisterForm'])->name('regis
 Route::post('register', [AuthController::class, 'register']);
 
 Route::middleware(['auth'])->group(function () {
-    Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
+    Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::get('pengaduan-data', [DashboardController::class, 'getPengaduanData']);
         Route::get('feedback-data', [DashboardController::class, 'getFeedbackData']);
@@ -48,8 +48,21 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('siswa', SiswaController::class);
         Route::get('siswa/edit/profile/{id}', [SiswaController::class, 'editProfile']);
         Route::put('siswa/update/profile/{id}', [SiswaController::class, 'updateProfile']);
-        Route::resource('pengaduan', PengaduanController::class);
-        Route::put('pengaduan/selesai/{id}', [PengaduanController::class, 'pengaduanSelesai']);
+        
+        // Routes untuk Pengaduan - PERBAIKI DI SINI
+        Route::prefix('pengaduan')->name('pengaduan.')->group(function () {
+            Route::get('/', [PengaduanController::class, 'index'])->name('index');
+            Route::get('/create', [PengaduanController::class, 'create'])->name('create');
+            Route::post('/', [PengaduanController::class, 'store'])->name('store');
+            Route::get('/{id}', [PengaduanController::class, 'show'])->name('show');
+            Route::get('/{id}/edit', [PengaduanController::class, 'edit'])->name('edit');
+            Route::put('/{id}', [PengaduanController::class, 'update'])->name('update');
+            Route::delete('/{id}', [PengaduanController::class, 'destroy'])->name('destroy');
+            Route::put('/selesai/{id}', [PengaduanController::class, 'pengaduanSelesai'])->name('selesai');
+            Route::get('/export/all', [PengaduanController::class, 'export'])->name('export');
+            Route::get('/export/{id}', [PengaduanController::class, 'export_single'])->name('export_single');
+        });
+        
         Route::resource('artikel', ArtikelController::class);
         Route::resource('feedback', FeedbackController::class);
         Route::get('feedback/create/{pengaduan}', [FeedbackController::class, 'create'])->name('feedback.create');
