@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\ImageManager;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class PengaduanController extends Controller
@@ -31,10 +33,6 @@ class PengaduanController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->get();
         }
-
-        $title = 'Hapus Pengaduan';
-        $text = "Apakah anda yakin untuk hapus?";
-        confirmDelete($title, $text);
         return view('admin.pengaduan.index', compact('data'));
     }
 
@@ -45,7 +43,8 @@ class PengaduanController extends Controller
      */
     public function create()
     {
-        return view('admin.pengaduan.create');
+        $siswa = Siswa::with('user')->get();
+        return view('admin.pengaduan.create', compact('siswa'));
     }
 
     /**
@@ -60,51 +59,64 @@ class PengaduanController extends Controller
             'bentuk_perundungan' => 'required|in:verbal,fisik,sosial,siber,seksual',
             'frekuensi_kejadian' => 'required|in:sekali,2-3_kali,sering',
             'lokasi' => 'nullable|string|max:255',
-            'trauma_mental' => 'required|boolean',
-            'luka_fisik' => 'required|boolean',
-            'pelaku_lebih_dari_satu' => 'required|boolean',
-            'konten_digital' => 'required|boolean',
+            'trauma_mental' => 'nullable|boolean',
+            'luka_fisik' => 'nullable|boolean',
+            'pelaku_lebih_dari_satu' => 'nullable|boolean',
+            'konten_digital' => 'nullable|boolean',
             'jenis_kata' => 'nullable|string|max:255',
             'klasifikasi' => 'required|in:ringan,sedang,berat',
-            'deskripsi' => 'required|string'
+            'deskripsi' => 'required|string',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
         ]);
 
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
+            $errors = $validator->errors()->all();
+            $errorMessage = "Pengaduan gagal dibuat. periksa kembali data yang diinput.<br>";
+            foreach ($errors as $error) {
+                $errorMessage .= "$error";
+            }
+            $errorMessage .= "<br>";
+            return redirect()->back()
+                ->withInput()
+                ->with('error', $errorMessage);
         }
 
         DB::beginTransaction();
 
         try {
-            $pengaduanData = $request->only([
-                'bentuk_perundungan',
-                'frekuensi_kejadian',
-                'lokasi',
-                'trauma_mental',
-                'luka_fisik',
-                'pelaku_lebih_dari_satu',
-                'konten_digital',
-                'jenis_kata',
-                'klasifikasi',
-                'deskripsi'
-            ]);
+            $pengaduanData = $request->all();
 
-            $pengaduanData['id_siswa'] = session('userdata')->id_siswa;
+            if(Auth::user()->role == 'siswa'){
+                $pengaduanData['id_siswa'] = Auth::user()->id_pengguna;
+            } else {
+                $pengaduanData['id_siswa'] = $request->id_pengguna;
+            }
 
-            // Handle upload foto jika ada field foto
             if ($request->hasFile('foto')) {
-                $image = $request->file('foto');
-                $image->storeAs('public/foto-pengaduan', $image->hashName());
-                $pengaduanData['foto'] = $image->hashName();
+                $file = $request->file('foto');
+                $ext = 'webp';
+                $filename = uniqid('pengaduan_') . '.' . $ext;
+
+                $manager = new ImageManager(new Driver());
+
+                // Simpan dalam 3 ukuran
+                $sm = $manager->read($file)->scale(150, 150)->toWebp(80);
+                Storage::disk('public')->put('pengaduan/foto/sm/' . $filename, (string) $sm);
+
+                $md = $manager->read($file)->scale(400, 400)->toWebp(85);
+                Storage::disk('public')->put('pengaduan/foto/md/' . $filename, (string) $md);
+
+                $lg = $manager->read($file)->scale(800, 800)->toWebp(90);
+                Storage::disk('public')->put('pengaduan/foto/lg/' . $filename, (string) $lg);
+
+                $data['foto'] = $filename;
             }
 
             Pengaduan::create($pengaduanData);
 
-            Alert::success("Success", "Data berhasil disimpan");
-
             DB::commit();
 
-            return redirect()->route('admin.pengaduan.index'); // Perbaiki redirect ke admin.pengaduan.index
+            return redirect()->route('admin.pengaduan.index')->with('success', 'Pengaduan berhasil dibuat');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data.')->withInput();
@@ -298,9 +310,11 @@ class PengaduanController extends Controller
         }
 
         // Admin bisa menutup semua pengaduan
-        if (Auth::user()->role == 'admin' || 
-            (Auth::user()->role == 'siswa' && $pengaduan->id_siswa == session('userdata')->id_siswa)) {
-            
+        if (
+            Auth::user()->role == 'admin' ||
+            (Auth::user()->role == 'siswa' && $pengaduan->id_siswa == session('userdata')->id_siswa)
+        ) {
+
             $pengaduan->status = 'ditutup';
             $pengaduan->save();
 
