@@ -86,7 +86,7 @@ class PengaduanController extends Controller
         try {
             $pengaduanData = $request->all();
 
-            if(Auth::user()->role == 'siswa'){
+            if (Auth::user()->role == 'siswa') {
                 $pengaduanData['id_siswa'] = Auth::user()->id_pengguna;
             } else {
                 $pengaduanData['id_siswa'] = $request->id_pengguna;
@@ -175,17 +175,26 @@ class PengaduanController extends Controller
             'bentuk_perundungan' => 'required|in:verbal,fisik,sosial,siber,seksual',
             'frekuensi_kejadian' => 'required|in:sekali,2-3_kali,sering',
             'lokasi' => 'nullable|string|max:255',
-            'trauma_mental' => 'required|boolean',
-            'luka_fisik' => 'required|boolean',
-            'pelaku_lebih_dari_satu' => 'required|boolean',
-            'konten_digital' => 'required|boolean',
+            'trauma_mental' => 'nullable|boolean',
+            'luka_fisik' => 'nullable|boolean',
+            'pelaku_lebih_dari_satu' => 'nullable|boolean',
+            'konten_digital' => 'nullable|boolean',
             'jenis_kata' => 'nullable|string|max:255',
             'klasifikasi' => 'required|in:ringan,sedang,berat',
-            'deskripsi' => 'required|string'
+            'deskripsi' => 'required|string',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
         ]);
 
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
+            $errors = $validator->errors()->all();
+            $errorMessage = "Pengaduan gagal dibuat. periksa kembali data yang diinput.<br>";
+            foreach ($errors as $error) {
+                $errorMessage .= "$error";
+            }
+            $errorMessage .= "<br>";
+            return redirect()->back()
+                ->withInput()
+                ->with('error', $errorMessage);
         }
 
         DB::beginTransaction();
@@ -203,23 +212,34 @@ class PengaduanController extends Controller
             $pengaduan->deskripsi = $request->deskripsi;
 
             if ($request->hasFile('foto')) {
-                // Hapus foto lama jika ada
+                // hapus foto lama
                 if ($pengaduan->foto) {
-                    Storage::delete('public/foto-pengaduan/' . $pengaduan->foto);
+                    Storage::disk('public')->delete('pengaduan/foto/sm/' . $pengaduan->foto);
+                    Storage::disk('public')->delete('pengaduan/foto/md/' . $pengaduan->foto);
+                    Storage::disk('public')->delete('pengaduan/foto/lg/' . $pengaduan->foto);
                 }
 
-                $foto = $request->file('foto');
-                $foto->storeAs('public/foto-pengaduan', $foto->hashName());
-                $pengaduan->foto = $foto->hashName();
+                $file = $request->file('foto');
+                $ext = 'webp';
+                $filename = uniqid('pengaduan_') . '.' . $ext;
+
+                $manager = new ImageManager(new Driver());
+                $sm = $manager->read($file)->scale(150, 150)->toWebp(80);
+                Storage::disk('public')->put('pengaduan/foto/sm/' . $filename, (string) $sm);
+
+                $md = $manager->read($file)->scale(400, 400)->toWebp(85);
+                Storage::disk('public')->put('pengaduan/foto/md/' . $filename, (string) $md);
+
+                $lg = $manager->read($file)->scale(800, 800)->toWebp(90);
+                Storage::disk('public')->put('pengaduan/foto/lg/' . $filename, (string) $lg);
+
+                $pengaduan->foto = $filename;
             }
 
             $pengaduan->save();
 
             DB::commit();
-
-            Alert::success("Success", "Data berhasil diperbarui");
-
-            return redirect()->route('admin.pengaduan.index'); // Perbaiki redirect ke admin.pengaduan.index
+            return redirect()->route('admin.pengaduan.index')->with('success', 'Pengaduan berhasil diperbarui');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui data.')->withInput();
@@ -246,15 +266,16 @@ class PengaduanController extends Controller
 
         try {
             if ($pengaduan->foto) {
-                Storage::delete('public/foto-pengaduan/' . $pengaduan->foto);
+                Storage::disk('public')->delete('pengaudan$pengaduan/foto/sm/' . $pengaduan->foto);
+                Storage::disk('public')->delete('pengaudan$pengaduan/foto/md/' . $pengaduan->foto);
+                Storage::disk('public')->delete('pengaudan$pengaduan/foto/lg/' . $pengaduan->foto);
             }
+
             $pengaduan->delete();
 
             DB::commit();
 
-            Alert::success("Success", "Data berhasil dihapus");
-
-            return redirect()->route('admin.pengaduan.index'); // Perbaiki redirect ke admin.pengaduan.index
+            return redirect()->route('admin.pengaduan.index')->with('success', 'Pengaduan berhasil dihapus');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus data.');
