@@ -55,7 +55,9 @@ class Pengaduan extends Model
 		'pelaku_lebih_dari_satu',
 		'konten_digital',
 		'jenis_kata',
-		'klasifikasi'
+		'klasifikasi',
+		'deskripsi',
+		'status'
 	];
 
 	public function siswa()
