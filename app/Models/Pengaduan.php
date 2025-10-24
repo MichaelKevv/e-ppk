@@ -55,7 +55,7 @@ class Pengaduan extends Model
         'jenis_kata',
         'klasifikasi',
         'deskripsi',
-		'status'
+		'status',
         'foto'
     ];
 

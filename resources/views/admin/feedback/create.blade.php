@@ -17,59 +17,59 @@
                 </div>
             </div>
         </div>
+
         <section id="basic-vertical-layouts">
             <div class="row match-height">
                 <div class="col-md-12 col-12">
-                    <div class="card">
-                        <div class="card-content">
-                            <div class="card-body">
-                                <form action="{{ route('admin.feedback.store', $pengaduan->id_pengaduan) }}" method="post"
-                                    enctype="multipart/form-data">
-                                    @csrf
-                                    <div class="form-body">
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <div class="form-group">
-                                                    <label for="email-id-vertical">Judul Pengaduan</label>
-                                                    <input type="text" id="email-id-vertical" class="form-control"
-                                                        value="{{ $pengaduan->judul }}" name="judul" readonly>
-                                                </div>
-                                            </div>
-                                            <div class="col-12">
-                                                <div class="form-group">
-                                                    <label for="feedback-textarea">Feedback</label>
-                                                    <textarea id="feedback-textarea" data-purpose="feedback" class="form-control" name="teks_tanggapan">
-                                                    </textarea>
-                                                </div>
-                                            </div>
-                                            {{-- <div class="col-12">
-                                                <div class="form-group">
-                                                    <label for="email-id-vertical">Status</label>
-                                                    <select class="form-control" name="status" id="status">
-                                                        <option value="" disabled>Pilih Status</option>
-                                                        <option value="terbuka"
-                                                            {{ $pengaduan->status == 'terbuka' ? 'selected' : '' }}>Terbuka
-                                        </option>
-                                        <option value="diproses"
-                                            {{ $pengaduan->status == 'diproses' ? 'selected' : '' }}>Diproses
-                                        </option>
-                                        <option value="ditutup"
-                                            {{ $pengaduan->status == 'ditutup' ? 'selected' : '' }}>Ditutup
-                                        </option>
-                                        </select>
-                                    </div>
-                                </div> --}}
-                                            <div class="col-12 d-flex justify-content-end">
-                                                <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
+                    <div class="card shadow-sm border-0" style="border-radius: 10px;">
+                        <div class="card-body">
+                            <form action="{{ route('admin.feedback.store', $pengaduan->id_pengaduan) }}" method="post"
+                                enctype="multipart/form-data">
+                                @csrf
+                                <div class="form-body">
+                                    <div class="row">
+                                        <div class="col-12 mb-3">
+                                            <div class="form-group">
+                                                <label for="judul_pengaduan" class="form-label fw-semibold">Judul Pengaduan</label>
+                                                <input type="text" id="judul_pengaduan" class="form-control shadow-sm"
+                                                    value="{{ $judul_pengaduan }}" name="judul" readonly
+                                                    style="background-color: #f8f9fa; border: 1px solid #ced4da; border-radius: 8px;">
                                             </div>
                                         </div>
+
+                                        <div class="col-12 mb-4">
+                                            <div class="form-group">
+                                                <label for="feedback-textarea" class="form-label fw-semibold">Feedback</label>
+                                                <textarea id="feedback-textarea" class="form-control shadow-sm" name="teks_tanggapan"
+                                                    placeholder="Tuliskan feedback Anda di sini..." rows="6"
+                                                    style="border: 1.5px solid #ced4da; border-radius: 8px; transition: all 0.3s ease;"></textarea>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 d-flex justify-content-end">
+                                            <button type="submit" class="btn btn-primary px-4 shadow-sm">
+                                                <i class="bi bi-send-fill me-2"></i>Submit
+                                            </button>
+                                        </div>
                                     </div>
-                                </form>
-                            </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
     </div>
+
+    <style>
+        #feedback-textarea:hover {
+            border-color: #80bdff;
+        }
+
+        #feedback-textarea:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 5px rgba(13, 110, 253, 0.3);
+            outline: none;
+        }
+    </style>
 @endsection

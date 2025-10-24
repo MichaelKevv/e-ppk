@@ -13,7 +13,6 @@ class FeedbackController extends Controller
 {
     public function index()
     {
-        // Ambil semua data feedback sesuai role user
         if (Auth::user()->role == 'siswa') {
             $data = Feedback::where('id_user', Auth::id())
                 ->with(['pengaduan', 'user'])
@@ -24,57 +23,62 @@ class FeedbackController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->get();
         }
-
-        // Tambahkan kolom virtual 'judul_pengaduan'
-        foreach ($data as $item) {
+        $data = $data->map(function ($item) {
             if ($item->pengaduan) {
                 $p = $item->pengaduan;
-                $item->judul_pengaduan = implode(' | ', [
-                    "ID: {$p->id_pengaduan}",
-                    "Siswa: {$p->id_siswa}",
-                    "Bentuk: {$p->bentuk_perundungan}",
-                    "Frekuensi: {$p->frekuensi_kejadian}",
-                    "Lokasi: {$p->lokasi}",
-                    "Trauma: {$p->trauma_mental}",
-                    "Luka: {$p->luka_fisik}",
-                    "Pelaku: {$p->pelaku_lebih_dari_satu}",
-                    "Konten: {$p->konten_digital}",
-                    "Kata: {$p->jenis_kata}",
-                    "Klasifikasi: {$p->klasifikasi}"
-                ]);
+                $namaSiswa = optional($p->siswa)->nama ?? "Siswa #{$p->id_siswa}";
+                $lokasi = $p->lokasi ? ucfirst($p->lokasi) : 'Lokasi tidak diketahui';
+                $bentuk = $p->bentuk_perundungan ? ucfirst($p->bentuk_perundungan) : 'Tidak diketahui';
+                $item->judul_pengaduan = "{$bentuk} di {$lokasi} - {$namaSiswa}";
             } else {
                 $item->judul_pengaduan = '-';
             }
-        }
+
+            return $item;
+        });
 
         return view('admin.feedback.index', compact('data'));
     }
 
+
     public function create(Pengaduan $pengaduan)
     {
-        return view('admin.feedback.create', compact('pengaduan'));
+        if ($pengaduan) {
+            $p = $pengaduan;
+            $namaSiswa = optional($p->siswa)->nama ?? "Siswa #{$p->id_siswa}";
+            $lokasi = $p->lokasi ? ucfirst($p->lokasi) : 'Lokasi tidak diketahui';
+            $bentuk = $p->bentuk_perundungan ? ucfirst($p->bentuk_perundungan) : 'Tidak diketahui';
+            $judul_pengaduan = "{$bentuk} di {$lokasi} - {$namaSiswa}";
+        } else {
+            $judul_pengaduan = '-';
+        }
+
+        return view('admin.feedback.create', compact('pengaduan', 'judul_pengaduan'));
     }
+
 
     public function store(Request $request, Pengaduan $pengaduan)
     {
         $request->validate([
-            'isi_tanggapan' => 'required|string',
+            'teks_tanggapan' => 'required|string',
         ]);
 
         Feedback::create([
             'id_pengaduan' => $pengaduan->id_pengaduan,
-            'nip' => Auth::user()->nip ?? null,
+            'nip' => Auth::user()->nip ,
             'id_user' => Auth::id(),
-            'isi_tanggapan' => $request->isi_tanggapan,
+            'isi_tanggapan' => $request->teks_tanggapan, // gunakan teks_tanggapan dari form
             'created_at' => now(),
         ]);
 
+        // update status pengaduan
         $pengaduan->status = $request->status ?? 'diproses';
         $pengaduan->save();
 
         Alert::success('Berhasil', 'Feedback berhasil dikirim');
         return redirect()->route('admin.pengaduan.show', $pengaduan->id_pengaduan);
     }
+
 
     public function show(Feedback $feedback)
     {

@@ -23,14 +23,14 @@
                     <div class="card">
                         <div class="card-content">
                             <div class="card-header">
-                                <h5>{{ $pengaduan->judul }}</h5>
+                                <h5>{{ $feedback->pengaduan->judul ?? 'Tanpa Judul' }}</h5>
                             </div>
                             <div class="card-body">
                                 <strong>Deskripsi Pengaduan :</strong>
-                                {!! $pengaduan->deskripsi !!}
+                               {!! $feedback->pengaduan->deskripsi ?? '-' !!}
                                 <strong>Feedback :</strong>
-                                {!! $feedback->teks_tanggapan !!}
-                                Pemberi Feedback : <strong>{{ $feedback->tb_petuga->nama }}</strong>
+                                {!! $feedback->teks_tanggapan ?? '-' !!}
+                                Pemberi Feedback : <strong>{{ $feedback->tb_petuga->nama ?? 'Tanpa Nama' }}</strong>
                                 <br>
                                 Tanggal Feedback :
                                 <strong>{{ \Carbon\Carbon::parse($feedback->created_at)->isoFormat('D MMMM YYYY HH:mm:ss') }}</strong>
