@@ -47,10 +47,6 @@ class FeedbackController extends Controller
             }
         }
 
-        $title = 'Hapus Feedback';
-        $text = 'Apakah anda yakin ingin menghapus feedback ini?';
-        confirmDelete($title, $text);
-
         return view('admin.feedback.index', compact('data'));
     }
 

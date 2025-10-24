@@ -48,7 +48,9 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('siswa', SiswaController::class);
         Route::get('siswa/edit/profile/{id}', [SiswaController::class, 'editProfile']);
         Route::put('siswa/update/profile/{id}', [SiswaController::class, 'updateProfile']);
-        
+
+        Route::post('/admin/feedback/survey', [FeedbackController::class, 'storeSurvey'])->name('feedback.survey.store');
+
         // Routes untuk Pengaduan - PERBAIKI DI SINI
         Route::prefix('pengaduan')->name('pengaduan.')->group(function () {
             Route::get('/', [PengaduanController::class, 'index'])->name('index');
@@ -62,7 +64,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/export/all', [PengaduanController::class, 'export'])->name('export');
             Route::get('/export/{id}', [PengaduanController::class, 'export_single'])->name('export_single');
         });
-        
+
         Route::resource('artikel', ArtikelController::class);
         Route::resource('feedback', FeedbackController::class);
         Route::get('feedback/create/{pengaduan}', [FeedbackController::class, 'create'])->name('feedback.create');
