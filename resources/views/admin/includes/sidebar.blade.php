@@ -47,38 +47,25 @@
                     aria-controls="profileExamples" role="button" aria-expanded="false">
                     <i
                         class="material-symbols-rounded opacity-5 {% if page.brand == 'RTL' %}ms-2{% else %} me-2{% endif %}">group</i>
-                    <span class="nav-link-text ms-1 ps-1">Team</span>
+                    <span class="nav-link-text ms-1 ps-1">Metode</span>
                 </a>
                 <div class="collapse" id="profileExamples" style="">
                     <ul class="nav ">
-                        <li class="nav-item ">
-                            <a class="nav-link text-dark " href="../../pages/team/all-projects.html">
-                                <span class="sidenav-mini-icon"> A </span>
-                                <span class="sidenav-normal  ms-1  ps-1"> All Projects </span>
+                        {{-- Decision Tree --}}
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->is('admin/decision-tree*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
+                                href="{{ route('admin.decision-tree.index') }}">
+                                <i class="material-symbols-rounded opacity-5">article</i>
+                                <span class="nav-link-text ms-1">Decision Tree</span>
                             </a>
                         </li>
-                        <li class="nav-item ">
-                            <a class="nav-link text-dark " href="../../pages/team/messages.html">
-                                <span class="sidenav-mini-icon"> M </span>
-                                <span class="sidenav-normal  ms-1  ps-1"> Messages </span>
-                            </a>
-                        </li>
-                        <li class="nav-item ">
-                            <a class="nav-link text-dark " href="../../pages/team/new-user.html">
-                                <span class="sidenav-mini-icon"> N </span>
-                                <span class="sidenav-normal  ms-1  ps-1"> New User </span>
-                            </a>
-                        </li>
-                        <li class="nav-item ">
-                            <a class="nav-link text-dark " href="../../pages/team/profile-overview.html">
-                                <span class="sidenav-mini-icon"> P </span>
-                                <span class="sidenav-normal  ms-1  ps-1"> Profile Overview </span>
-                            </a>
-                        </li>
-                        <li class="nav-item ">
-                            <a class="nav-link text-dark " href="../../pages/team/reports.html">
-                                <span class="sidenav-mini-icon"> R </span>
-                                <span class="sidenav-normal  ms-1  ps-1"> Reports </span>
+
+                        {{-- TAM & Survey Data --}}
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->is('survey*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
+                                href="{{ route('admin.survey.index') }}">
+                                <i class="material-symbols-rounded opacity-5">assessment</i>
+                                <span class="nav-link-text ms-1">Survey Data & TAM</span>
                             </a>
                         </li>
                     </ul>
@@ -158,26 +145,6 @@
                     <span class="nav-link-text ms-1">Artikel</span>
                 </a>
             </li>
-            {{-- Decision Tree --}}
-            <li class="nav-item">
-                <a class="nav-link {{ request()->is('admin/decision-tree*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
-                    href="{{ route('admin.decision-tree.index') }}">
-                    <i class="material-symbols-rounded opacity-5">article</i>
-                    <span class="nav-link-text ms-1">Decision Tree</span>
-                </a>
-            </li> 
-            
-            {{-- TAM --}}
-            <li class="nav-item">
-                <a class="nav-link {{ request()->is('admin/tam*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
-                    href="{{ route('admin.tam.index') }}">
-                    <i class="material-symbols-rounded opacity-5">assessment</i>
-                    <span class="nav-link-text ms-1">TAM</span>
-                </a>
-            </li>
-                </a>
-            </li>
-
         </ul>
     </div>
 </aside>

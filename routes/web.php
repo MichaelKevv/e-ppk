@@ -13,6 +13,7 @@ use App\Http\Controllers\PetugasController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\DecisionTreeController;
 use App\Http\Controllers\TAMController;
+use App\Http\Controllers\SurveyDataController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -50,6 +51,14 @@ Route::middleware(['auth'])->group(function () {
         Route::put('siswa/update/profile/{id}', [SiswaController::class, 'updateProfile']);
 
         Route::post('/admin/feedback/survey', [FeedbackController::class, 'storeSurvey'])->name('feedback.survey.store');
+        Route::prefix('survey')->name('survey.')->group(function () {
+            Route::get('/', [SurveyDataController::class, 'index'])->name('index');
+            Route::get('/create', [SurveyDataController::class, 'create'])->name('create');
+            Route::post('/store', [SurveyDataController::class, 'store'])->name('store');
+            Route::get('/show/{id}', [SurveyDataController::class, 'show'])->name('show');
+            Route::delete('/destroy/{id}', [SurveyDataController::class, 'destroy'])->name('destroy');
+            Route::get('/analysis', [SurveyDataController::class, 'analysis'])->name('analysis');
+        });
 
         // Routes untuk Pengaduan - PERBAIKI DI SINI
         Route::prefix('pengaduan')->name('pengaduan.')->group(function () {
