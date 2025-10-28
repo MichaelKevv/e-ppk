@@ -71,7 +71,7 @@
                     </ul>
                 </div>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
                 <a data-bs-toggle="collapse" href="#projectsExamples" class="nav-link text-dark "
                     aria-controls="projectsExamples" role="button" aria-expanded="false">
                     <i
@@ -100,7 +100,7 @@
                         </li>
                     </ul>
                 </div>
-            </li>
+            </li> -->
 
             {{-- Siswa --}}
             <li class="nav-item">

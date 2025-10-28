@@ -49,8 +49,97 @@
         </tbody>
     </table>
 
-    <div class="mt-3">
-        {{ $surveys->links() }}
+    @if ($surveys->hasPages())
+    <div class="d-flex justify-content-center mt-4">
+        <nav aria-label="Page navigation">
+            <ul class="pagination pagination-custom mb-0">
+                {{-- Tombol Previous --}}
+                @if ($surveys->onFirstPage())
+                    <li class="page-item disabled">
+                        <span class="page-link">
+                            <i class="fas fa-chevron-left"></i>
+                        </span>
+                    </li>
+                @else
+                    <li class="page-item">
+                        <a href="{{ $surveys->previousPageUrl() }}" class="page-link" aria-label="Previous">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    </li>
+                @endif
+                @foreach ($surveys->links()->elements[0] ?? [] as $page => $url)
+                    @if ($page == $surveys->currentPage())
+                        <li class="page-item active"><span class="page-link">{{ $page }}</span></li>
+                    @else
+                        <li class="page-item"><a class="page-link" href="{{ $url }}">{{ $page }}</a></li>
+                    @endif
+                @endforeach
+                @if ($surveys->hasMorePages())
+                    <li class="page-item">
+                        <a href="{{ $surveys->nextPageUrl() }}" class="page-link" aria-label="Next">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                @else
+                    <li class="page-item disabled">
+                        <span class="page-link">
+                            <i class="fas fa-chevron-right"></i>
+                        </span>
+                    </li>
+                @endif
+            </ul>
+        </nav>
     </div>
+    @endif
 </div>
+@push('styles')
+<style>
+.pagination-custom {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.pagination-custom .page-item {
+    display: inline-flex;
+}
+
+.pagination-custom .page-link {
+    border: none;
+    border-radius: 6px;
+    padding: 8px 14px;
+    color: #333;
+    font-weight: 500;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pagination-custom .page-link i {
+    font-size: 0.85rem;
+}
+
+.pagination-custom .page-item.active .page-link {
+    background: linear-gradient(90deg, #007bff, #0056b3);
+    color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.pagination-custom .page-link:hover {
+    background: #f1f5f9;
+    color: #007bff;
+    transform: translateY(-2px);
+}
+
+.pagination-custom .page-item.disabled .page-link {
+    background: #f8f9fa;
+    color: #ccc;
+    box-shadow: none;
+}
+</style>
+@endpush
 @endsection
