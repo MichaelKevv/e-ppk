@@ -13,10 +13,9 @@ class SurveyData extends Model
     protected $fillable = [
         'respondent_name',
         'email',
+        'id_pengaduan',
         'perceived_usefulness',
         'perceived_ease_of_use',
-        'attitude_toward_using',
         'behavioral_intention_to_use',
-        'actual_system_use',
     ];
 }

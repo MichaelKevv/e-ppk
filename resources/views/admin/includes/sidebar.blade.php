@@ -43,13 +43,12 @@
             </li>
 
             <li class="nav-item">
-                <a data-bs-toggle="collapse" href="#profileExamples" class="nav-link text-dark collapsed"
-                    aria-controls="profileExamples" role="button" aria-expanded="false">
-                    <i
-                        class="material-symbols-rounded opacity-5 {% if page.brand == 'RTL' %}ms-2{% else %} me-2{% endif %}">group</i>
+                <a data-bs-toggle="collapse" href="#dashboardsExamples" class="nav-link {{ request()->is('admin/survey*') || request()->is('admin/decision-tree*') ? 'active bg-gradient-dark text-white' : 'text-dark collapsed' }} "
+                    aria-controls="dashboardsExamples" role="button" aria-expanded="{{ request()->is('admin/survey*') || request()->is('admin/decision-tree*') ? 'true' : 'false' }}">
+                    <i class="material-symbols-rounded opacity-5">group</i>
                     <span class="nav-link-text ms-1 ps-1">Metode</span>
                 </a>
-                <div class="collapse" id="profileExamples" style="">
+                <div class="collapse {{ request()->is('admin/survey*') || request()->is('admin/decision-tree*') ? 'show' : '' }}" id="dashboardsExamples" style="">
                     <ul class="nav ">
                         {{-- Decision Tree --}}
                         <li class="nav-item">
@@ -62,7 +61,7 @@
 
                         {{-- TAM & Survey Data --}}
                         <li class="nav-item">
-                            <a class="nav-link {{ request()->is('survey*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
+                            <a class="nav-link {{ request()->is('admin/survey*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
                                 href="{{ route('admin.survey.index') }}">
                                 <i class="material-symbols-rounded opacity-5">assessment</i>
                                 <span class="nav-link-text ms-1">Survey Data & TAM</span>
@@ -71,6 +70,7 @@
                     </ul>
                 </div>
             </li>
+
             <!-- <li class="nav-item">
                 <a data-bs-toggle="collapse" href="#projectsExamples" class="nav-link text-dark "
                     aria-controls="projectsExamples" role="button" aria-expanded="false">

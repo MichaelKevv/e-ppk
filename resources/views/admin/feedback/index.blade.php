@@ -187,6 +187,30 @@
                                                             'Saya akan menggunakan SAFESCHOOL setiap kali menerima laporan dari pihak sekolah.',
                                                         ],
                                                     ];
+                                                } elseif ($role == 'admin') {
+                                                    $pertanyaan = [
+                                                        'Perceived Usefulness (PU)' => [
+                                                            'SAFESCHOOL memudahkan koordinasi antara sekolah dan Dinsos dalam menangani laporan berat.',
+                                                            'Sistem ini membantu saya mendapatkan informasi laporan secara cepat dan lengkap.',
+                                                            'Aplikasi ini meningkatkan efektivitas kerja dalam menindaklanjuti kasus kekerasan anak.',
+                                                            'Fitur klasifikasi tingkat urgensi mempermudah saya menentukan prioritas penanganan.',
+                                                            'SAFESCHOOL mempercepat proses komunikasi antarinstansi terkait.',
+                                                        ],
+                                                        'Perceived Ease of Use (PEOU)' => [
+                                                            'Saya mudah memahami fitur-fitur utama pada SAFESCHOOL.',
+                                                            'Proses verifikasi dan tanggapan laporan dapat dilakukan dengan sederhana.',
+                                                            'Tampilan dashboard memudahkan saya dalam memantau seluruh laporan dari sekolah.',
+                                                            'Aplikasi ini dapat saya gunakan tanpa memerlukan bantuan teknis khusus.',
+                                                            'Saya merasa sistem ini nyaman digunakan untuk pekerjaan saya sehari-hari.',
+                                                        ],
+                                                        'Behavioral Intention to Use (ITU)' => [
+                                                            'Saya berencana terus menggunakan SAFESCHOOL untuk menangani laporan kasus di masa depan.',
+                                                            'Saya akan merekomendasikan SAFESCHOOL kepada sekolah lain di wilayah kerja saya.',
+                                                            'Saya berniat berkolaborasi lebih lanjut dengan sekolah melalui platform ini.',
+                                                            'Saya percaya sistem ini akan menjadi bagian penting dari mekanisme penanganan kasus anak.',
+                                                            'Saya akan menggunakan SAFESCHOOL setiap kali menerima laporan dari pihak sekolah.',
+                                                        ],
+                                                    ];
                                                 }
                                             @endphp
 
@@ -195,11 +219,21 @@
                                                     tabindex="-1" aria-hidden="true">
                                                     <div class="modal-dialog modal-lg modal-dialog-scrollable">
                                                         <div class="modal-content">
-                                                            <form action="{{ route('admin.feedback.survey.store') }}"
+                                                            <form action="{{ route('admin.survey.store') }}"
                                                                 method="POST">
                                                                 @csrf
                                                                 <input type="hidden" name="id_feedback"
                                                                     value="{{ $feedback->id_feedback }}">
+                                                                @if (Auth::user()->role == 'siswa')
+                                                                    <input type="hidden" name="respondent_name" value="{{ Auth::user()->siswas->first()->nama }}">
+                                                                @elseif(Auth::user()->role == 'gurubk')
+                                                                    <input type="hidden" name="respondent_name" value="{{ Auth::user()->gurubks->first()->nama }}">
+                                                                @elseif(Auth::user()->role == 'dinsos')
+                                                                    <input type="hidden" name="respondent_name" value="{{ Auth::user()->dinsos->first()->nama }}">
+                                                                @elseif(Auth::user()->role == 'admin')
+                                                                    <input type="hidden" name="respondent_name" value="{{ Auth::user()->admins->first()->nama }}">
+                                                                @endif
+                                                                <input type="hidden" name="email" value="{{ Auth::user()->email }}">
                                                                 <div class="modal-header bg-dark text-white">
                                                                     <h6 class="modal-title">Survey Feedback -
                                                                         {{ strtoupper($role) }}</h6>

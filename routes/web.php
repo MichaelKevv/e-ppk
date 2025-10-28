@@ -50,7 +50,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('siswa/edit/profile/{id}', [SiswaController::class, 'editProfile']);
         Route::put('siswa/update/profile/{id}', [SiswaController::class, 'updateProfile']);
 
-        Route::post('/admin/feedback/survey', [FeedbackController::class, 'storeSurvey'])->name('feedback.survey.store');
+        // Route::post('/admin/feedback/survey', [FeedbackController::class, 'storeSurvey'])->name('feedback.survey.store');
         Route::prefix('survey')->name('survey.')->group(function () {
             Route::get('/', [SurveyDataController::class, 'index'])->name('index');
             Route::get('/create', [SurveyDataController::class, 'create'])->name('create');

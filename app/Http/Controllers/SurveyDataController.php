@@ -1,12 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\SurveyData;
 use Illuminate\Http\Request;
 
 class SurveyDataController extends Controller
 {
-     public function index()
+    public function index()
     {
         $surveys = SurveyData::latest()->paginate(10);
         return view('admin.survey.index', compact('surveys'));
@@ -19,18 +20,47 @@ class SurveyDataController extends Controller
 
     public function store(Request $request)
     {
+        // Ambil semua data request
+        $inputs = $request->all();
+
+        // Hitung rata-rata untuk setiap kategori
+        $categories = [
+            'perceived_usefulness' => 'perceived-usefulness',
+            'perceived_ease_of_use' => 'perceived-ease-of-use',
+            'behavioral_intention_to_use' => 'behavioral-intention-to-use',
+        ];
+
+        $averages = [];
+
+        foreach ($categories as $field => $prefix) {
+            $filtered = collect($inputs)
+                ->filter(fn($value, $key) => str_starts_with($key, $prefix))
+                ->map(fn($value) => (int) $value);
+
+            $averages[$field] = $filtered->count() > 0 ? round($filtered->avg(), 2) : null;
+        }
+
+        // Gabungkan data lain seperti nama responden & email
+        $data = [
+            'respondent_name' => $request->input('respondent_name'),
+            'id_pengaduan' => $request->input('id_pengaduan'),
+            'email' => $request->input('email'),
+            'perceived_usefulness' => $averages['perceived_usefulness'],
+            'perceived_ease_of_use' => $averages['perceived_ease_of_use'],
+            'behavioral_intention_to_use' => $averages['behavioral_intention_to_use'],
+        ];
+
+        // Validasi data (optional bisa disesuaikan)
         $request->validate([
             'respondent_name' => 'required|string|max:255',
-            'perceived_usefulness' => 'required|integer|min:1|max:5',
-            'perceived_ease_of_use' => 'required|integer|min:1|max:5',
-            'attitude_toward_using' => 'required|integer|min:1|max:5',
-            'behavioral_intention_to_use' => 'required|integer|min:1|max:5',
-            'actual_system_use' => 'required|integer|min:1|max:5',
+            'email' => 'required|string|max:255',
         ]);
 
-        SurveyData::create($request->all());
+        // Simpan ke tabel survey
+        SurveyData::create($data);
 
-        return redirect()->route('admin.survey.index')->with('success', 'Data survey berhasil disimpan.');
+        return redirect()->route('admin.survey.index')
+            ->with('success', 'Data survey berhasil disimpan.');
     }
 
     public function show($id)
@@ -51,10 +81,8 @@ class SurveyDataController extends Controller
         $totalSurvey = SurveyData::count();
         $avgPU = SurveyData::avg('perceived_usefulness');
         $avgPEOU = SurveyData::avg('perceived_ease_of_use');
-        $avgATU = SurveyData::avg('attitude_toward_using');
         $avgBI = SurveyData::avg('behavioral_intention_to_use');
-        $avgASU = SurveyData::avg('actual_system_use');
 
-        return view('admin.survey.analysis', compact('avgPU', 'avgPEOU', 'avgATU', 'avgBI', 'avgASU','totalSurvey'));
+        return view('admin.survey.analysis', compact('avgPU', 'avgPEOU', 'avgBI', 'totalSurvey'));
     }
 }

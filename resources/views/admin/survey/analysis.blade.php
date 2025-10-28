@@ -19,16 +19,8 @@
             <td>{{ number_format($avgPEOU, 2) }}</td>
         </tr>
         <tr>
-            <th>Attitude Toward Using (ATU)</th>
-            <td>{{ number_format($avgATU, 2) }}</td>
-        </tr>
-        <tr>
-            <th>Behavioral Intention to Use (BI)</th>
+            <th>Behavioral Intention to Use (ITU)</th>
             <td>{{ number_format($avgBI, 2) }}</td>
-        </tr>
-        <tr>
-            <th>Actual System Use (ASU)</th>
-            <td>{{ number_format($avgASU, 2) }}</td>
         </tr>
     </table>
 </div>
