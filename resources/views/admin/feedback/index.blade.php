@@ -224,6 +224,8 @@
                                                                 @csrf
                                                                 <input type="hidden" name="id_feedback"
                                                                     value="{{ $feedback->id_feedback }}">
+                                                                <input type="hidden" name="id_feedback"
+                                                                    value="{{ $feedback->id_pengaduan }}">
                                                                 @if (Auth::user()->role == 'siswa')
                                                                     <input type="hidden" name="respondent_name" value="{{ Auth::user()->siswas->first()->nama }}">
                                                                 @elseif(Auth::user()->role == 'gurubk')
