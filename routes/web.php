@@ -14,6 +14,7 @@ use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\DecisionTreeController;
 use App\Http\Controllers\TAMController;
 use App\Http\Controllers\SurveyDataController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -36,6 +37,7 @@ Route::get('login', [AuthController::class, 'showLoginForm'])->name('login')->mi
 Route::post('login', [AuthController::class, 'login']);
 Route::get('register', [AuthController::class, 'showRegisterForm'])->name('register')->middleware('guest');
 Route::post('register', [AuthController::class, 'register']);
+Route::get('/artikel', [HomeController::class, 'allArticles'])->name('artikel.semua');
 
 Route::middleware(['auth'])->group(function () {
     Route::prefix('admin')->name('admin.')->group(function () {

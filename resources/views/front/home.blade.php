@@ -1,6 +1,11 @@
 @extends('front.layouts.template')
 
 @section('content')
+@php
+    // kalau $articles belum di-set, jadikan collection kosong
+    $articles = $articles ?? collect();
+@endphp
+
     <!-- ======= Hero Section ======= -->
     <section id="hero">
         <div class="container">
@@ -41,49 +46,54 @@
             </g>
         </svg>
     </section>
-    <!-- End Hero -->
+<section id="articles" class="features">
+    <div class="container">
 
-    <!-- ======= Articles Section ======= -->
-    <section id="articles" class="features">
-        <div class="container">
-
-            <div class="section-title" data-aos="fade-up">
+        <div class="d-flex justify-content-between align-items-center mb-3 section-title" data-aos="fade-up">
+            <div>
                 <h2>Education</h2>
                 <p>Top Articles</p>
             </div>
+            <div>
+                <a href="{{ route('artikel.semua') }}" class="btn btn-outline-primary btn-sm">
+                    Lihat Artikel Lainnya <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
 
-            @php
-                $articles = []; // Kosongkan untuk simulasi empty state
-            @endphp
+        @if ($articles->count() > 0)
+            <div class="row" data-aos="fade-left">
+                @foreach ($articles as $article)
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            @if ($article->gambar)
+                                <img src="{{ asset('storage/artikel/gambar/md/' . $article->gambar) }}" class="card-img-top"
+                                     alt="{{ $article->judul }}">
+                            @else
+                                <img src="{{ asset('admin/img/landscape-placeholder.svg') }}" class="card-img-top" alt="No Image">
+                            @endif
 
-            @if (count($articles) > 0)
-                <div class="row" data-aos="fade-left">
-                    @foreach ($articles as $article)
-                        <div class="col-lg-4 col-md-4 mb-4">
-                            <div class="card h-100 shadow-sm">
-                                <img src="{{ asset($article['image']) }}" class="card-img-top" alt="{{ $article['title'] }}">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ $article['title'] }}</h5>
-                                    <p class="card-text">{{ $article['excerpt'] }}</p>
-                                    <a href="{{ $article['url'] }}" class="btn btn-primary">Baca Selengkapnya</a>
-                                </div>
+                            <div class="card-body">
+                                <h5 class="card-title">{{ $article->judul }}</h5>
+                                <p class="card-text text-muted">{{ Str::limit(strip_tags($article->konten), 100) }}</p>
+                                <a href="{{ url('artikel/' . $article->id) }}" class="btn btn-primary btn-sm">
+                                    Baca Selengkapnya
+                                </a>
                             </div>
                         </div>
-                    @endforeach
-                </div>
-            @else
-                <!-- Empty State -->
-                <div class="text-center py-5" data-aos="fade-up">
-                    <img src="{{ asset('admin/img/landscape-placeholder.svg') }}" alt="No Articles" width="220" class="mb-3 opacity-75">
-                    <h5 class="fw-bold text-secondary">Belum Ada Artikel</h5>
-                    <p class="text-muted">Artikel akan segera hadir untuk menambah wawasan dan edukasi kamu.</p>
-                    <a href="{{ url('/') }}" class="btn btn-outline-primary mt-3">
-                        <i class="fas fa-arrow-left me-2"></i>Kembali ke Beranda
-                    </a>
-                </div>
-            @endif
+                    </div>
+                @endforeach
+            </div>
+        @else
+            <!-- Empty State -->
+            <div class="text-center py-5" data-aos="fade-up">
+                <img src="{{ asset('admin/img/landscape-placeholder.svg') }}" alt="No Articles" width="220"
+                     class="mb-3 opacity-75">
+                <h5 class="fw-bold text-secondary">Belum Ada Artikel</h5>
+                <p class="text-muted">Artikel akan segera hadir untuk menambah wawasan dan edukasi kamu.</p>
+            </div>
+        @endif
 
-        </div>
-    </section>
-    <!-- End Articles Section -->
+    </div>
+</section>
 @endsection
