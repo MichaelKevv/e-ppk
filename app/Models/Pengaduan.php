@@ -13,7 +13,8 @@ use Illuminate\Database\Eloquent\Model;
  * Class Pengaduan
  *
  * @property int $id_pengaduan
- * @property int $id_siswa
+ * @property string $nama_pelaku
+ * @property string|null $nama_pelapor
  * @property string $bentuk_perundungan
  * @property string $frekuensi_kejadian
  * @property string|null $lokasi
@@ -36,7 +37,6 @@ class Pengaduan extends Model
     protected $primaryKey = 'id_pengaduan';
 
     protected $casts = [
-        'id_siswa' => 'int',
         'trauma_mental' => 'bool',
         'luka_fisik' => 'bool',
         'pelaku_lebih_dari_satu' => 'bool',
@@ -44,7 +44,8 @@ class Pengaduan extends Model
     ];
 
     protected $fillable = [
-        'id_siswa',
+        'nama_pelaku',
+        'nama_pelapor',
         'bentuk_perundungan',
         'frekuensi_kejadian',
         'lokasi',

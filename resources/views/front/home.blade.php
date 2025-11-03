@@ -1,10 +1,6 @@
 @extends('front.layouts.template')
 
 @section('content')
-@php
-    // kalau $articles belum di-set, jadikan collection kosong
-    $articles = $articles ?? collect();
-@endphp
 
     <!-- ======= Hero Section ======= -->
     <section id="hero">
