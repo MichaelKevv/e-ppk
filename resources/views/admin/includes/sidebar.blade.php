@@ -42,7 +42,7 @@
                 </a>
             </li>
 
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a data-bs-toggle="collapse" href="#dashboardsExamples" class="nav-link {{ request()->is('admin/survey*') || request()->is('admin/decision-tree*') ? 'active bg-gradient-dark text-white' : 'text-dark collapsed' }} "
                     aria-controls="dashboardsExamples" role="button" aria-expanded="{{ request()->is('admin/survey*') || request()->is('admin/decision-tree*') ? 'true' : 'false' }}">
                     <i class="material-symbols-rounded opacity-5">group</i>
@@ -50,7 +50,6 @@
                 </a>
                 <div class="collapse {{ request()->is('admin/survey*') || request()->is('admin/decision-tree*') ? 'show' : '' }}" id="dashboardsExamples" style="">
                     <ul class="nav ">
-                        {{-- Decision Tree --}}
                         <li class="nav-item">
                             <a class="nav-link {{ request()->is('admin/decision-tree*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
                                 href="{{ route('admin.decision-tree.index') }}">
@@ -58,8 +57,6 @@
                                 <span class="nav-link-text ms-1">Decision Tree</span>
                             </a>
                         </li>
-
-                        {{-- TAM & Survey Data --}}
                         <li class="nav-item">
                             <a class="nav-link {{ request()->is('admin/survey*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
                                 href="{{ route('admin.survey.index') }}">
@@ -69,7 +66,7 @@
                         </li>
                     </ul>
                 </div>
-            </li>
+            </li> --}}
 
             <!-- <li class="nav-item">
                 <a data-bs-toggle="collapse" href="#projectsExamples" class="nav-link text-dark "
@@ -102,49 +99,53 @@
                 </div>
             </li> -->
 
-            {{-- Siswa --}}
-            <li class="nav-item">
-                <a class="nav-link {{ request()->is('admin/siswa*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
-                    href="{{ route('admin.siswa.index') }}">
-                    <i class="material-symbols-rounded opacity-5">school</i>
-                    <span class="nav-link-text ms-1">Siswa</span>
-                </a>
-            </li>
+            @if (Auth::user()->role == 'admin')
+                {{-- Siswa --}}
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->is('admin/siswa*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
+                        href="{{ route('admin.siswa.index') }}">
+                        <i class="material-symbols-rounded opacity-5">school</i>
+                        <span class="nav-link-text ms-1">Siswa</span>
+                    </a>
+                </li>
 
-            {{-- Petugas --}}
-            <li class="nav-item">
-                <a class="nav-link {{ request()->is('admin/admin*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
-                    href="{{ route('admin.admin.index') }}">
-                    <i class="material-symbols-rounded opacity-5">badge</i>
-                    <span class="nav-link-text ms-1">Admin</span>
-                </a>
-            </li>
+                {{-- Petugas --}}
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->is('admin/admin*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
+                        href="{{ route('admin.admin.index') }}">
+                        <i class="material-symbols-rounded opacity-5">badge</i>
+                        <span class="nav-link-text ms-1">Admin</span>
+                    </a>
+                </li>
 
-            <li class="nav-item">
-                <a class="nav-link {{ request()->is('admin/dinsos*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
-                    href="{{ route('admin.dinsos.index') }}">
-                    <i class="material-symbols-rounded opacity-5">badge</i>
-                    <span class="nav-link-text ms-1">Dinsos</span>
-                </a>
-            </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->is('admin/dinsos*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
+                        href="{{ route('admin.dinsos.index') }}">
+                        <i class="material-symbols-rounded opacity-5">badge</i>
+                        <span class="nav-link-text ms-1">Dinsos</span>
+                    </a>
+                </li>
 
-            {{-- Pengguna --}}
-            <li class="nav-item">
-                <a class="nav-link {{ request()->is('admin/pengguna*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
-                    href="{{ route('admin.pengguna.index') }}">
-                    <i class="material-symbols-rounded opacity-5">group</i>
-                    <span class="nav-link-text ms-1">Pengguna</span>
-                </a>
-            </li>
+                {{-- Pengguna --}}
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->is('admin/pengguna*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
+                        href="{{ route('admin.pengguna.index') }}">
+                        <i class="material-symbols-rounded opacity-5">group</i>
+                        <span class="nav-link-text ms-1">Pengguna</span>
+                    </a>
+                </li>
 
-            {{-- Artikel --}}
-            <li class="nav-item">
-                <a class="nav-link {{ request()->is('admin/artikel*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
-                    href="{{ route('admin.artikel.index') }}">
-                    <i class="material-symbols-rounded opacity-5">article</i>
-                    <span class="nav-link-text ms-1">Artikel</span>
-                </a>
-            </li>
+                {{-- Artikel --}}
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->is('admin/artikel*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
+                        href="{{ route('admin.artikel.index') }}">
+                        <i class="material-symbols-rounded opacity-5">article</i>
+                        <span class="nav-link-text ms-1">Artikel</span>
+                    </a>
+                </li>
+            @endif
+
+
         </ul>
     </div>
 </aside>
