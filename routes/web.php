@@ -15,6 +15,8 @@ use App\Http\Controllers\DecisionTreeController;
 use App\Http\Controllers\TAMController;
 use App\Http\Controllers\SurveyDataController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Admin\GuruBKController; 
+use App\Http\Controllers\GuruBKController as ControllersGuruBKController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -51,6 +53,10 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('siswa', SiswaController::class);
         Route::get('siswa/edit/profile/{id}', [SiswaController::class, 'editProfile']);
         Route::put('siswa/update/profile/{id}', [SiswaController::class, 'updateProfile']);
+        
+        // Tambahkan route untuk GuruBK
+        Route::resource('guru-bk', ControllersGuruBKController::class)
+            ->parameters(['guru-bk' => 'guruBk']); // Parameter camelCase
 
         // Route::post('/admin/feedback/survey', [FeedbackController::class, 'storeSurvey'])->name('feedback.survey.store');
         Route::prefix('survey')->name('survey.')->group(function () {

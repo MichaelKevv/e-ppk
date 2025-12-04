@@ -33,19 +33,25 @@ class Gurubk extends Model
 	protected $table = 'gurubk';
 	protected $primaryKey = 'nip';
 	public $incrementing = false;
+	protected $keyType = 'string';
 
-	protected $casts = [
-		'id_pengguna' => 'int'
-	];
 
 	protected $fillable = [
-		'id_pengguna',
-		'nama',
-		'gender',
-		'alamat',
-		'no_telp',
-		'foto'
+		'nip',
+        'id_pengguna',
+        'nama',
+        'gender',
+        'alamat',
+        'no_telp',
+        'foto',
+        'created_at',
+        'updated_at'
 	];
+	protected $casts = [
+        'id_pengguna' => 'integer',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime'
+    ];
 
 	public function user()
 	{
