@@ -32,7 +32,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('showarticle', [ArtikelController::class, 'indexUser']);
-Route::get('kontak', [HomeController::class, 'kontakPetugas']);
+Route::get('/kontak-petugas', [HomeController::class, 'kontakPetugas'])->name('kontak.petugas');
 Route::get('article_detail/{id}', [ArtikelController::class, 'articleDetail']);
 Route::get('register', [AuthController::class, 'showRegisterForm'])->name('register');
 Route::get('login', [AuthController::class, 'showLoginForm'])->name('login')->middleware('guest');

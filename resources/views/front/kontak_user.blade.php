@@ -1,4 +1,4 @@
-@extends('template_user')
+@extends('front.layouts.template')
 @section('content')
     <!-- ======= Breadcrumbs Section ======= -->
     <section class="breadcrumbs">
@@ -22,17 +22,21 @@
         <section id="team" class="team" style="padding-top: 0!important">
             <div class="container">
                 <div class="row" data-aos="fade-left">
-                    @foreach ($data as $petugas)
+                    @foreach ($petugas as $petugasItem) {{-- Changed variable name to avoid conflict --}}
                         <div class="col-lg-3 col-md-6">
                             <div class="member" data-aos="zoom-in" data-aos-delay="100">
-                                <div class="pic"><img src="{{ url('storage/foto-petugas/' . $petugas->foto) }}"
-                                        class="img-fluid" alt="">
+                                <div class="pic">
+                                    @if($petugasItem->foto)
+                                        <img src="{{ url('storage/foto-petugas/' . $petugasItem->foto) }}" class="img-fluid" alt="{{ $petugasItem->nama }}">
+                                    @else
+                                        <img src="{{ url('assets/img/default-profile.png') }}" class="img-fluid" alt="{{ $petugasItem->nama }}">
+                                    @endif
                                 </div>
                                 <div class="member-info">
-                                    <h4>{{ $petugas->nama }}</h4>
+                                    <h4>{{ $petugasItem->nama }}</h4>
+                                    <span>{{ $petugasItem->no_telp }}</span>
                                     <div class="social">
-                                        <a href="http://wa.me/{{ substr_replace($petugas->no_telp, '62', 0, 1) }}"
-                                            target="_blank">
+                                        <a href="http://wa.me/{{ substr_replace($petugasItem->no_telp, '62', 0, 1) }}" target="_blank">
                                             <i class="bi bi-whatsapp"></i>
                                         </a>
                                     </div>

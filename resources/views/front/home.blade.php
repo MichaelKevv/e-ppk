@@ -12,7 +12,7 @@
                             Berani Peduli</h5>
                         <h1 class="text-uppercase" style="color: #171d4a">Suara <span style="color: #171d4a">kamu</span>
                             Penting !!!</h1>
-                        <p class="" style="color: #171d4a">SIPERU hadir sebagai sistem pengaduan yang aman dan
+                        <p class="" style="color: #171d4a">SAFESCHOOL hadir sebagai sistem pengaduan yang aman dan
                             mudah digunakan untuk melaporkan tindakan
                             perundungan di lingkungan sekolah. Tidak perlu takut,
                             karena perubahan dimulai dari keberanianmu bersuara.</p>
