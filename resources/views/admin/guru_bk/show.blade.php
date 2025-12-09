@@ -35,18 +35,18 @@
                     <div class="row">
                         <div class="col-md-4 text-center mb-4">
                             @if($guruBk->foto)
-                                <img src="{{ asset('storage/' . $guruBk->foto) }}" 
-                                     class="img-fluid rounded shadow-lg" 
+                                <img src="{{ asset('storage/gurubk/foto/lg/' . $guruBk->foto) }}"
+                                     class="img-fluid rounded shadow-lg"
                                      alt="{{ $guruBk->nama }}"
                                      style="max-width: 300px;">
                             @else
-                                <div class="bg-secondary d-flex align-items-center justify-content-center rounded" 
+                                <div class="bg-secondary d-flex align-items-center justify-content-center rounded"
                                      style="width: 300px; height: 300px; margin: 0 auto;">
                                     <i class="material-symbols-rounded text-white" style="font-size: 100px;">person</i>
                                 </div>
                             @endif
                         </div>
-                        
+
                         <div class="col-md-8">
                             <div class="table-responsive">
                                 <table class="table table-bordered">
@@ -88,7 +88,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="d-flex justify-content-between mt-4">
                         <a href="{{ route('admin.guru-bk.index') }}" class="btn btn-secondary">
                             <i class="material-symbols-rounded">arrow_back</i> Kembali ke Daftar

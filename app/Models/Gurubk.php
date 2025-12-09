@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Gurubk
- * 
+ *
  * @property string $nip
  * @property int $id_pengguna
  * @property string $nama
@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $foto
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * 
+ *
  * @property User $user
  * @property Collection|Feedback[] $feedback
  *
@@ -30,14 +30,14 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Gurubk extends Model
 {
-	protected $table = 'gurubk';
-	protected $primaryKey = 'nip';
-	public $incrementing = false;
-	protected $keyType = 'string';
+    protected $table = 'gurubk';
+    protected $primaryKey = 'nip';
+    public $incrementing = false;
+    protected $keyType = 'string';
 
 
-	protected $fillable = [
-		'nip',
+    protected $fillable = [
+        'nip',
         'id_pengguna',
         'nama',
         'gender',
@@ -46,20 +46,35 @@ class Gurubk extends Model
         'foto',
         'created_at',
         'updated_at'
-	];
-	protected $casts = [
+    ];
+    protected $casts = [
         'id_pengguna' => 'integer',
         'created_at' => 'datetime',
         'updated_at' => 'datetime'
     ];
 
-	public function user()
-	{
-		return $this->belongsTo(User::class, 'id_pengguna');
-	}
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'id_pengguna');
+    }
 
-	public function feedback()
-	{
-		return $this->hasMany(Feedback::class, 'nip');
-	}
+    public function feedback()
+    {
+        return $this->hasMany(Feedback::class, 'nip');
+    }
+
+    public function getFotoSmAttribute()
+    {
+        return $this->foto ? asset('storage/gurubk/foto/sm/' . $this->foto) : null;
+    }
+
+    public function getFotoMdAttribute()
+    {
+        return $this->foto ? asset('storage/gurubk/foto/md/' . $this->foto) : null;
+    }
+
+    public function getFotoLgAttribute()
+    {
+        return $this->foto ? asset('storage/gurubk/foto/lg/' . $this->foto) : null;
+    }
 }

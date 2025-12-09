@@ -25,24 +25,24 @@
             </li>
 
             {{-- Pengaduan --}}
-            <!-- <li class="nav-item">
+            <li class="nav-item">
                 <a class="nav-link {{ request()->is('admin/pengaduan*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
                     href="{{ route('admin.pengaduan.index') }}">
                     <i class="material-symbols-rounded opacity-5">report</i>
                     <span class="nav-link-text ms-1">Pengaduan</span>
                 </a>
-            </li> -->
+            </li>
 
             {{-- Feedback --}}
-            <!-- <li class="nav-item">
+            <li class="nav-item">
                 <a class="nav-link {{ request()->is('admin/feedback*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
                     href="{{ route('admin.feedback.index') }}">
                     <i class="material-symbols-rounded opacity-5">forum</i>
                     <span class="nav-link-text ms-1">Feedback</span>
                 </a>
-            </li> -->
+            </li>
 
-            <!-- <li class="nav-item">
+            <li class="nav-item">
                 <a data-bs-toggle="collapse" href="#dashboardsExamples" class="nav-link {{ request()->is('admin/survey*') || request()->is('admin/decision-tree*') ? 'active bg-gradient-dark text-white' : 'text-dark collapsed' }} "
                     aria-controls="dashboardsExamples" role="button" aria-expanded="{{ request()->is('admin/survey*') || request()->is('admin/decision-tree*') ? 'true' : 'false' }}">
                     <i class="material-symbols-rounded opacity-5">group</i>
@@ -66,38 +66,7 @@
                         </li>
                     </ul>
                 </div>
-            </li> -->
-
-            <!-- <li class="nav-item">
-                <a data-bs-toggle="collapse" href="#projectsExamples" class="nav-link text-dark "
-                    aria-controls="projectsExamples" role="button" aria-expanded="false">
-                    <i
-                        class="material-symbols-rounded opacity-5 {% if page.brand == 'RTL' %}ms-2{% else %} me-2{% endif %}">widgets</i>
-                    <span class="nav-link-text ms-1 ps-1">Projects</span>
-                </a>
-                <div class="collapse " id="projectsExamples">
-                    <ul class="nav ">
-                        <li class="nav-item ">
-                            <a class="nav-link text-dark " href="../../pages/projects/general.html">
-                                <span class="sidenav-mini-icon"> G </span>
-                                <span class="sidenav-normal  ms-1  ps-1"> General </span>
-                            </a>
-                        </li>
-                        <li class="nav-item ">
-                            <a class="nav-link text-dark " href="../../pages/projects/timeline.html">
-                                <span class="sidenav-mini-icon"> T </span>
-                                <span class="sidenav-normal  ms-1  ps-1"> Timeline </span>
-                            </a>
-                        </li>
-                        <li class="nav-item ">
-                            <a class="nav-link text-dark " href="../../pages/projects/new-project.html">
-                                <span class="sidenav-mini-icon"> N </span>
-                                <span class="sidenav-normal  ms-1  ps-1"> New Project </span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </li> -->
+            </li>
 
             @if (Auth::user()->role == 'admin')
                 {{-- Siswa --}}
@@ -109,32 +78,32 @@
                     </a>
                 </li>
 
-            {{-- Admin --}}
-            <li class="nav-item">
-                <a class="nav-link {{ request()->is('admin/admin*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
-                    href="{{ route('admin.admin.index') }}">
-                    <i class="material-symbols-rounded opacity-5">badge</i>
-                    <span class="nav-link-text ms-1">Admin</span>
-                </a>
-            </li>
+                {{-- Admin --}}
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->is('admin/admin*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
+                        href="{{ route('admin.admin.index') }}">
+                        <i class="material-symbols-rounded opacity-5">badge</i>
+                        <span class="nav-link-text ms-1">Admin</span>
+                    </a>
+                </li>
 
-            {{-- Dinsos --}}
-            <!-- <li class="nav-item">
-                <a class="nav-link {{ request()->is('admin/dinsos*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
-                    href="{{ route('admin.dinsos.index') }}">
-                    <i class="material-symbols-rounded opacity-5">badge</i>
-                    <span class="nav-link-text ms-1">Dinsos</span>
-                </a>
-            </li> -->
+                {{-- Dinsos --}}
+                <!-- <li class="nav-item">
+                    <a class="nav-link {{ request()->is('admin/dinsos*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
+                        href="{{ route('admin.dinsos.index') }}">
+                        <i class="material-symbols-rounded opacity-5">badge</i>
+                        <span class="nav-link-text ms-1">Dinsos</span>
+                    </a>
+                </li> -->
 
-            {{-- Guru BK --}}
-            <li class="nav-item">
-                <a class="nav-link {{ request()->is('admin/guru-bk*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
-                    href="{{ route('admin.guru-bk.index') }}">
-                    <i class="material-symbols-rounded opacity-5">psychology</i>
-                    <span class="nav-link-text ms-1">Guru BK</span>
-                </a>
-            </li>
+                {{-- Guru BK --}}
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->is('admin/guru-bk*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
+                        href="{{ route('admin.guru-bk.index') }}">
+                        <i class="material-symbols-rounded opacity-5">psychology</i>
+                        <span class="nav-link-text ms-1">Guru BK</span>
+                    </a>
+                </li>
 
                 {{-- Pengguna --}}
                 <li class="nav-item">
@@ -145,14 +114,15 @@
                     </a>
                 </li>
 
-            {{-- Artikel --}}
-            <!-- <li class="nav-item">
-                <a class="nav-link {{ request()->is('admin/artikel*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
-                    href="{{ route('admin.artikel.index') }}">
-                    <i class="material-symbols-rounded opacity-5">article</i>
-                    <span class="nav-link-text ms-1">Artikel</span>
-                </a>
-            </li> -->
+                {{-- Artikel --}}
+                <!-- <li class="nav-item">
+                    <a class="nav-link {{ request()->is('admin/artikel*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
+                        href="{{ route('admin.artikel.index') }}">
+                        <i class="material-symbols-rounded opacity-5">article</i>
+                        <span class="nav-link-text ms-1">Artikel</span>
+                    </a>
+                </li> -->
+            @endif
         </ul>
     </div>
 </aside>
