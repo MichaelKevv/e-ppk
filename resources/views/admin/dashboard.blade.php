@@ -13,7 +13,7 @@
             <div class="col-12">
                 <h3 class="mb-0 h4 font-weight-bolder">Dashboard</h3>
                 <p class="mb-4">
-                    Selamat datang di Sistem Informasi Pengaduan Perundungan (SIPERU). Pantau statistik dan aktivitas terbaru di sini.
+                    Selamat datang di Safeschool. Pantau statistik dan aktivitas terbaru di sini.
                 </p>
             </div>
 
@@ -259,7 +259,6 @@
                     <br>
                     <br>
                     <br>
-        @include('admin.includes.footer')
     </div>
 @endsection
 

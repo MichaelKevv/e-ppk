@@ -46,7 +46,7 @@
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                 Feedback</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                Petugas</th>
+                                                Pemberi Feedback</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                 Tanggal</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
@@ -56,24 +56,6 @@
                                     <tbody>
                                         @forelse ($data as $feedback)
                                             <tr>
-                                                @if (Auth::user()->role == 'petugas' || Auth::user()->role == 'kepala_sekolah')
-                                                    <td>
-                                                        <div class="d-flex flex-column justify-content-center">
-                                                            <h6 class="mb-0 text-sm">
-                                                                {{ optional($feedback->pengaduan->siswa ?? null)->nama ?? '-' }}
-                                                            </h6>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <span
-                                                            class="text-xs text-secondary mb-0">{{ optional($feedback->pengaduan->siswa ?? null)->kelas ?? '-' }}</span>
-                                                    </td>
-                                                    <td>
-                                                        <span
-                                                            class="text-xs text-secondary mb-0">{{ optional($feedback->pengaduan->siswa ?? null)->jurusan ?? '-' }}</span>
-                                                    </td>
-                                                @endif
-
                                                 <td>
                                                     <span class="text-xs font-weight-bold mb-0">
                                                         {{ Str::limit($feedback->judul_pengaduan ?? '-', 70) }}
@@ -87,7 +69,7 @@
 
                                                 <td>
                                                     <span
-                                                        class="text-xs font-weight-bold mb-0">{{ optional($feedback->user)->username ?? '-' }}</span>
+                                                        class="text-xs font-weight-bold mb-0">{{ optional($feedback->user)->username . " - " . optional($feedback->user)->role ?? '-' }}</span>
                                                 </td>
 
                                                 <td>
@@ -219,23 +201,27 @@
                                                     tabindex="-1" aria-hidden="true">
                                                     <div class="modal-dialog modal-lg modal-dialog-scrollable">
                                                         <div class="modal-content">
-                                                            <form action="{{ route('admin.survey.store') }}"
-                                                                method="POST">
+                                                            <form action="{{ route('admin.survey.store') }}" method="POST">
                                                                 @csrf
                                                                 <input type="hidden" name="id_feedback"
                                                                     value="{{ $feedback->id_feedback }}">
                                                                 <input type="hidden" name="id_pengaduan"
                                                                     value="{{ $feedback->id_pengaduan }}">
                                                                 @if (Auth::user()->role == 'siswa')
-                                                                    <input type="hidden" name="respondent_name" value="{{ Auth::user()->siswas->first()->nama }}">
+                                                                    <input type="hidden" name="respondent_name"
+                                                                        value="{{ Auth::user()->siswas->first()->nama }}">
                                                                 @elseif(Auth::user()->role == 'gurubk')
-                                                                    <input type="hidden" name="respondent_name" value="{{ Auth::user()->gurubks->first()->nama }}">
+                                                                    <input type="hidden" name="respondent_name"
+                                                                        value="{{ Auth::user()->gurubks->first()->nama }}">
                                                                 @elseif(Auth::user()->role == 'dinsos')
-                                                                    <input type="hidden" name="respondent_name" value="{{ Auth::user()->dinsos->first()->nama }}">
+                                                                    <input type="hidden" name="respondent_name"
+                                                                        value="{{ Auth::user()->dinsos->first()->nama }}">
                                                                 @elseif(Auth::user()->role == 'admin')
-                                                                    <input type="hidden" name="respondent_name" value="{{ Auth::user()->admins->first()->nama }}">
+                                                                    <input type="hidden" name="respondent_name"
+                                                                        value="{{ Auth::user()->admins->first()->nama }}">
                                                                 @endif
-                                                                <input type="hidden" name="email" value="{{ Auth::user()->email }}">
+                                                                <input type="hidden" name="email"
+                                                                    value="{{ Auth::user()->email }}">
                                                                 <div class="modal-header bg-dark text-white">
                                                                     <h6 class="modal-title">Survey Feedback -
                                                                         {{ strtoupper($role) }}</h6>

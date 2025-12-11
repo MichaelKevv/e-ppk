@@ -17,7 +17,11 @@ class PengaduanController extends Controller
 {
     public function index()
     {
-        $data = Pengaduan::orderBy('created_at', 'desc')->get();
+        if (Auth::user()->role == 'siswa') {
+            $data = Pengaduan::where('id_user', Auth::id())->orderBy('created_at', 'desc')->get();
+        } else {
+            $data = Pengaduan::orderBy('created_at', 'desc')->get();
+        }
         return view('admin.pengaduan.index', compact('data'));
     }
 
@@ -83,6 +87,8 @@ class PengaduanController extends Controller
                 $data['foto'] = $filename;
             }
 
+            $data['id_user'] = Auth::id();
+
             Pengaduan::create($data);
             DB::commit();
 
@@ -95,7 +101,7 @@ class PengaduanController extends Controller
 
     public function show($id)
     {
-        $pengaduan = Pengaduan::findOrFail($id);
+        $pengaduan = Pengaduan::select('pengaduan.*', 'siswa.nama', 'siswa.kelas')->join('siswa', 'pengaduan.id_user', 'siswa.id_pengguna')->findOrFail($id);
         return view('admin.pengaduan.detail', compact('pengaduan'));
     }
 

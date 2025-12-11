@@ -4,9 +4,8 @@
         <i class="fas fa-times p-3 cursor-pointer text-dark opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
             aria-hidden="true" id="iconSidenav"></i>
         <a class="navbar-brand px-4 py-3 m-0" href="{{ route('admin.dashboard') }}">
-            <img src="{{ asset('images/logo_black.PNG') }}" class="navbar-brand-img" width="35" height="42"
+            <img src="{{ asset('images/Logo-new.png') }}" class="navbar-brand-img" width="100"
                 alt="main_logo">
-            <span class="ms-1 text-sm text-dark"><span style="color: #ffb703">SI</span>PERU</span>
         </a>
     </div>
 

@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Siswa
- * 
+ *
  * @property int $id_siswa
  * @property int $id_pengguna
  * @property string $nama
@@ -23,7 +23,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $foto
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * 
+ *
  * @property User $user
  * @property Collection|Pengaduan[] $pengaduans
  *
@@ -55,6 +55,6 @@ class Siswa extends Model
 
 	public function pengaduans()
 	{
-		return $this->hasMany(Pengaduan::class, 'id_siswa');
+		return $this->hasMany(Pengaduan::class, 'id_pengguna');
 	}
 }

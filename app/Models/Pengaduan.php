@@ -37,6 +37,7 @@ class Pengaduan extends Model
     protected $primaryKey = 'id_pengaduan';
 
     protected $casts = [
+		'id_user' => 'int',
         'trauma_mental' => 'bool',
         'luka_fisik' => 'bool',
         'pelaku_lebih_dari_satu' => 'bool',
@@ -44,6 +45,7 @@ class Pengaduan extends Model
     ];
 
     protected $fillable = [
+		'id_user',
         'nama_pelaku',
         'nama_pelapor',
         'bentuk_perundungan',
@@ -62,21 +64,21 @@ class Pengaduan extends Model
 
     public function siswa()
     {
-        return $this->belongsTo(Siswa::class, 'id_siswa');
+        return $this->belongsTo(Siswa::class, 'id_pengguna');
     }
 
     public function getFotoSmAttribute()
     {
-        return $this->foto ? asset('storage/admin/foto/sm/' . $this->foto) : null;
+        return $this->foto ? asset('storage/foto-siswa/sm/' . $this->foto) : null;
     }
 
     public function getFotoMdAttribute()
     {
-        return $this->foto ? asset('storage/admin/foto/md/' . $this->foto) : null;
+        return $this->foto ? asset('storage/foto-siswa/md/' . $this->foto) : null;
     }
 
     public function getFotoLgAttribute()
     {
-        return $this->foto ? asset('storage/admin/foto/lg/' . $this->foto) : null;
+        return $this->foto ? asset('storage/foto-siswa/lg/' . $this->foto) : null;
     }
 }

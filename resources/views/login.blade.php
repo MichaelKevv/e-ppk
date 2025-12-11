@@ -1,11 +1,12 @@
 @extends('front.layouts.auth')
 
-@section('title', 'Login - SIPERU')
+@section('title', 'Login - SAFESCHOOL')
 @section('content')
 <div class="login-container">
     <div class="login-form">
         <div class="text-center mb-4">
-            <h4 class="brand"><span>SI</span>PERU</h4>
+            <img src="{{ asset('images/Logo-new.png') }}" alt=""
+                        class="img-fluid" width=200>
         </div>
 
         <form method="POST" action="{{ route('login') }}">

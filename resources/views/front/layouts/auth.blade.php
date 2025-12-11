@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'SIPERU')</title>
+    <title>@yield('title', 'SafeSchool - Student Complaiment')</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="Shortcut icon" href = "{{ asset('images/Logo-new.png') }}"alt="">
     @stack('styles')
 </head>
 

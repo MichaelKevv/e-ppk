@@ -41,15 +41,11 @@
                                             <table class="table table-sm">
                                                 <tr>
                                                     <th width="40%">Nama Siswa</th>
-                                                    <td>{{ $pengaduan->siswa->nama ?? 'N/A' }}</td>
+                                                    <td>{{ $pengaduan->nama ?? 'N/A' }}</td>
                                                 </tr>
                                                 <tr>
                                                     <th>Kelas</th>
-                                                    <td>{{ $pengaduan->siswa->kelas ?? 'N/A' }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <th>NIS</th>
-                                                    <td>{{ $pengaduan->siswa->nis ?? 'N/A' }}</td>
+                                                    <td>{{ $pengaduan->kelas ?? 'N/A' }}</td>
                                                 </tr>
                                             </table>
                                         </div>

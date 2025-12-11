@@ -4,12 +4,12 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Safeschool - Student Complaiment</title>
+    <title>@yield('title', 'SafeSchool - Student Complaiment')</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
     <!-- Favicons -->
-    <link rel="Shortcut icon" href = "{{ asset('images/logo_eppk.png') }}"alt="">
+    <link rel="Shortcut icon" href = "{{ asset('images/Logo-new.png') }}"alt="">
 
     <!-- Google Fonts -->
     <link
@@ -37,15 +37,16 @@
         <div class="container d-flex align-items-center justify-content-between">
 
             <div class="logo">
-                <a href="{{ url('/') }}"><img src="{{ asset('images/Logo (1).png') }}" alt=""
-                        class="img-fluid" width="100" style="max-height: 100px!important"></a>
+                <a href="{{ url('/') }}"><img src="{{ asset('images/Logo-new.png') }}" alt=""
+                        class="img-fluid" width="200"></a>
             </div>
 
             <nav id="navbar" class="navbar">
                 <ul>
-                    <li><a class="nav-link text-dark fw-bold" href="{{ url('/') }}" class="">Beranda</a></li>
-                    <li><a class="nav-link text-dark fw-bold" href="{{route('artikel.semua')}}">Edukasi</a></li>
-                    <li><a class="nav-link text-dark fw-bold" href="{{ url('kontak-petugas') }}">Kontak</a></li>
+                    <li><a class="nav-link text-dark fw-bold" href="{{ url('/') }}" class="">Beranda</a>
+                    </li>
+                    <li><a class="nav-link text-dark fw-bold" href="{{ route('artikel.semua') }}">Edukasi</a></li>
+                    {{-- <li><a class="nav-link text-dark fw-bold" href="{{ url('kontak-petugas') }}">Kontak</a></li> --}}
                     @if (Auth::check() && session('userdata'))
                         <li>
                             <a class="nav-link text-dark fw-bold" href="{{ url('dashboard') }}">Dashboard</a>
@@ -56,7 +57,7 @@
                         </li>
                     @endif
                     <li>
-                        <a href="" class="btn-header">
+                        <a href="{{ url('register') }}" class="btn-header">
                             <button class="btn btn-outline-dark fw-bold">Daftar</button>
                         </a>
                     </li>
@@ -73,13 +74,43 @@
         @yield('content')
 
     </main>
+
+    <!-- ======= Footer ======= -->
     <footer id="footer">
+        <!--<div class="footer-top">-->
+        <!--    <div class="container">-->
+        <!--        <div class="row justify-content-center">-->
+
+        <!--            <div class="col-lg-4 col-md-6">-->
+        <!--                <div class="footer-info">-->
+        <!--                    <a href="{{ url('/') }}" class="">-->
+        <!--                        <img src="{{ asset('images/logo_eppk.png') }}" alt="" width="100"-->
+        <!--                            class="mb-4">-->
+        <!--                    </a>-->
+        <!--                    <p>Jl. Tugu Pancasila Desa Kedungrejo Kec. Bantaran</p>-->
+        <!--                    <p>Kabupaten Probolinggo, Jawa Timur 67261</p>-->
+        <!--                    <p class="mt-3"><strong>Phone:</strong> <span>+6281216494265</span></p>-->
+        <!--                    <p><strong>Email:</strong> <span>smpn2bantaran@gmail.com</span></p>-->
+        <!--                    </p>-->
+        <!--                </div>-->
+        <!--            </div>-->
+        <!--        </div>-->
+        <!--    </div>-->
+        <!--</div>-->
+
         <div class="container">
             <div class="copyright">
-                &copy; Copyright <strong><span>Safeschool</span></strong>. All Rights Reserved
+                &copy; Copyright <strong><span>SafeSchool</span></strong>. All Rights Reserved
+            </div>
+            <div class="credits">
+                {{-- <!-- All the links in the footer should remain intact. -->
+                <!-- You can delete the links only if you purchased the pro version. -->
+                <!-- Licensing information: https://bootstrapmade.com/license/ -->
+                <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/front-free-bootstrap-landing-page-template/ -->
+                Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a> --}}
             </div>
         </div>
-    </footer>
+    </footer><!-- End Footer -->
 
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
             class="bi bi-arrow-up-short"></i></a>
