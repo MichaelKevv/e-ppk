@@ -15,8 +15,10 @@ class FeedbackController extends Controller
     public function index()
     {
         if (Auth::user()->role == 'siswa') {
-            $data = Feedback::where('id_user', Auth::id())
-                ->with(['pengaduan', 'user'])
+            $data = Feedback::with(['pengaduan', 'user'])
+                ->whereHas('pengaduan', function ($q) {
+                    $q->where('id_user', Auth::id());
+                })
                 ->orderBy('created_at', 'desc')
                 ->get();
         } else {
