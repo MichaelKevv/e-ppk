@@ -396,6 +396,7 @@
                 <!-- Form Balas Pesan -->
                 <form action="{{ route('admin.feedback.store', $pengaduan->id_pengaduan) }}" method="POST" class="pt-2 border-t border-slate-100 space-y-3">
                     @csrf
+                    <input type="hidden" name="id_pengaduan" value="{{ $pengaduan->id_pengaduan }}">
                     <div>
                         <textarea name="teks_tanggapan" rows="2" required
                                   placeholder="{{ Auth::user()->isSiswa() ? 'Tuliskan pertanyaan, perasaan, atau perkembangan baru untuk Guru BK...' : 'Tuliskan arahan konseling atau pertanyaan kepada pelapor...' }}"

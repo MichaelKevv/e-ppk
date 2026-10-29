@@ -112,8 +112,33 @@ class FeedbackController extends Controller
         return view('admin.feedback.create', compact('pengaduan', 'judul_pengaduan'));
     }
 
-    public function store(Request $request, Pengaduan $pengaduan)
+    public function store(Request $request, $pengaduan = null)
     {
+        // Pastikan $pengaduan adalah model Pengaduan yang valid
+        if (!$pengaduan instanceof Pengaduan || !$pengaduan->id_pengaduan) {
+            $idPengaduan = is_numeric($pengaduan) ? (int)$pengaduan : null;
+            $idPengaduan = $idPengaduan 
+                ?? $request->input('id_pengaduan')
+                ?? $request->route('pengaduan')
+                ?? $request->query('pengaduan');
+
+            // Tangani format URL query string seperti /admin/feedback?64
+            if (!$idPengaduan) {
+                $queryKeys = array_keys($request->query->all());
+                if (!empty($queryKeys) && is_numeric($queryKeys[0])) {
+                    $idPengaduan = (int)$queryKeys[0];
+                }
+            }
+
+            if ($idPengaduan) {
+                $pengaduan = Pengaduan::find($idPengaduan);
+            }
+        }
+
+        if (!$pengaduan || !$pengaduan->id_pengaduan) {
+            return redirect()->back()->with('error', 'Gagal mengirim pesan: Berkas pengaduan tidak ditemukan.');
+        }
+
         $request->validate([
             'teks_tanggapan' => 'required|string',
         ]);

@@ -92,10 +92,11 @@ Route::middleware(['auth'])->group(function () {
         });
 
         Route::resource('artikel', ArtikelController::class);
-        Route::resource('feedback', FeedbackController::class);
+        Route::resource('feedback', FeedbackController::class)->except(['create', 'store']);
         Route::get('feedback-export', [FeedbackController::class, 'export'])->name('feedback.export');
         Route::get('feedback/create/{pengaduan}', [FeedbackController::class, 'create'])->name('feedback.create');
         Route::post('feedback/store/{pengaduan}', [FeedbackController::class, 'store'])->name('feedback.store');
+        Route::post('feedback', [FeedbackController::class, 'store'])->name('feedback.store.direct');
         Route::get('logout', [AuthController::class, 'logout'])->name('logout');
         Route::prefix('decision-tree')->name('decision-tree.')->group(function () {
             Route::get('/', [DecisionTreeController::class, 'index'])->name('index');

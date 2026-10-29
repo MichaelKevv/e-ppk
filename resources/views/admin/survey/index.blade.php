@@ -1,161 +1,363 @@
 @extends('admin.layouts.template')
 @section('title', 'Data Survey TAM')
 
-@section('breadcrumb')
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-        <li class="breadcrumb-item text-sm">
-            <a class="opacity-5 text-dark" href="{{ route('admin.dashboard') }}">Dashboard</a>
-        </li>
-        <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Data Survey TAM</li>
-    </ol>
-</nav>
-@endsection
-
 @section('content')
-<div class="container-fluid py-2">
-    <div class="row">
-        <div class="col-12">
-            <div class="card my-4">
-                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                    <div
-                        class="bg-gradient-dark shadow-dark border-radius-lg pt-4 pb-3 d-flex justify-content-between align-items-center">
-                        <h6 class="text-white text-capitalize ps-3 mb-0">Data Survey TAM</h6>
-                        <div class="d-flex gap-2 me-3">
-                            <a href="{{ route('admin.survey.analysis') }}" class="btn btn-success btn-sm">
-                                <i class="bi bi-graph-up"></i>
-                                <span class="d-none d-md-inline">Lihat Analisis TAM</span>
-                            </a>
-                        </div>
-                    </div>
+<div class="space-y-6">
+
+    <!-- Page Header & Action Bar -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs">
+        <div>
+            <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-semibold mb-2">
+                <i class="fa-solid fa-square-poll-vertical"></i>
+                <span>Metode Evaluasi Akseptasi Sistem (Davis, 1989)</span>
+            </div>
+            <h1 class="text-xl sm:text-2xl font-extrabold text-slate-800 tracking-tight">
+                Data Survey TAM (Technology Acceptance Model)
+            </h1>
+            <p class="text-xs sm:text-sm text-slate-500 mt-1">
+                Kompilasi kuesioner evaluasi kegunaan, kemudahan operasional, dan intensi penggunaan sistem Lapora.
+            </p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-wrap items-center gap-2">
+            <a href="{{ route('admin.tam.index') }}"
+               class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white text-xs font-bold shadow-sm shadow-indigo-600/30 transition-all hover:scale-[1.02] active:scale-95">
+                <i class="fa-solid fa-calculator"></i>
+                <span>Kalkulasi Model TAM</span>
+            </a>
+
+            <a href="{{ route('admin.survey.create') }}"
+               class="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-xs font-bold transition-all">
+                <i class="fa-solid fa-plus"></i>
+                <span>Tambah Survey</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Stat Metric Summary Cards -->
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-3.5 sm:gap-4">
+        <!-- Total Responden -->
+        <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-slate-500">Responden</span>
+                <span class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xs">
+                    <i class="fa-solid fa-users"></i>
+                </span>
+            </div>
+            <div class="mt-3">
+                <div class="text-2xl font-extrabold text-slate-800">{{ $totalSurvey }}</div>
+                <div class="text-[11px] text-slate-400 mt-0.5">Total data kuesioner</div>
+            </div>
+        </div>
+
+        <!-- Perceived Usefulness (PU) -->
+        <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-slate-500">PU (Kegunaan)</span>
+                <span class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xs">
+                    <i class="fa-solid fa-lightbulb"></i>
+                </span>
+            </div>
+            <div class="mt-3">
+                <div class="flex items-baseline gap-1.5">
+                    <span class="text-2xl font-extrabold text-blue-700">{{ number_format($avgPU, 2) }}</span>
+                    <span class="text-xs text-slate-400">/ 5.0</span>
                 </div>
+                <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2 overflow-hidden">
+                    <div class="bg-blue-600 h-1.5 rounded-full" style="width: {{ min(100, ($avgPU / 5) * 100) }}%"></div>
+                </div>
+            </div>
+        </div>
 
-                <div class="card-body px-0 pb-2">
-                    <!-- Desktop View -->
-                    <div class="d-none d-md-block">
-                        <div class="table-responsive p-0">
-                            <table class="table align-items-center mb-0">
-                                <thead>
-                                    <tr>
-                                        <th>Nama</th>
-                                        <th>Perceived Usefulness</th>
-                                        <th>Perceived Ease of Use</th>
-                                        <th>Behavioral Intention to Use</th>
-                                        <th class="text-center" style="width: 150px;">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse($surveys as $survey)
-                                    <tr>
-                                        <td>{{ $survey->respondent_name }}</td>
-                                        <td>{{ $survey->perceived_usefulness }}</td>
-                                        <td>{{ $survey->perceived_ease_of_use }}</td>
-                                        <td>{{ $survey->behavioral_intention_to_use }}</td>
-                                        <td class="text-center">
-                                            <a href="{{ route('admin.survey.show', $survey->id) }}" class="btn btn-info btn-sm"
-                                                data-bs-toggle="tooltip" title="Detail">
-                                                <i class="material-symbols-rounded" style="font-size: 18px;">visibility</i>
-                                            </a>
-                                            <button type="button" class="btn btn-danger btn-sm btnDelete" data-bs-toggle="tooltip"
-                                                title="Hapus">
-                                                <i class="material-symbols-rounded" style="font-size: 18px;">delete</i>
-                                            </button>
-                                            <form action="{{ route('admin.survey.destroy', $survey->id) }}" method="POST"
-                                                class="d-none deleteForm">
-                                                @csrf
-                                                @method('DELETE')
-                                            </form>
-                                        </td>
-                                    </tr>
-                                    @empty
-                                    <tr>
-                                        <td colspan="5" class="text-center text-muted py-4">Belum ada data survey.</td>
-                                    </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+        <!-- Perceived Ease of Use (PEOU) -->
+        <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-slate-500">PEOU (Kemudahan)</span>
+                <span class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xs">
+                    <i class="fa-solid fa-hand-pointer"></i>
+                </span>
+            </div>
+            <div class="mt-3">
+                <div class="flex items-baseline gap-1.5">
+                    <span class="text-2xl font-extrabold text-emerald-700">{{ number_format($avgPEOU, 2) }}</span>
+                    <span class="text-xs text-slate-400">/ 5.0</span>
+                </div>
+                <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2 overflow-hidden">
+                    <div class="bg-emerald-600 h-1.5 rounded-full" style="width: {{ min(100, ($avgPEOU / 5) * 100) }}%"></div>
+                </div>
+            </div>
+        </div>
 
-                    <!-- Mobile View -->
-                    <div class="d-md-none">
-                        <div class="row px-3">
-                            @forelse($surveys as $survey)
-                            <div class="col-12 mb-3">
-                                <div class="card shadow-sm">
-                                    <div class="card-body p-3">
-                                        <h6 class="mb-2 text-sm font-weight-bold">{{ $survey->respondent_name }}</h6>
-                                        <ul class="list-unstyled mb-3 text-xs">
-                                            <li><strong>PU:</strong> {{ $survey->perceived_usefulness }}</li>
-                                            <li><strong>PEOU:</strong> {{ $survey->perceived_ease_of_use }}</li>
-                                            <li><strong>BI:</strong> {{ $survey->behavioral_intention_to_use }}</li>
-                                        </ul>
-                                        <div class="d-flex justify-content-end gap-1">
-                                            <a href="{{ route('admin.survey.show', $survey->id) }}" class="btn btn-info btn-sm"
-                                                data-bs-toggle="tooltip" title="Detail">
-                                                <i class="material-symbols-rounded" style="font-size: 18px;">visibility</i>
-                                            </a>
-                                            <button type="button" class="btn btn-danger btn-sm btnDelete" data-bs-toggle="tooltip"
-                                                title="Hapus">
-                                                <i class="material-symbols-rounded" style="font-size: 18px;">delete</i>
-                                            </button>
-                                            <form action="{{ route('admin.survey.destroy', $survey->id) }}" method="POST"
-                                                class="d-none deleteForm">
-                                                @csrf
-                                                @method('DELETE')
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            @empty
-                            <div class="col-12">
-                                <div class="card shadow-sm">
-                                    <div class="card-body text-center text-muted py-5">
-                                        <i class="material-symbols-rounded mb-2"
-                                            style="font-size: 48px; opacity: 0.5;">bar_chart</i>
-                                        <p class="mb-0">Belum ada data survey.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            @endforelse
-                        </div>
-                    </div>
+        <!-- Behavioral Intention (BI) -->
+        <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-slate-500">BI (Intensi)</span>
+                <span class="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-xs">
+                    <i class="fa-solid fa-repeat"></i>
+                </span>
+            </div>
+            <div class="mt-3">
+                <div class="flex items-baseline gap-1.5">
+                    <span class="text-2xl font-extrabold text-purple-700">{{ number_format($avgBI, 2) }}</span>
+                    <span class="text-xs text-slate-400">/ 5.0</span>
+                </div>
+                <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2 overflow-hidden">
+                    <div class="bg-purple-600 h-1.5 rounded-full" style="width: {{ min(100, ($avgBI / 5) * 100) }}%"></div>
+                </div>
+            </div>
+        </div>
 
-                    {{-- Pagination --}}
-                    @if ($surveys->hasPages())
-                    <div class="d-flex justify-content-center mt-3">
-                        {{ $surveys->links('pagination::bootstrap-5') }}
-                    </div>
-                    @endif
+        <!-- Tingkat Penerimaan Global -->
+        <div class="col-span-2 md:col-span-1 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-slate-500">Penerimaan</span>
+                <span class="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xs">
+                    <i class="fa-solid fa-chart-pie"></i>
+                </span>
+            </div>
+            <div class="mt-3">
+                <div class="flex items-baseline gap-1.5">
+                    <span class="text-2xl font-extrabold text-slate-800">{{ $acceptanceRate }}%</span>
+                </div>
+                <div class="text-[11px] font-semibold text-emerald-600 mt-1 flex items-center gap-1">
+                    <i class="fa-solid fa-circle-check text-[10px]"></i>
+                    <span>{{ $acceptanceRate >= 80 ? 'Sangat Diterima' : ($acceptanceRate >= 60 ? 'Diterima Baik' : 'Cukup') }}</span>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Alert Success Notification if any -->
+    @if(session('success'))
+    <div class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs sm:text-sm flex items-center justify-between gap-3 shadow-xs">
+        <div class="flex items-center gap-2.5">
+            <i class="fa-solid fa-circle-check text-emerald-600 text-base"></i>
+            <span>{{ session('success') }}</span>
+        </div>
+        <button type="button" onclick="this.parentElement.remove()" class="text-emerald-600 hover:text-emerald-800">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </div>
+    @endif
+
+    <!-- Data Table Card -->
+    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
+        
+        <!-- Table Search & Header Bar -->
+        <div class="p-4 sm:p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div class="flex items-center gap-2">
+                <h2 class="text-sm sm:text-base font-bold text-slate-800">Daftar Responden Survey</h2>
+                <span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-xs font-semibold">
+                    {{ $surveys->total() }} data
+                </span>
+            </div>
+
+            <!-- Search Form -->
+            <form method="GET" action="{{ route('admin.survey.index') }}" class="flex items-center gap-2 w-full sm:w-auto">
+                <div class="relative w-full sm:w-64">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                    <input type="text"
+                           name="search"
+                           value="{{ request('search') }}"
+                           placeholder="Cari nama atau email..."
+                           class="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 transition-all">
+                </div>
+                @if(request('search'))
+                <a href="{{ route('admin.survey.index') }}"
+                   title="Reset Pencarian"
+                   class="px-2.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs transition-colors">
+                    <i class="fa-solid fa-rotate-left"></i>
+                </a>
+                @endif
+                <button type="submit"
+                        class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold transition-colors">
+                    Filter
+                </button>
+            </form>
+        </div>
+
+        <!-- Table Content -->
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-slate-600">
+                <thead class="bg-slate-50/75 border-b border-slate-100 text-slate-500 font-semibold uppercase tracking-wider text-[11px]">
+                    <tr>
+                        <th class="py-3.5 px-4">Responden</th>
+                        <th class="py-3.5 px-4">Terkait Kasus</th>
+                        <th class="py-3.5 px-4 text-center">PU (Kegunaan)</th>
+                        <th class="py-3.5 px-4 text-center">PEOU (Kemudahan)</th>
+                        <th class="py-3.5 px-4 text-center">BI (Intensi)</th>
+                        <th class="py-3.5 px-4 text-center">Rata-rata TAM</th>
+                        <th class="py-3.5 px-4">Tanggal Input</th>
+                        <th class="py-3.5 px-4 text-center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    @forelse($surveys as $survey)
+                    @php
+                        $meanRow = round(($survey->perceived_usefulness + $survey->perceived_ease_of_use + $survey->behavioral_intention_to_use) / 3, 2);
+                        $badgeClass = match(true) {
+                            $meanRow >= 4.0 => 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                            $meanRow >= 3.0 => 'bg-blue-50 text-blue-700 border-blue-200',
+                            default => 'bg-amber-50 text-amber-700 border-amber-200',
+                        };
+                    @endphp
+                    <tr class="hover:bg-slate-50/50 transition-colors">
+                        <!-- Responden -->
+                        <td class="py-3.5 px-4">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-indigo-600 text-white font-bold flex items-center justify-center text-xs shrink-0">
+                                    {{ strtoupper(substr($survey->respondent_name, 0, 1)) }}
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="font-semibold text-slate-800 truncate">{{ $survey->respondent_name }}</div>
+                                    <div class="text-[11px] text-slate-400 truncate">{{ $survey->email ?? 'Tanpa email' }}</div>
+                                </div>
+                            </div>
+                        </td>
+
+                        <!-- Terkait Kasus -->
+                        <td class="py-3.5 px-4">
+                            @if($survey->pengaduan)
+                            <a href="{{ route('admin.pengaduan.show', $survey->pengaduan->id_pengaduan) }}"
+                               class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-[11px] font-semibold transition-colors">
+                                <i class="fa-solid fa-folder-open text-[10px]"></i>
+                                <span>{{ $survey->pengaduan->kode_kasus ?? '#KASUS-'.$survey->id_pengaduan }}</span>
+                            </a>
+                            @elseif($survey->id_pengaduan)
+                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 text-[11px]">
+                                #{{ $survey->id_pengaduan }}
+                            </span>
+                            @else
+                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-50 text-slate-400 text-[11px] border border-slate-200/60">
+                                Evaluasi Umum
+                            </span>
+                            @endif
+                        </td>
+
+                        <!-- Perceived Usefulness -->
+                        <td class="py-3.5 px-4 text-center">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                                {{ number_format($survey->perceived_usefulness, 2) }}
+                            </span>
+                        </td>
+
+                        <!-- Perceived Ease of Use -->
+                        <td class="py-3.5 px-4 text-center">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                {{ number_format($survey->perceived_ease_of_use, 2) }}
+                            </span>
+                        </td>
+
+                        <!-- Behavioral Intention -->
+                        <td class="py-3.5 px-4 text-center">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-purple-50 text-purple-700 border border-purple-200">
+                                {{ number_format($survey->behavioral_intention_to_use, 2) }}
+                            </span>
+                        </td>
+
+                        <!-- Mean Skor TAM -->
+                        <td class="py-3.5 px-4 text-center">
+                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-extrabold border {{ $badgeClass }}">
+                                <i class="fa-solid fa-star text-[10px]"></i>
+                                <span>{{ number_format($meanRow, 2) }}</span>
+                            </span>
+                        </td>
+
+                        <!-- Tanggal Input -->
+                        <td class="py-3.5 px-4 whitespace-nowrap text-[11px] text-slate-500">
+                            {{ $survey->created_at ? $survey->created_at->translatedFormat('d M Y, H:i') : '-' }}
+                        </td>
+
+                        <!-- Aksi -->
+                        <td class="py-3.5 px-4 text-center whitespace-nowrap">
+                            <div class="inline-flex items-center gap-1.5">
+                                <a href="{{ route('admin.survey.show', $survey->id) }}"
+                                   title="Lihat Detail Survey"
+                                   class="p-2 rounded-lg bg-slate-100 hover:bg-indigo-50 text-slate-600 hover:text-indigo-600 transition-colors">
+                                    <i class="fa-solid fa-eye text-xs"></i>
+                                </a>
+
+                                <form action="{{ route('admin.survey.destroy', $survey->id) }}" method="POST" class="inline delete-form">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="button"
+                                            onclick="confirmDelete(this)"
+                                            title="Hapus Survey"
+                                            class="p-2 rounded-lg bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 transition-colors">
+                                        <i class="fa-solid fa-trash-can text-xs"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="8" class="py-12 text-center text-slate-400">
+                            <div class="flex flex-col items-center justify-center">
+                                <div class="w-14 h-14 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center text-xl mb-3">
+                                    <i class="fa-solid fa-inbox"></i>
+                                </div>
+                                <p class="text-sm font-semibold text-slate-700">Belum Ada Data Survey TAM</p>
+                                <p class="text-xs text-slate-400 mt-1 max-w-sm">
+                                    Data survey akan terisi otomatis ketika responden mengisi form TAM atau dapat ditambahkan secara manual.
+                                </p>
+                                <a href="{{ route('admin.survey.create') }}" class="mt-4 px-4 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700 transition-colors">
+                                    <i class="fa-solid fa-plus mr-1"></i> Tambah Survey Pertama
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination Section -->
+        @if ($surveys->hasPages())
+        <div class="p-4 sm:p-5 border-t border-slate-100 flex items-center justify-between">
+            <div class="text-xs text-slate-500">
+                Menampilkan <span class="font-semibold text-slate-700">{{ $surveys->firstItem() ?? 0 }}</span> - <span class="font-semibold text-slate-700">{{ $surveys->lastItem() ?? 0 }}</span> dari <span class="font-semibold text-slate-700">{{ $surveys->total() }}</span> survey
+            </div>
+            <div>
+                {{ $surveys->links() }}
+            </div>
+        </div>
+        @endif
+    </div>
+
 </div>
 @endsection
 
 @push('scripts')
 <script>
-    document.querySelectorAll('.btnDelete').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const form = this.closest('.card-body').querySelector('.deleteForm') ||
-                this.closest('td').querySelector('.deleteForm');
-
+    function confirmDelete(button) {
+        if (typeof Swal !== 'undefined') {
             Swal.fire({
-                title: 'Yakin ingin menghapus data survey ini?',
-                text: "Data yang dihapus tidak dapat dikembalikan.",
+                title: 'Hapus Data Survey?',
+                text: 'Data responden dan skor penilaian TAM ini akan dihapus permanen.',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Ya, hapus!'
+                confirmButtonColor: '#e11d48',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Ya, Hapus Data',
+                cancelButtonText: 'Batal',
+                reverseButtons: true,
+                customClass: {
+                    popup: 'rounded-2xl',
+                    confirmButton: 'rounded-xl text-xs font-bold px-4 py-2.5',
+                    cancelButton: 'rounded-xl text-xs font-bold px-4 py-2.5'
+                }
             }).then((result) => {
                 if (result.isConfirmed) {
-                    form.submit();
+                    button.closest('form').submit();
                 }
             });
-        });
-    });
+        } else {
+            if (confirm('Yakin ingin menghapus data survey TAM ini?')) {
+                button.closest('form').submit();
+            }
+        }
+    }
 </script>
 @endpush

@@ -44,6 +44,7 @@
     <div class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200/80 shadow-xs">
         <form action="{{ route('admin.feedback.store', $pengaduan->id_pengaduan) }}" method="POST" class="space-y-6">
             @csrf
+            <input type="hidden" name="id_pengaduan" value="{{ $pengaduan->id_pengaduan }}">
 
             <!-- Text Tanggapan -->
             <div>

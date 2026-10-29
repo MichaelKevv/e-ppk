@@ -18,4 +18,9 @@ class SurveyData extends Model
         'perceived_ease_of_use',
         'behavioral_intention_to_use',
     ];
+
+    public function pengaduan()
+    {
+        return $this->belongsTo(Pengaduan::class, 'id_pengaduan', 'id_pengaduan');
+    }
 }

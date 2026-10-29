@@ -260,6 +260,7 @@
 
                         <form action="{{ route('admin.feedback.store', $feedback->pengaduan->id_pengaduan) }}" method="POST" class="space-y-3">
                             @csrf
+                            <input type="hidden" name="id_pengaduan" value="{{ $feedback->pengaduan->id_pengaduan }}">
                             <textarea name="teks_tanggapan" rows="3" required
                                       placeholder="Tuliskan arahan konseling, perkembangan mediasi, atau pesan tindak lanjut..."
                                       class="w-full text-xs rounded-xl border border-slate-200 p-3.5 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-hidden transition-all"></textarea>
