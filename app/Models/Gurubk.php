@@ -1,33 +1,11 @@
 <?php
 
-/**
- * Created by Reliese Model.
- */
-
 namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * Class Gurubk
- *
- * @property string $nip
- * @property int $id_pengguna
- * @property string $nama
- * @property string $gender
- * @property string|null $alamat
- * @property string|null $no_telp
- * @property string|null $foto
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- *
- * @property User $user
- * @property Collection|Feedback[] $feedback
- *
- * @package App\Models
- */
 class Gurubk extends Model
 {
     protected $table = 'gurubk';
@@ -35,9 +13,9 @@ class Gurubk extends Model
     public $incrementing = false;
     protected $keyType = 'string';
 
-
     protected $fillable = [
         'nip',
+        'id_sekolah',
         'id_pengguna',
         'nama',
         'gender',
@@ -47,11 +25,18 @@ class Gurubk extends Model
         'created_at',
         'updated_at'
     ];
+    
     protected $casts = [
+        'id_sekolah' => 'integer',
         'id_pengguna' => 'integer',
         'created_at' => 'datetime',
         'updated_at' => 'datetime'
     ];
+
+    public function sekolah()
+    {
+        return $this->belongsTo(Sekolah::class, 'id_sekolah');
+    }
 
     public function user()
     {

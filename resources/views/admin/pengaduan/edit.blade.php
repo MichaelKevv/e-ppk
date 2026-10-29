@@ -1,185 +1,238 @@
 @extends('admin.layouts.template')
-@section('title', 'Edit Pengaduan')
-
-@section('breadcrumb')
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="{{ route('admin.pengaduan.index') }}">Data Pengaduan</a></li>
-            <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Edit Pengaduan</li>
-        </ol>
-    </nav>
-@endsection
+@section('title', 'Edit Data Pengaduan Kasus')
 
 @section('content')
-<div class="container-fluid py-4">
-    <div class="row">
-        <div class="col-12">
-            <div class="card my-4">
-                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                    <div class="bg-gradient-dark shadow-dark border-radius-lg pt-4 pb-3">
-                        <h6 class="text-white text-capitalize ps-3">Edit Data Pengaduan</h6>
-                    </div>
-                </div>
-                <div class="card-body px-4 pb-2">
-                    <form action="{{ route('admin.pengaduan.update', $pengaduan->id_pengaduan) }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        @method('PUT')
-                        <div class="row">
-
-                            <!-- Bentuk Perundungan -->
-                            <div class="col-md-6">
-                                <div class="input-group input-group-static mb-4">
-                                    <label for="bentuk_perundungan" class="ms-0">Bentuk Perundungan <span class="text-danger">*</span></label>
-                                    <select class="form-control" name="bentuk_perundungan" id="bentuk_perundungan" required>
-                                        <option value="" disabled>Pilih Bentuk Perundungan</option>
-                                        <option value="verbal" {{ old('bentuk_perundungan', $pengaduan->bentuk_perundungan) == 'verbal' ? 'selected' : '' }}>Verbal</option>
-                                        <option value="fisik" {{ old('bentuk_perundungan', $pengaduan->bentuk_perundungan) == 'fisik' ? 'selected' : '' }}>Fisik</option>
-                                        <option value="sosial" {{ old('bentuk_perundungan', $pengaduan->bentuk_perundungan) == 'sosial' ? 'selected' : '' }}>Sosial</option>
-                                        <option value="siber" {{ old('bentuk_perundungan', $pengaduan->bentuk_perundungan) == 'siber' ? 'selected' : '' }}>Siber</option>
-                                        <option value="seksual" {{ old('bentuk_perundungan', $pengaduan->bentuk_perundungan) == 'seksual' ? 'selected' : '' }}>Seksual</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <!-- Nama Pelapor (tampil hanya jika bentuk seksual) -->
-                            <div class="col-md-6" id="nama-pelapor-container" style="display: none;">
-                                <div class="input-group input-group-static mb-4">
-                                    <label for="nama_pelapor" class="ms-0">Nama Pelapor <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="nama_pelapor" name="nama_pelapor"
-                                        value="{{ old('nama_pelapor', $pengaduan->nama_pelapor) }}">
-                                    <div class="form-text">Hanya diisi untuk kasus perundungan seksual</div>
-                                </div>
-                            </div>
-
-                            <!-- Frekuensi Kejadian -->
-                            <div class="col-md-6">
-                                <div class="input-group input-group-static mb-4">
-                                    <label for="frekuensi_kejadian" class="ms-0">Frekuensi Kejadian <span class="text-danger">*</span></label>
-                                    <select class="form-control" name="frekuensi_kejadian" id="frekuensi_kejadian" required>
-                                        <option value="" disabled>Pilih Frekuensi</option>
-                                        <option value="sekali" {{ old('frekuensi_kejadian', $pengaduan->frekuensi_kejadian) == 'sekali' ? 'selected' : '' }}>Sekali</option>
-                                        <option value="2-3_kali" {{ old('frekuensi_kejadian', $pengaduan->frekuensi_kejadian) == '2-3_kali' ? 'selected' : '' }}>2-3 Kali</option>
-                                        <option value="sering" {{ old('frekuensi_kejadian', $pengaduan->frekuensi_kejadian) == 'sering' ? 'selected' : '' }}>Sering</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <!-- Lokasi -->
-                            <div class="col-md-6">
-                                <div class="input-group input-group-static mb-4">
-                                    <label for="lokasi" class="ms-0">Lokasi Kejadian</label>
-                                    <input type="text" class="form-control" id="lokasi"
-                                        name="lokasi" value="{{ old('lokasi', $pengaduan->lokasi) }}"
-                                        placeholder="Contoh: Ruang kelas, Lapangan, Kantin, dll.">
-                                </div>
-                            </div>
-
-                            <!-- Checkbox Group -->
-                            <div class="col-12">
-                                <div class="row">
-                                    @php
-                                        $checkboxes = [
-                                            'trauma_mental' => 'Trauma Mental',
-                                            'luka_fisik' => 'Luka Fisik',
-                                            'pelaku_lebih_dari_satu' => 'Pelaku Lebih dari Satu',
-                                            'konten_digital' => 'Konten Digital',
-                                        ];
-                                    @endphp
-                                    @foreach ($checkboxes as $field => $label)
-                                        <div class="col-md-3 col-6">
-                                            <div class="form-check mb-3">
-                                                <input class="form-check-input" type="checkbox" name="{{ $field }}" id="{{ $field }}" value="1"
-                                                    {{ old($field, $pengaduan->$field) ? 'checked' : '' }}>
-                                                <label class="form-check-label" for="{{ $field }}">{{ $label }}</label>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </div>
-
-                            <!-- Jenis Kata -->
-                            <div class="col-12">
-                                <div class="input-group input-group-static mb-4">
-                                    <label for="jenis_kata" class="ms-0">Jenis Kata/Kalimat yang Digunakan</label>
-                                    <input type="text" class="form-control" id="jenis_kata"
-                                        name="jenis_kata" value="{{ old('jenis_kata', $pengaduan->jenis_kata) }}"
-                                        placeholder="Contoh: Kata-kata kasar, ancaman, dll.">
-                                </div>
-                            </div>
-
-                            <!-- Klasifikasi -->
-                            <div class="col-md-6">
-                                <div class="input-group input-group-static mb-4">
-                                    <label for="klasifikasi" class="ms-0">Klasifikasi <span class="text-danger">*</span></label>
-                                    <select class="form-control" name="klasifikasi" id="klasifikasi" required>
-                                        <option value="" disabled>Pilih Klasifikasi</option>
-                                        <option value="ringan" {{ old('klasifikasi', $pengaduan->klasifikasi) == 'ringan' ? 'selected' : '' }}>Ringan</option>
-                                        <option value="sedang" {{ old('klasifikasi', $pengaduan->klasifikasi) == 'sedang' ? 'selected' : '' }}>Sedang</option>
-                                        <option value="berat" {{ old('klasifikasi', $pengaduan->klasifikasi) == 'berat' ? 'selected' : '' }}>Berat</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <!-- Foto Bukti -->
-                            <div class="col-md-6">
-                                <div class="input-group input-group-static mb-4">
-                                    <label for="foto" class="ms-0">Foto Bukti <small class="text-muted">(maks. 2 MB, opsional)</small></label>
-                                    <input type="file" class="form-control" id="foto" name="foto" accept="image/*">
-                                </div>
-                                @if ($pengaduan->foto)
-                                    <img src="{{ asset('storage/' . $pengaduan->foto) }}" class="img-thumbnail mt-2"
-                                        style="max-height: 200px; max-width: 300px;" alt="Foto Bukti Lama">
-                                @endif
-                            </div>
-
-                            <!-- Deskripsi -->
-                            <div class="col-12">
-                                <div class="input-group input-group-static mb-4">
-                                    <label for="deskripsi" class="ms-0">Deskripsi</label>
-                                    <textarea name="deskripsi" id="deskripsi" class="form-control" rows="4">{{ old('deskripsi', $pengaduan->deskripsi) }}</textarea>
-                                </div>
-                            </div>
-
-                            <!-- Tombol Aksi -->
-                            <div class="col-12">
-                                <div class="d-flex justify-content-end gap-2">
-                                    <a href="{{ route('admin.pengaduan.index') }}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Kembali</a>
-                                    <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Simpan Perubahan</button>
-                                </div>
-                            </div>
-
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-@endsection
-
-@push('scripts')
-<script>
-// === tampilkan nama pelapor jika bentuk seksual ===
-document.addEventListener('DOMContentLoaded', function() {
-    const bentukSelect = document.getElementById('bentuk_perundungan');
-    const pelaporContainer = document.getElementById('nama-pelapor-container');
-    const pelaporInput = document.getElementById('nama_pelapor');
-
-    function toggleNamaPelapor() {
-        const selectedValue = bentukSelect.value;
-        if (selectedValue === 'seksual') {
-            pelaporContainer.style.display = 'block';
-            pelaporInput.setAttribute('required', true);
-        } else {
-            pelaporContainer.style.display = 'none';
-            pelaporInput.removeAttribute('required');
-            pelaporInput.value = '';
+<div class="max-w-4xl mx-auto space-y-6" x-data="{
+    bentuk: '{{ old('bentuk_perundungan', $pengaduan->bentuk_perundungan) }}',
+    frekuensi: '{{ old('frekuensi_kejadian', $pengaduan->frekuensi_kejadian) }}',
+    trauma: '{{ old('trauma_mental', $pengaduan->trauma_mental) ? '1' : '0' }}',
+    luka: '{{ old('luka_fisik', $pengaduan->luka_fisik) ? '1' : '0' }}',
+    pelakuGanda: '{{ old('pelaku_lebih_dari_satu', $pengaduan->pelaku_lebih_dari_satu) ? '1' : '0' }}',
+    kontenDigital: '{{ old('konten_digital', $pengaduan->konten_digital) ? '1' : '0' }}',
+    previewUrl: '{{ !empty($pengaduan->foto) ? asset('storage/' . $pengaduan->foto) : '' }}',
+    fileChosen(event) {
+        const file = event.target.files[0];
+        if (file) {
+            this.previewUrl = URL.createObjectURL(file);
         }
     }
+}">
 
-    toggleNamaPelapor(); 
-    bentukSelect.addEventListener('change', toggleNamaPelapor);
-});
-</script>
-@endpush
+    <!-- Top Action Card -->
+    <div class="flex items-center justify-between bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+        <div>
+            <div class="flex items-center gap-2 mb-1">
+                <a href="{{ route('admin.pengaduan.show', $pengaduan->id_pengaduan) }}" class="text-xs text-blue-600 hover:underline font-semibold flex items-center gap-1">
+                    <i class="fa-solid fa-arrow-left text-[10px]"></i>
+                    <span>Kembali ke Detail Kasus</span>
+                </a>
+                <span class="text-xs text-slate-400">&bull;</span>
+                <span class="text-xs font-mono font-bold text-slate-500">{{ $pengaduan->kode_kasus ?? ('#' . $pengaduan->id_pengaduan) }}</span>
+            </div>
+            <h1 class="text-xl sm:text-2xl font-black text-slate-800 tracking-tight">Edit Berkas Pengaduan Kasus</h1>
+            <p class="text-xs text-slate-500 mt-1">Perbarui rincian investigasi kasus perundungan dan indikator dampak.</p>
+        </div>
+    </div>
+
+    <!-- Error Alert if any -->
+    @if ($errors->any())
+        <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs">
+            <div class="flex items-center gap-2 font-bold mb-1">
+                <i class="fa-solid fa-triangle-exclamation text-rose-600"></i>
+                <span>Terdapat kesalahan input:</span>
+            </div>
+            <ul class="list-disc list-inside space-y-0.5 text-rose-700">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <!-- Form Card -->
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-xs p-6 sm:p-8">
+        <form action="{{ route('admin.pengaduan.update', $pengaduan->id_pengaduan) }}" method="POST" enctype="multipart/form-data" class="space-y-8">
+            @csrf
+            @method('PUT')
+
+            <!-- Section 1: Karakteristik Insiden -->
+            <div>
+                <h3 class="text-xs font-black text-slate-800 uppercase tracking-wider pb-3 border-b border-slate-100 flex items-center gap-2">
+                    <span class="w-6 h-6 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-xs">1</span>
+                    <span>Bentuk & Karakteristik Insiden</span>
+                </h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Bentuk Perundungan <span class="text-rose-500">*</span></label>
+                        <select name="bentuk_perundungan" x-model="bentuk" required
+                                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden text-xs">
+                            <option value="verbal">Verbal (Kata kasar, hinaan, olokan)</option>
+                            <option value="fisik">Fisik (Pemukulan, dorongan, luka fisik)</option>
+                            <option value="sosial">Sosial (Pengucilan, fitnah, penyebaran rumor)</option>
+                            <option value="siber">Siber (Pelecehan online, doxxing, medsos)</option>
+                            <option value="seksual">Seksual (Pelecehan seksual)</option>
+                        </select>
+                    </div>
+
+                    <!-- Pelapor Khusus Pelecehan Seksual -->
+                    <div x-show="bentuk === 'seksual'" x-transition>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Nama Pelapor / Kerabat <span class="text-rose-500">*</span></label>
+                        <input type="text" name="nama_pelapor" value="{{ old('nama_pelapor', $pengaduan->nama_pelapor) }}"
+                               :required="bentuk === 'seksual'" placeholder="Nama orang tua, wali, atau saksi"
+                               class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden text-xs">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Frekuensi Kejadian <span class="text-rose-500">*</span></label>
+                        <select name="frekuensi_kejadian" x-model="frekuensi" required
+                                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden text-xs">
+                            <option value="sekali">Sekali (Insiden Pertama)</option>
+                            <option value="2-3_kali">2-3 Kali (Berulang Jarang)</option>
+                            <option value="sering">Sering (Berulang Intensif)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Lokasi Tempat Kejadian</label>
+                        <input type="text" name="lokasi" value="{{ old('lokasi', $pengaduan->lokasi) }}" placeholder="Contoh: Toilet lantai 2, Kantin, Lapangan..."
+                               class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden text-xs">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Kata/Kalimat yang Digunakan (Jika Ada)</label>
+                        <input type="text" name="jenis_kata" value="{{ old('jenis_kata', $pengaduan->jenis_kata) }}" placeholder="Contoh: Kata kasar, makian, ancaman..."
+                               class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden text-xs">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Indikator & Dampak Kejadian -->
+            <div>
+                <h3 class="text-xs font-black text-slate-800 uppercase tracking-wider pb-3 border-b border-slate-100 flex items-center gap-2">
+                    <span class="w-6 h-6 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center text-xs">2</span>
+                    <span>Indikator Dampak & Keterlibatan Pelaku</span>
+                </h3>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5">
+                    <!-- Luka Fisik -->
+                    <label class="flex items-center gap-3 p-3.5 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-slate-100/70 cursor-pointer transition-all">
+                        <input type="checkbox" name="luka_fisik" value="1"
+                               {{ old('luka_fisik', $pengaduan->luka_fisik) ? 'checked' : '' }}
+                               class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500">
+                        <div>
+                            <span class="text-xs font-bold text-slate-800 block">Mengakibatkan Luka Fisik</span>
+                            <span class="text-[11px] text-slate-400">Memar, luka berdarah, cidera tubuh</span>
+                        </div>
+                    </label>
+
+                    <!-- Trauma Mental -->
+                    <label class="flex items-center gap-3 p-3.5 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-slate-100/70 cursor-pointer transition-all">
+                        <input type="checkbox" name="trauma_mental" value="1"
+                               {{ old('trauma_mental', $pengaduan->trauma_mental) ? 'checked' : '' }}
+                               class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500">
+                        <div>
+                            <span class="text-xs font-bold text-slate-800 block">Indikasi Trauma Mental</span>
+                            <span class="text-[11px] text-slate-400">Menangis histeris, takut ke sekolah, murung</span>
+                        </div>
+                    </label>
+
+                    <!-- Pelaku Ganda -->
+                    <label class="flex items-center gap-3 p-3.5 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-slate-100/70 cursor-pointer transition-all">
+                        <input type="checkbox" name="pelaku_lebih_dari_satu" value="1"
+                               {{ old('pelaku_lebih_dari_satu', $pengaduan->pelaku_lebih_dari_satu) ? 'checked' : '' }}
+                               class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500">
+                        <div>
+                            <span class="text-xs font-bold text-slate-800 block">Pelaku Lebih dari Satu Orang</span>
+                            <span class="text-[11px] text-slate-400">Pengeroyokan atau aksi kelompok/geng</span>
+                        </div>
+                    </label>
+
+                    <!-- Konten Digital -->
+                    <label class="flex items-center gap-3 p-3.5 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-slate-100/70 cursor-pointer transition-all">
+                        <input type="checkbox" name="konten_digital" value="1"
+                               {{ old('konten_digital', $pengaduan->konten_digital) ? 'checked' : '' }}
+                               class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500">
+                        <div>
+                            <span class="text-xs font-bold text-slate-800 block">Penyebaran Konten Digital</span>
+                            <span class="text-[11px] text-slate-400">Viral di medsos, grup chat, rekaman video</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Section 3: Klasifikasi & Deskripsi Kronologi -->
+            <div>
+                <h3 class="text-xs font-black text-slate-800 uppercase tracking-wider pb-3 border-b border-slate-100 flex items-center gap-2">
+                    <span class="w-6 h-6 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-xs">3</span>
+                    <span>Tingkat Klasifikasi & Kronologi Kasus</span>
+                </h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Klasifikasi Kasus <span class="text-rose-500">*</span></label>
+                        <select name="klasifikasi" required
+                                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden text-xs font-bold">
+                            <option value="ringan" {{ old('klasifikasi', $pengaduan->klasifikasi) == 'ringan' ? 'selected' : '' }}>Tingkat Ringan (Bimbingan Konseling Sekolah)</option>
+                            <option value="sedang" {{ old('klasifikasi', $pengaduan->klasifikasi) == 'sedang' ? 'selected' : '' }}>Tingkat Sedang (Konseling & Pemanggilan Orang Tua)</option>
+                            <option value="berat" {{ old('klasifikasi', $pengaduan->klasifikasi) == 'berat' ? 'selected' : '' }}>Tingkat Berat (Intervensi Dinsos / Hukum)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Identitas Pelaku (Jika Diketahui)</label>
+                        <input type="text" name="nama_pelaku" value="{{ old('nama_pelaku', $pengaduan->nama_pelaku) }}" placeholder="Nama siswa/pihak pelaku..."
+                               class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden text-xs">
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Deskripsi Lengkap Kronologi Insiden</label>
+                        <textarea name="deskripsi" rows="4" placeholder="Ceritakan urutan peristiwa secara detail..."
+                                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden text-xs">{{ old('deskripsi', $pengaduan->deskripsi) }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: Bukti Foto / Lampiran -->
+            <div>
+                <h3 class="text-xs font-black text-slate-800 uppercase tracking-wider pb-3 border-b border-slate-100 flex items-center gap-2">
+                    <span class="w-6 h-6 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center text-xs">4</span>
+                    <span>Lampiran & Bukti Foto</span>
+                </h3>
+
+                <div class="flex items-center gap-6 mt-5">
+                    <div class="w-24 h-24 rounded-2xl bg-slate-100 border-2 border-dashed border-slate-200 flex items-center justify-center text-slate-400 overflow-hidden shrink-0">
+                        <template x-if="previewUrl">
+                            <img :src="previewUrl" alt="Bukti Foto" class="w-full h-full object-cover">
+                        </template>
+                        <template x-if="!previewUrl">
+                            <i class="fa-solid fa-image text-2xl"></i>
+                        </template>
+                    </div>
+
+                    <div class="flex-1">
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Unggah Bukti Baru (Opsional)</label>
+                        <input type="file" name="foto" @change="fileChosen" accept="image/*"
+                               class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
+                        <p class="text-[11px] text-slate-400 mt-1">Format: JPG, JPEG, PNG, WEBP. Maksimal 2 MB.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center justify-end gap-3 pt-6 border-t border-slate-100">
+                <a href="{{ route('admin.pengaduan.show', $pengaduan->id_pengaduan) }}"
+                   class="px-5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-600 text-xs font-bold transition-all">
+                    Batal
+                </a>
+                <button type="submit"
+                        class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-md shadow-blue-500/25 transition-all hover:scale-105 active:scale-95">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    <span>Simpan Perubahan Berkas</span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>
+@endsection

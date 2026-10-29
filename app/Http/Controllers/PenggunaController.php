@@ -2,13 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Dinso;
-use App\Models\Siswa;
-use App\Models\Admin;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -16,46 +13,74 @@ use RealRashid\SweetAlert\Facades\Alert;
 class PenggunaController extends Controller
 {
     /**
-     * Tampilkan semua pengguna dari tabel siswa, admin, dan dinso
+     * Tampilkan semua akun pengguna terdaftar
      */
     public function index()
     {
-        $data = User::with('admins')->get();
+        $data = User::with(['siswas', 'gurubks.sekolah', 'dinsos', 'admins'])->orderBy('created_at', 'desc')->get();
 
         $title = 'Hapus Pengguna';
-        $text = "Apakah anda yakin untuk hapus?";
+        $text = "Apakah anda yakin ingin menghapus akun ini?";
         confirmDelete($title, $text);
 
         return view('admin.pengguna.index', compact('data'));
     }
 
     /**
-     * Form edit pengguna berdasarkan tipe
+     * Form tambah akun pengguna baru
      */
-    public function edit($tipe, $id)
+    public function create()
     {
-        if ($tipe === 'siswa') {
-            $pengguna = Siswa::findOrFail($id);
-        } elseif ($tipe === 'admin') {
-            $pengguna = Admin::findOrFail($id);
-        } else {
-            $pengguna = Dinso::findOrFail($id);
-        }
-
-        return view('admin.pengguna.edit', compact('pengguna', 'tipe'));
+        return view('admin.pengguna.create');
     }
 
     /**
-     * Update data pengguna berdasarkan tipe
+     * Simpan akun pengguna baru
      */
-    public function update(Request $request, $tipe, $id)
+    public function store(Request $request)
     {
-        $model = $tipe === 'siswa' ? new Siswa : ($tipe === 'admin' ? new Admin : new Dinso);
-        $pengguna = $model->findOrFail($id);
+        $validator = Validator::make($request->all(), [
+            'username' => 'required|string|max:50|unique:users,username',
+            'email' => 'required|email|max:100|unique:users,email',
+            'role' => 'required|in:admin,admin_it,gurubk,dinsos,siswa',
+            'password' => 'required|string|min:6',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        User::create([
+            'username' => $request->username,
+            'email' => $request->email,
+            'role' => $request->role,
+            'password' => Hash::make($request->password),
+        ]);
+
+        Alert::success('Berhasil', 'Akun pengguna berhasil ditambahkan');
+        return redirect()->route('admin.pengguna.index');
+    }
+
+    /**
+     * Form edit akun pengguna
+     */
+    public function edit($id)
+    {
+        $pengguna = User::findOrFail($id);
+        return view('admin.pengguna.edit', compact('pengguna'));
+    }
+
+    /**
+     * Update kredensial dan role akun pengguna
+     */
+    public function update(Request $request, $id)
+    {
+        $pengguna = User::findOrFail($id);
 
         $validator = Validator::make($request->all(), [
-            'username' => 'required|string',
-            'email' => 'required|email',
+            'username' => 'required|string|max:50|unique:users,username,' . $pengguna->id_pengguna . ',id_pengguna',
+            'email' => 'required|email|max:100|unique:users,email,' . $pengguna->id_pengguna . ',id_pengguna',
+            'role' => 'required|in:admin,admin_it,gurubk,dinsos,siswa',
             'password' => 'nullable|string|min:6',
         ]);
 
@@ -63,58 +88,45 @@ class PenggunaController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        DB::beginTransaction();
+        $pengguna->username = $request->username;
+        $pengguna->email = $request->email;
+        $pengguna->role = $request->role;
 
-        try {
-            $pengguna->nama = $request->username;
-            $pengguna->email = $request->email;
-
-            if ($request->filled('password')) {
-                $pengguna->password = Hash::make($request->password);
-            }
-
-            $pengguna->save();
-
-            DB::commit();
-
-            Alert::success("Success", "Data pengguna berhasil diperbarui");
-            return redirect()->route('admin.pengguna.index');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui data.')->withInput();
-        }
-    }
-
-    /**
-     * Hapus pengguna berdasarkan tipe
-     */
-    public function destroy($tipe, $id)
-    {
-        if ($tipe === 'siswa') {
-            $pengguna = Siswa::findOrFail($id);
-        } elseif ($tipe === 'admin') {
-            $pengguna = Admin::findOrFail($id);
-        } else {
-            $pengguna = Dinso::findOrFail($id);
+        if ($request->filled('password')) {
+            $pengguna->password = Hash::make($request->password);
         }
 
-        $pengguna->delete();
+        $pengguna->save();
 
-        Alert::success("Success", "Data pengguna berhasil dihapus");
+        Alert::success('Berhasil', 'Data akun pengguna berhasil diperbarui');
         return redirect()->route('admin.pengguna.index');
     }
 
     /**
-     * Export semua pengguna ke PDF
+     * Hapus akun pengguna
+     */
+    public function destroy($id)
+    {
+        $pengguna = User::findOrFail($id);
+
+        if ($pengguna->id_pengguna === Auth::id()) {
+            Alert::error('Gagal', 'Anda tidak dapat menghapus akun Anda yang sedang aktif.');
+            return redirect()->back();
+        }
+
+        $pengguna->delete();
+
+        Alert::success('Berhasil', 'Akun pengguna berhasil dihapus');
+        return redirect()->route('admin.pengguna.index');
+    }
+
+    /**
+     * Export daftar akun pengguna ke PDF
      */
     public function export()
     {
-        $data = collect()
-            ->merge(Siswa::select('nama as username', 'email', DB::raw("'siswa' as tipe"))->get())
-            ->merge(Admin::select('nama as username', 'email', DB::raw("'admin' as tipe"))->get())
-            ->merge(Dinso::select('nama as username', 'email', DB::raw("'dinso' as tipe"))->get());
-
-        $pdf = Pdf::loadview('pengguna.export_pdf', ['data' => $data]);
+        $data = User::select('username', 'email', 'role as tipe')->get();
+        $pdf = Pdf::loadView('admin.pengguna.export_pdf', ['data' => $data]);
         return $pdf->download('laporan-pengguna.pdf');
     }
 }

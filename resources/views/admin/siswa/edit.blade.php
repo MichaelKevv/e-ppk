@@ -1,299 +1,205 @@
 @extends('admin.layouts.template')
-@section('title', 'Edit Siswa')
-@section('breadcrumb')
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="{{ route('admin.siswa.index') }}">Data Siswa</a></li>
-            <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Edit Siswa</li>
-        </ol>
-    </nav>
-@endsection
+@section('title', 'Edit Siswa - ' . $siswa->nama)
+
 @section('content')
-    <div class="container-fluid py-4">
-        <div class="row">
-            <div class="col-12">
-                <div class="card my-4">
-                    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                        <div class="bg-gradient-dark shadow-dark border-radius-lg pt-4 pb-3">
-                            <h6 class="text-white text-capitalize ps-3">Edit Data Siswa</h6>
-                        </div>
+<div class="max-w-4xl mx-auto space-y-6" x-data="{
+    showPassword: false,
+    previewUrl: '{{ !empty($siswa->foto) && file_exists(public_path('storage/foto-siswa/' . $siswa->foto)) ? asset('storage/foto-siswa/' . $siswa->foto) : '' }}',
+    fileChosen(event) {
+        const file = event.target.files[0];
+        if (file) {
+            this.previewUrl = URL.createObjectURL(file);
+        }
+    }
+}">
+
+    <!-- Top Action Card -->
+    <div class="flex items-center justify-between bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+        <div>
+            <div class="flex items-center gap-2 mb-1">
+                <a href="{{ route('admin.siswa.index') }}" class="text-xs text-blue-600 hover:underline font-semibold flex items-center gap-1">
+                    <i class="fa-solid fa-arrow-left text-[10px]"></i>
+                    <span>Kembali ke Daftar Siswa</span>
+                </a>
+                <span class="text-xs text-slate-400">&bull;</span>
+                <span class="text-xs text-slate-500 font-medium">Perbarui Data</span>
+            </div>
+            <h1 class="text-xl sm:text-2xl font-black text-slate-800 tracking-tight">Edit Siswa: {{ $siswa->nama }}</h1>
+            <p class="text-xs text-slate-500 mt-1">Perbarui data kependidikan, nomor kontak, serta akses akun siswa.</p>
+        </div>
+    </div>
+
+    <!-- Error Alert if any -->
+    @if ($errors->any())
+        <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs">
+            <div class="flex items-center gap-2 font-bold mb-1">
+                <i class="fa-solid fa-triangle-exclamation text-rose-600"></i>
+                <span>Terdapat kesalahan pengisian data:</span>
+            </div>
+            <ul class="list-disc list-inside space-y-0.5 text-rose-700">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <!-- Edit Form Card -->
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-xs p-6 sm:p-8">
+        <form action="{{ route('admin.siswa.update', $siswa->id_siswa) }}" method="POST" enctype="multipart/form-data" class="space-y-8">
+            @csrf
+            @method('PUT')
+
+            <!-- Section 1: Afiliasi Sekolah & Kelas -->
+            <div>
+                <h3 class="text-xs font-black text-slate-800 uppercase tracking-wider pb-3 border-b border-slate-100 flex items-center gap-2">
+                    <span class="w-6 h-6 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-xs">1</span>
+                    <span>Tingkat Kelas & Afiliasi Lembaga</span>
+                </h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mt-5">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Tingkat / Kelas <span class="text-rose-500">*</span></label>
+                        <select name="kelas" required
+                                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden text-xs">
+                            <option value="7" {{ old('kelas', $siswa->kelas) == '7' ? 'selected' : '' }}>Kelas 7 (Tujuh)</option>
+                            <option value="8" {{ old('kelas', $siswa->kelas) == '8' ? 'selected' : '' }}>Kelas 8 (Delapan)</option>
+                            <option value="9" {{ old('kelas', $siswa->kelas) == '9' ? 'selected' : '' }}>Kelas 9 (Sembilan)</option>
+                            <option value="10" {{ old('kelas', $siswa->kelas) == '10' ? 'selected' : '' }}>Kelas 10 (Sepuluh)</option>
+                            <option value="11" {{ old('kelas', $siswa->kelas) == '11' ? 'selected' : '' }}>Kelas 11 (Sebelas)</option>
+                            <option value="12" {{ old('kelas', $siswa->kelas) == '12' ? 'selected' : '' }}>Kelas 12 (Dua Belas)</option>
+                        </select>
                     </div>
-                    <div class="card-body px-4 pb-2">
-                        <form action="{{ route('admin.siswa.update', $siswa->id_siswa) }}" method="post" enctype="multipart/form-data">
-                            @csrf
-                            @method('PUT')
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label for="nama" class="ms-0">Nama Lengkap</label>
-                                        <input type="text" class="form-control" id="nama" 
-                                               placeholder="Masukkan nama lengkap" name="nama" 
-                                               value="{{ old('nama', $siswa->nama) }}" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label for="email" class="ms-0">Email</label>
-                                        <input type="email" class="form-control" id="email" 
-                                               placeholder="Masukkan email" name="email"
-                                               value="{{ old('email', $pengguna->email) }}" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label for="username" class="ms-0">Username</label>
-                                        <input type="text" class="form-control" id="username" 
-                                               placeholder="Masukkan username" name="username"
-                                               value="{{ old('username', $pengguna->username) }}" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label for="password" class="ms-0">Password <small class="text-muted">(kosongkan jika tidak diubah)</small></label>
-                                        <input type="password" class="form-control" id="password" 
-                                               placeholder="Masukkan password baru" name="password">
-                                        <span class="input-group-text toggle-password" style="cursor: pointer;">
-                                            <i class="bi bi-eye"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label for="kelas" class="ms-0">Kelas</label>
-                                        <select class="form-control" name="kelas" id="kelas" required>
-                                            <option value="" disabled>Pilih Kelas</option>
-                                            <option value="7" {{ old('kelas', $siswa->kelas) == '7' ? 'selected' : '' }}>Kelas 7</option>
-                                            <option value="8" {{ old('kelas', $siswa->kelas) == '8' ? 'selected' : '' }}>Kelas 8</option>
-                                            <option value="9" {{ old('kelas', $siswa->kelas) == '9' ? 'selected' : '' }}>Kelas 9</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label for="jurusan" class="ms-0">Jurusan</label>
-                                        <select class="form-control" name="jurusan" id="jurusan" required>
-                                            <option value="" disabled>Pilih Jurusan</option>
-                                            <option value="IPA" {{ old('jurusan', $siswa->jurusan ?? '') == 'IPA' ? 'selected' : '' }}>IPA</option>
-                                            <option value="IPS" {{ old('jurusan', $siswa->jurusan ?? '') == 'IPS' ? 'selected' : '' }}>IPS</option>
-                                            <option value="Bahasa" {{ old('jurusan', $siswa->jurusan ?? '') == 'Bahasa' ? 'selected' : '' }}>Bahasa</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label for="gender" class="ms-0">Gender</label>
-                                        <select class="form-control" name="gender" id="gender" required>
-                                            <option value="" disabled>Pilih Gender</option>
-                                            <option value="laki-laki" {{ old('gender', $siswa->gender) == 'laki-laki' ? 'selected' : '' }}>Laki-Laki</option>
-                                            <option value="perempuan" {{ old('gender', $siswa->gender) == 'perempuan' ? 'selected' : '' }}>Perempuan</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label for="no_telp" class="ms-0">Nomor Telepon</label>
-                                        <input type="tel" class="form-control" id="no_telp" 
-                                               placeholder="Contoh: 085xxxxxxx" name="no_telp"
-                                               value="{{ old('no_telp', $siswa->no_telp) }}" required>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label for="alamat" class="ms-0">Alamat</label>
-                                        <textarea class="form-control" id="alamat" rows="3" 
-                                                  placeholder="Masukkan alamat lengkap" name="alamat" required>{{ old('alamat', $siswa->alamat) }}</textarea>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label for="foto" class="ms-0">Foto Profil <small class="text-muted">(maks. 2 MB, kosongkan jika tidak diubah)</small></label>
-                                        <div class="mb-3">
-                                            <img src="{{ asset('storage/foto-siswa/' . $siswa->foto) }}" 
-                                                 class="img-thumbnail" 
-                                                 style="max-height: 200px; max-width: 200px;" 
-                                                 alt="Foto Profil {{ $siswa->nama }}"
-                                                 id="current-photo">
-                                            <div class="form-text mt-1">Foto saat ini</div>
-                                        </div>
-                                        <input type="file" class="form-control" id="foto" name="foto" 
-                                               accept="image/*">
-                                        <div class="form-text">Format yang didukung: JPG, JPEG, PNG, GIF</div>
-                                    </div>
-                                    <div id="image-preview" class="mt-2"></div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="d-flex justify-content-end gap-2">
-                                        <a href="{{ route('admin.siswa.index') }}" class="btn btn-secondary">
-                                            <i class="bi bi-arrow-left"></i> Kembali
-                                        </a>
-                                        <button type="submit" class="btn btn-primary">
-                                            <i class="bi bi-check-circle"></i> Update Data
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Jurusan / Peminatan</label>
+                        <select name="jurusan"
+                                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden text-xs">
+                            <option value="" {{ empty($siswa->jurusan) ? 'selected' : '' }}>Umum / Tidak Ada</option>
+                            <option value="IPA" {{ old('jurusan', $siswa->jurusan) == 'IPA' ? 'selected' : '' }}>MIPA / IPA</option>
+                            <option value="IPS" {{ old('jurusan', $siswa->jurusan) == 'IPS' ? 'selected' : '' }}>IPS / Sosial</option>
+                            <option value="Bahasa" {{ old('jurusan', $siswa->jurusan) == 'Bahasa' ? 'selected' : '' }}>Bahasa</option>
+                            <option value="Kejuruan" {{ old('jurusan', $siswa->jurusan) == 'Kejuruan' ? 'selected' : '' }}>Kejuruan (SMK)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Jenis Kelamin <span class="text-rose-500">*</span></label>
+                        @php
+                            $curGender = strtolower($siswa->gender);
+                            $isLaki = in_array($curGender, ['laki-laki', 'l', 'pria']);
+                        @endphp
+                        <select name="gender" required
+                                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden text-xs">
+                            <option value="laki-laki" {{ old('gender', $isLaki ? 'laki-laki' : 'perempuan') == 'laki-laki' ? 'selected' : '' }}>Laki-laki</option>
+                            <option value="perempuan" {{ old('gender', $isLaki ? 'laki-laki' : 'perempuan') == 'perempuan' ? 'selected' : '' }}>Perempuan</option>
+                        </select>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-@endsection
 
-@push('styles')
-    <style>
-        .input-group.input-group-static label {
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: #344767;
-        }
-        .form-control:focus {
-            border-color: #e91e63;
-            box-shadow: 0 0 0 2px rgba(233, 30, 99, 0.25);
-        }
-        .card {
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            border: 0;
-        }
-        .toggle-password {
-            background-color: #f8f9fa;
-            border: 1px solid #ced4da;
-            border-left: none;
-        }
-        .form-text {
-            font-size: 0.875rem;
-            color: #6c757d;
-            margin-top: 0.25rem;
-        }
-        #current-photo {
-            border: 2px solid #dee2e6;
-            border-radius: 0.375rem;
-        }
-    </style>
-@endpush
+            <!-- Section 2: Data Diri Siswa -->
+            <div>
+                <h3 class="text-xs font-black text-slate-800 uppercase tracking-wider pb-3 border-b border-slate-100 flex items-center gap-2">
+                    <span class="w-6 h-6 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-xs">2</span>
+                    <span>Informasi Data Diri & Kontak</span>
+                </h3>
 
-@push('scripts')
-    <script>
-        // Toggle password visibility
-        document.querySelectorAll('.toggle-password').forEach(function(toggle) {
-            toggle.addEventListener('click', function() {
-                const passwordInput = this.closest('.input-group').querySelector('input');
-                const icon = this.querySelector('i');
-                
-                if (passwordInput.type === 'password') {
-                    passwordInput.type = 'text';
-                    icon.classList.remove('bi-eye');
-                    icon.classList.add('bi-eye-slash');
-                } else {
-                    passwordInput.type = 'password';
-                    icon.classList.remove('bi-eye-slash');
-                    icon.classList.add('bi-eye');
-                }
-            });
-        });
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Nama Lengkap Siswa <span class="text-rose-500">*</span></label>
+                        <input type="text" name="nama" value="{{ old('nama', $siswa->nama) }}" required
+                               class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden text-xs">
+                    </div>
 
-        // Preview gambar baru sebelum upload
-        document.getElementById('foto').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            const preview = document.getElementById('image-preview');
-            const currentPhoto = document.getElementById('current-photo');
-            
-            if (file) {
-                // Validasi ukuran file
-                const maxSize = 2 * 1024 * 1024; // 2MB
-                if (file.size > maxSize) {
-                    alert('Ukuran file terlalu besar. Maksimal 2MB.');
-                    this.value = '';
-                    preview.innerHTML = '';
-                    return;
-                }
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Nomor Telepon / WhatsApp <span class="text-rose-500">*</span></label>
+                        <input type="tel" name="no_telp" value="{{ old('no_telp', $siswa->no_telp) }}" required
+                               class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden text-xs font-mono">
+                    </div>
 
-                // Validasi tipe file
-                const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
-                if (!validTypes.includes(file.type)) {
-                    alert('Format file tidak didukung. Gunakan JPG, JPEG, PNG, atau GIF.');
-                    this.value = '';
-                    preview.innerHTML = '';
-                    return;
-                }
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Alamat Tempat Tinggal <span class="text-rose-500">*</span></label>
+                        <textarea name="alamat" rows="2" required
+                                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden text-xs">{{ old('alamat', $siswa->alamat) }}</textarea>
+                    </div>
+                </div>
+            </div>
 
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    preview.innerHTML = `
-                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                            <strong>Preview Foto Baru:</strong> Foto lama akan diganti.
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <!-- Section 3: Kredensial Akun Login -->
+            <div>
+                <h3 class="text-xs font-black text-slate-800 uppercase tracking-wider pb-3 border-b border-slate-100 flex items-center gap-2">
+                    <span class="w-6 h-6 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center text-xs">3</span>
+                    <span>Kredensial Akun Login Siswa</span>
+                </h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mt-5">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Username <span class="text-rose-500">*</span></label>
+                        <input type="text" name="username" value="{{ old('username', $pengguna->username ?? '') }}" required
+                               class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden text-xs font-mono">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Email Siswa <span class="text-rose-500">*</span></label>
+                        <input type="email" name="email" value="{{ old('email', $pengguna->email ?? '') }}" required
+                               class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden text-xs">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Password Baru <span class="text-[10px] text-slate-400 font-normal">(opsional)</span></label>
+                        <div class="relative">
+                            <input :type="showPassword ? 'text' : 'password'" name="password" placeholder="Kosongkan jika tak diubah"
+                                   class="w-full px-3.5 py-2.5 pr-10 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-hidden text-xs">
+                            <button type="button" @click="showPassword = !showPassword"
+                                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600">
+                                <i :class="showPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'" class="text-xs"></i>
+                            </button>
                         </div>
-                        <img src="${e.target.result}" class="img-thumbnail mt-2" style="max-height: 200px; max-width: 200px;" alt="Preview Foto Baru">
-                        <button type="button" class="btn btn-sm btn-outline-danger mt-2" onclick="cancelImageUpload()">
-                            <i class="bi bi-x-circle"></i> Batalkan Perubahan
-                        </button>
-                    `;
-                    
-                    // Sembunyikan foto lama
-                    if (currentPhoto) {
-                        currentPhoto.style.opacity = '0.5';
-                    }
-                }
-                reader.readAsDataURL(file);
-            } else {
-                preview.innerHTML = '';
-                // Tampilkan kembali foto lama
-                if (currentPhoto) {
-                    currentPhoto.style.opacity = '1';
-                }
-            }
-        });
+                    </div>
+                </div>
+            </div>
 
-        // Fungsi untuk membatalkan upload gambar baru
-        function cancelImageUpload() {
-            document.getElementById('foto').value = '';
-            document.getElementById('image-preview').innerHTML = '';
-            const currentPhoto = document.getElementById('current-photo');
-            if (currentPhoto) {
-                currentPhoto.style.opacity = '1';
-            }
-        }
+            <!-- Section 4: Foto Profil Siswa -->
+            <div>
+                <h3 class="text-xs font-black text-slate-800 uppercase tracking-wider pb-3 border-b border-slate-100 flex items-center gap-2">
+                    <span class="w-6 h-6 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center text-xs">4</span>
+                    <span>Foto Profil Siswa</span>
+                </h3>
 
-        // Validasi nomor telepon
-        document.getElementById('no_telp').addEventListener('input', function(e) {
-            this.value = this.value.replace(/[^0-9+]/g, '');
-            
-            // Validasi panjang nomor telepon
-            if (this.value.length < 10 || this.value.length > 15) {
-                this.setCustomValidity('Nomor telepon harus antara 10-15 digit');
-            } else {
-                this.setCustomValidity('');
-            }
-        });
+                <div class="flex items-center gap-6 mt-5">
+                    <div class="w-20 h-20 rounded-2xl bg-slate-100 border-2 border-dashed border-slate-200 flex items-center justify-center text-slate-400 overflow-hidden shrink-0">
+                        <template x-if="previewUrl">
+                            <img :src="previewUrl" alt="Foto Siswa" class="w-full h-full object-cover">
+                        </template>
+                        <template x-if="!previewUrl">
+                            <i class="fa-solid fa-user text-2xl"></i>
+                        </template>
+                    </div>
 
-        // Generate username dari email jika username kosong
-        document.getElementById('email').addEventListener('blur', function(e) {
-            const usernameField = document.getElementById('username');
-            if (!usernameField.value && this.value) {
-                const email = this.value;
-                const username = email.split('@')[0];
-                usernameField.value = username.toLowerCase().replace(/[^a-z0-9]/g, '');
-            }
-        });
+                    <div class="flex-1">
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Ganti Foto Profil Siswa</label>
+                        <input type="file" name="foto" @change="fileChosen" accept="image/*"
+                               class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
+                        <p class="text-[11px] text-slate-400 mt-1">Kosongkan jika tidak ingin mengganti foto profil.</p>
+                    </div>
+                </div>
+            </div>
 
-        // Konfirmasi sebelum submit
-        document.querySelector('form').addEventListener('submit', function(e) {
-            if (!confirm('Apakah Anda yakin ingin mengupdate data siswa ini?')) {
-                e.preventDefault();
-            }
-        });
+            <!-- Action Buttons -->
+            <div class="flex items-center justify-end gap-3 pt-6 border-t border-slate-100">
+                <a href="{{ route('admin.siswa.index') }}"
+                   class="px-5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-600 text-xs font-bold transition-all">
+                    Batal
+                </a>
+                <button type="submit"
+                        class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-md shadow-blue-500/25 transition-all hover:scale-105 active:scale-95">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    <span>Simpan Perubahan</span>
+                </button>
+            </div>
+        </form>
+    </div>
 
-        // Tampilkan pesan error validasi jika ada
-        @if($errors->any())
-            document.addEventListener('DOMContentLoaded', function() {
-                const firstErrorField = document.querySelector('.is-invalid');
-                if (firstErrorField) {
-                    firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    firstErrorField.focus();
-                }
-            });
-        @endif
-    </script>
-@endpush
+</div>
+@endsection

@@ -1,132 +1,112 @@
 @extends('admin.layouts.template')
-@section('title', 'Tambah Artikel')
-@section('breadcrumb')
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark"
-                    href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="{{ route('admin.artikel.index') }}">Data
-                    Artikel</a></li>
-            <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Tambah Artikel</li>
-        </ol>
-    </nav>
-@endsection
+@section('title', 'Tulis Artikel Baru')
+
 @section('content')
-    <div class="container-fluid py-4">
-        <div class="row">
-            <div class="col-12">
-                <div class="card my-4">
-                    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                        <div class="bg-gradient-dark shadow-dark border-radius-lg pt-4 pb-3">
-                            <h6 class="text-white text-capitalize ps-3">Tambah Data Artikel</h6>
-                        </div>
-                    </div>
-                    <div class="card-body px-4 pb-2">
-                        <form action="{{ route('admin.artikel.store') }}" method="post" enctype="multipart/form-data">
-                            @csrf
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label for="judul" class="ms-0">Judul Artikel</label>
-                                        <input type="text" class="form-control" id="judul"
-                                            placeholder="Masukkan judul artikel" name="judul" required>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label for="konten" class="ms-0">Konten Artikel</label>
-                                        <textarea id="konten" name="konten" class="form-control" rows="10" placeholder="Tulis konten artikel disini..."
-                                            data-purpose="artikel"></textarea>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label for="kategori" class="ms-0">Kategori</label>
-                                        <select class="form-control" name="kategori" id="kategori" required>
-                                            <option value="" selected disabled>Pilih Kategori</option>
-                                            <option value="Mental">Mental</option>
-                                            <option value="Stress">Stress</option>
-                                            <option value="Anxiety">Anxiety</option>
-                                            <option value="Therapy">Therapy</option>
-                                            <option value="Selfcare">Selfcare</option>
-                                            <option value="Relationships">Relationships</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label for="gambar" class="ms-0">Gambar Artikel <small class="text-muted">(maks.
-                                                2 MB)</small></label>
-                                        <input type="file" class="form-control" id="gambar" name="gambar"
-                                            accept="image/*" required>
-                                        <div class="col-12 form-text" id="format">
-                                            Format yang didukung: JPG, JPEG, PNG, GIF
-                                        </div>
-                                        <div id="image-preview" class="mt-2"></div>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="d-flex justify-content-end gap-2">
-                                        <a href="{{ route('admin.artikel.index') }}" class="btn btn-secondary">
-                                            <i class="bi bi-arrow-left"></i> Kembali
-                                        </a>
-                                        <button type="submit" class="btn btn-primary">
-                                            <i class="bi bi-check-circle"></i> Simpan Artikel
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+<div class="max-w-4xl mx-auto space-y-6" x-data="{
+    previewUrl: null,
+    fileChosen(event) {
+        const file = event.target.files[0];
+        if (file) {
+            this.previewUrl = URL.createObjectURL(file);
+        }
+    }
+}">
+
+    <!-- Top Action Card -->
+    <div class="flex items-center justify-between bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+        <div>
+            <div class="flex items-center gap-2 mb-1">
+                <a href="{{ route('admin.artikel.index') }}" class="text-xs text-emerald-600 hover:underline font-semibold flex items-center gap-1">
+                    <i class="fa-solid fa-arrow-left text-[10px]"></i>
+                    <span>Kembali ke Daftar Artikel</span>
+                </a>
+                <span class="text-xs text-slate-400">&bull;</span>
+                <span class="text-xs text-slate-500 font-medium">Editor Konten</span>
             </div>
+            <h1 class="text-xl sm:text-2xl font-black text-slate-800 tracking-tight">Tulis Artikel Edukasi Baru</h1>
+            <p class="text-xs text-slate-500 mt-1">Publikasikan panduan literasi anti-bullying dan kesehatan mental untuk komunitas sekolah.</p>
         </div>
     </div>
+
+    <!-- Error Alert if any -->
+    @if ($errors->any())
+        <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs">
+            <div class="flex items-center gap-2 font-bold mb-1">
+                <i class="fa-solid fa-triangle-exclamation text-rose-600"></i>
+                <span>Terdapat kesalahan pengisian data:</span>
+            </div>
+            <ul class="list-disc list-inside space-y-0.5 text-rose-700">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <!-- Create Form Card -->
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-xs p-6 sm:p-8">
+        <form action="{{ route('admin.artikel.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+            @csrf
+
+            <!-- Judul Artikel -->
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1.5">Judul Artikel <span class="text-rose-500">*</span></label>
+                <input type="text" name="judul" value="{{ old('judul') }}" required placeholder="Contoh: Mengenali Tanda-tanda Perundungan Siber dan Cara Menghadapinya"
+                       class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-hidden text-sm font-bold text-slate-900 placeholder:font-normal">
+            </div>
+
+            <!-- Kategori & Cover -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Kategori Materi <span class="text-rose-500">*</span></label>
+                    <select name="kategori" required
+                            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-hidden text-xs font-semibold text-slate-800">
+                        <option value="" disabled selected>Pilih Kategori</option>
+                        <option value="Edukasi" {{ old('kategori') == 'Edukasi' ? 'selected' : '' }}>Edukasi Anti-Bullying</option>
+                        <option value="Tips" {{ old('kategori') == 'Tips' ? 'selected' : '' }}>Tips & Tindakan Siswa</option>
+                        <option value="Mental" {{ old('kategori') == 'Mental' ? 'selected' : '' }}>Kesehatan Mental & Konseling</option>
+                        <option value="Hukum" {{ old('kategori') == 'Hukum' ? 'selected' : '' }}>Regulasi & Aspek Hukum</option>
+                        <option value="Relationships" {{ old('kategori') == 'Relationships' ? 'selected' : '' }}>Hubungan Pertemanan Sehat</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Gambar Sampul / Cover</label>
+                    <input type="file" name="gambar" @change="fileChosen" accept="image/*"
+                           class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer">
+                    <p class="text-[11px] text-slate-400 mt-1">Format: JPG, PNG, WEBP. Maksimal 2 MB.</p>
+                </div>
+            </div>
+
+            <!-- Cover Preview -->
+            <div x-show="previewUrl" x-transition class="p-4 rounded-2xl bg-slate-50 border border-slate-100">
+                <span class="text-xs font-bold text-slate-600 block mb-2">Pratinjau Gambar Sampul:</span>
+                <div class="w-full max-w-sm h-48 rounded-xl overflow-hidden border border-slate-200">
+                    <img :src="previewUrl" alt="Cover Preview" class="w-full h-full object-cover">
+                </div>
+            </div>
+
+            <!-- Konten Artikel -->
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1.5">Isi Konten Artikel <span class="text-rose-500">*</span></label>
+                <textarea name="konten" rows="12" required placeholder="Tulis isi artikel secara lengkap dan terstruktur..."
+                          class="w-full p-4 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-hidden text-xs text-slate-800 leading-relaxed">{{ old('konten') }}</textarea>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center justify-end gap-3 pt-6 border-t border-slate-100">
+                <a href="{{ route('admin.artikel.index') }}"
+                   class="px-5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-600 text-xs font-bold transition-all">
+                    Batal
+                </a>
+                <button type="submit"
+                        class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md shadow-emerald-500/25 transition-all hover:scale-105 active:scale-95">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span>Terbitkan Artikel</span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>
 @endsection
-
-@push('scripts')
-    <script>
-        const inputGambar = document.getElementById('gambar');
-        const previewContainer = document.getElementById('image-preview');
-        const maxSize = 2 * 1024 * 1024; // 2MB
-
-        inputGambar.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            previewContainer.innerHTML = ''; // kosongkan preview lama
-
-            if (!file) return;
-
-            if (file.size > maxSize) {
-                alert('Ukuran file terlalu besar. Maksimal 2MB.');
-                inputGambar.value = '';
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                previewContainer.innerHTML = `
-                <img src="${event.target.result}" class="img-thumbnail" style="max-height: 200px;" alt="Preview">
-                <small class="text-muted d-block mt-1">Preview gambar</small>
-            `;
-            };
-            reader.readAsDataURL(file);
-        });
-
-        // Validasi file size
-        document.getElementById('gambar').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            const maxSize = 2 * 1024 * 1024; // 2MB in bytes
-
-            if (file && file.size > maxSize) {
-                alert('Ukuran file terlalu besar. Maksimal 2MB.');
-                this.value = '';
-
-                // Hapus preview jika ada
-                const preview = document.getElementById('image-preview');
-                if (preview) {
-                    preview.remove();
-                }
-            }
-        });
-    </script>
-@endpush

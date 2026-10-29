@@ -15,6 +15,8 @@ use App\Http\Controllers\DecisionTreeController;
 use App\Http\Controllers\TAMController;
 use App\Http\Controllers\SurveyDataController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\SekolahController;
+use App\Http\Controllers\StatistikController;
 use App\Http\Controllers\Admin\GuruBKController; 
 use App\Http\Controllers\GuruBKController as ControllersGuruBKController;
 use Illuminate\Support\Facades\Route;
@@ -31,22 +33,28 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('showarticle', [ArtikelController::class, 'indexUser']);
+Route::get('/artikel', [HomeController::class, 'allArticles'])->name('artikel.semua');
+Route::get('/artikel/{id}', [HomeController::class, 'articleDetail'])->name('artikel.detail');
+Route::get('showarticle', [HomeController::class, 'allArticles']); // backward compatibility
+Route::get('article_detail/{id}', [HomeController::class, 'articleDetail']); // backward compatibility
 Route::get('/kontak-petugas', [HomeController::class, 'kontakPetugas'])->name('kontak.petugas');
-Route::get('article_detail/{id}', [ArtikelController::class, 'articleDetail']);
-Route::get('register', [AuthController::class, 'showRegisterForm'])->name('register');
+
 Route::get('login', [AuthController::class, 'showLoginForm'])->name('login')->middleware('guest');
 Route::post('login', [AuthController::class, 'login']);
 Route::get('register', [AuthController::class, 'showRegisterForm'])->name('register')->middleware('guest');
 Route::post('register', [AuthController::class, 'register']);
-Route::get('/artikel', [HomeController::class, 'allArticles'])->name('artikel.semua');
 
 Route::middleware(['auth'])->group(function () {
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('statistik', [StatistikController::class, 'index'])->name('statistik.index');
+        Route::get('statistik/export-pdf', [StatistikController::class, 'exportPdf'])->name('statistik.export');
         Route::get('pengaduan-data', [DashboardController::class, 'getPengaduanData']);
         Route::get('feedback-data', [DashboardController::class, 'getFeedbackData']);
         Route::get('siswa-data', [DashboardController::class, 'getSiswaData']);
+
+        // Data Sekolah & Master Data
+        Route::resource('sekolah', SekolahController::class);
         Route::resource('admin', AdminController::class);
         Route::resource('dinsos', DinsosController::class);
         Route::resource('pengguna', PenggunaController::class);
@@ -78,18 +86,28 @@ Route::middleware(['auth'])->group(function () {
             Route::put('/{id}', [PengaduanController::class, 'update'])->name('update');
             Route::delete('/{id}', [PengaduanController::class, 'destroy'])->name('destroy');
             Route::put('/selesai/{id}', [PengaduanController::class, 'pengaduanSelesai'])->name('selesai');
+            Route::post('/{id}/tindakan', [PengaduanController::class, 'tambahTindakan'])->name('tindakan.store');
             Route::get('/export/all', [PengaduanController::class, 'export'])->name('export');
             Route::get('/export/{id}', [PengaduanController::class, 'export_single'])->name('export_single');
         });
 
         Route::resource('artikel', ArtikelController::class);
         Route::resource('feedback', FeedbackController::class);
+        Route::get('feedback-export', [FeedbackController::class, 'export'])->name('feedback.export');
         Route::get('feedback/create/{pengaduan}', [FeedbackController::class, 'create'])->name('feedback.create');
         Route::post('feedback/store/{pengaduan}', [FeedbackController::class, 'store'])->name('feedback.store');
         Route::get('logout', [AuthController::class, 'logout'])->name('logout');
-        Route::get('/decision-tree', [DecisionTreeController::class, 'index'])->name('decision-tree.index');
-        Route::post('/decision-tree/proses', [DecisionTreeController::class, 'proses'])->name('decision-tree.proses');
-        Route::post('/decision-tree/classify', [DecisionTreeController::class, 'classify'])->name('decision-tree.classify');
+        Route::prefix('decision-tree')->name('decision-tree.')->group(function () {
+            Route::get('/', [DecisionTreeController::class, 'index'])->name('index');
+            Route::post('/latih', [DecisionTreeController::class, 'latih'])->name('latih');
+            Route::post('/classify', [DecisionTreeController::class, 'classify'])->name('classify');
+            Route::post('/sinkron-pengaduan', [DecisionTreeController::class, 'sinkronPengaduan'])->name('sinkron');
+            Route::get('/download-template', [DecisionTreeController::class, 'downloadTemplate'])->name('download-template');
+            Route::post('/import-csv', [DecisionTreeController::class, 'importCsv'])->name('import-csv');
+            Route::get('/export-csv', [DecisionTreeController::class, 'exportCsv'])->name('export-csv');
+            Route::delete('/dataset/{id}', [DecisionTreeController::class, 'destroyDataset'])->name('dataset.destroy');
+            Route::post('/reset-seeder', [DecisionTreeController::class, 'resetSeeder'])->name('reset-seeder');
+        });
         Route::get('/tam', [TAMController::class, 'index'])->name('tam.index');
         Route::post('/tam/hitung', [TAMController::class, 'hitung'])->name('tam.hitung');
 

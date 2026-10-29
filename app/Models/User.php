@@ -70,6 +70,64 @@ class User extends Authenticatable
 		return $this->hasMany(Siswa::class, 'id_pengguna');
 	}
 
+	public function guruBk()
+	{
+		return $this->hasOne(Gurubk::class, 'id_pengguna');
+	}
+
+	public function siswa()
+	{
+		return $this->hasOne(Siswa::class, 'id_pengguna');
+	}
+
+	public function isAdmin(): bool
+	{
+		return in_array($this->role, ['admin', 'admin_it', 'dinsos']);
+	}
+
+	public function isGuruBk(): bool
+	{
+		return $this->role === 'gurubk';
+	}
+
+	public function isSiswa(): bool
+	{
+		return $this->role === 'siswa';
+	}
+
+	public function getSekolahIdAttribute(): ?int
+	{
+		if ($this->isGuruBk()) {
+			return $this->guruBk?->id_sekolah;
+		}
+		if ($this->isSiswa()) {
+			return $this->siswa?->id_sekolah;
+		}
+		return null;
+	}
+
+	public function getSekolahAttribute(): ?Sekolah
+	{
+		if ($this->isGuruBk()) {
+			return $this->guruBk?->sekolah;
+		}
+		if ($this->isSiswa()) {
+			return $this->siswa?->sekolah;
+		}
+		return null;
+	}
+
+	public function getNamaLengkapAttribute(): string
+	{
+		if ($this->isGuruBk()) {
+			return $this->guruBk?->nama ?? $this->username;
+		}
+		if ($this->isSiswa()) {
+			return $this->siswa?->nama ?? $this->username;
+		}
+		return $this->username;
+	}
+
     public function getFotoSmAttribute()
     {
         return $this->foto ? asset('storage/foto-siswa/sm/' . $this->foto) : null;

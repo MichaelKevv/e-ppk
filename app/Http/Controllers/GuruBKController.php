@@ -14,19 +14,36 @@ use Intervention\Image\ImageManager;
 
 class GuruBKController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $guruBks = Gurubk::orderBy('nama')->paginate(10);
-        return view('admin.guru_bk.index', compact('guruBks'));
+        $user = auth()->user();
+        $query = Gurubk::with('sekolah');
+
+        if ($user && $user->isGuruBk() && $user->sekolah_id) {
+            $query->where('id_sekolah', $user->sekolah_id);
+        } elseif ($user && $user->isAdmin() && $request->filled('id_sekolah')) {
+            $query->where('id_sekolah', $request->id_sekolah);
+        }
+
+        $guruBks = $query->orderBy('nama')->paginate(10);
+        $sekolahList = ($user && $user->isAdmin()) ? \App\Models\Sekolah::orderBy('nama_sekolah')->get() : collect();
+        $selectedSekolahId = $request->get('id_sekolah');
+
+        return view('admin.guru_bk.index', compact('guruBks', 'sekolahList', 'selectedSekolahId'));
     }
+
     public function create()
     {
-        return view('admin.guru_bk.create');
+        $user = auth()->user();
+        $sekolahList = \App\Models\Sekolah::orderBy('nama_sekolah')->get();
+        return view('admin.guru_bk.create', compact('sekolahList', 'user'));
     }
+
     public function store(Request $request)
     {
         $validated = Validator::make($request->all(), [
             'nip' => 'required|string|max:20|unique:gurubk,nip',
+            'id_sekolah' => 'nullable|exists:sekolah,id',
             'nama' => 'required|string|max:100',
             'gender' => 'required|in:L,P',
             'alamat' => 'nullable|string',
@@ -51,7 +68,6 @@ class GuruBKController extends Controller
 
         $data = $request->all();
 
-
         $user = User::create([
             'username' => $data['username'],
             'email' => $data['email'],
@@ -60,6 +76,16 @@ class GuruBKController extends Controller
         ]);
 
         $data['id_pengguna'] = $user->id_pengguna;
+
+        $authUser = auth()->user();
+        if ($authUser && $authUser->isGuruBk() && $authUser->sekolah_id) {
+            $data['id_sekolah'] = $authUser->sekolah_id;
+        } elseif ($request->filled('id_sekolah')) {
+            $data['id_sekolah'] = $request->id_sekolah;
+        } else {
+            $defaultSekolah = \App\Models\Sekolah::first();
+            $data['id_sekolah'] = $defaultSekolah ? $defaultSekolah->id : 1;
+        }
 
         if ($request->hasFile('foto')) {
             $file = $request->file('foto');

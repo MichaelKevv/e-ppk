@@ -19,13 +19,25 @@ class SiswaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data = Siswa::all();
+        $user = auth()->user();
+        $query = Siswa::with('sekolah');
+
+        if ($user && $user->isGuruBk() && $user->sekolah_id) {
+            $query->where('id_sekolah', $user->sekolah_id);
+        } elseif ($user && $user->isAdmin() && $request->filled('id_sekolah')) {
+            $query->where('id_sekolah', $request->id_sekolah);
+        }
+
+        $data = $query->orderBy('nama')->get();
+        $sekolahList = ($user && $user->isAdmin()) ? \App\Models\Sekolah::orderBy('nama_sekolah')->get() : collect();
+        $selectedSekolahId = $request->get('id_sekolah');
+
         $title = 'Hapus Siswa';
         $text = "Apakah anda yakin untuk hapus?";
         confirmDelete($title, $text);
-        return view('admin.siswa/index', compact('data'));
+        return view('admin.siswa.index', compact('data', 'sekolahList', 'selectedSekolahId'));
     }
 
     /**
@@ -35,7 +47,9 @@ class SiswaController extends Controller
      */
     public function create()
     {
-        return view('admin.siswa/create');
+        $user = auth()->user();
+        $sekolahList = \App\Models\Sekolah::orderBy('nama_sekolah')->get();
+        return view('admin.siswa.create', compact('sekolahList', 'user'));
     }
 
     /**
@@ -47,6 +61,7 @@ class SiswaController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
+            'id_sekolah' => 'nullable|exists:sekolah,id',
             'nama' => 'required|string|max:255',
             'kelas' => 'required|string|max:255',
             'gender' => 'required|string|max:255',
@@ -65,6 +80,7 @@ class SiswaController extends Controller
         DB::beginTransaction();
 
         try {
+            $user = auth()->user();
             $penggunaData = $request->only(['username', 'email']);
             $penggunaData['password'] = Hash::make($request->password);
             $penggunaData['role'] = 'siswa';
@@ -73,6 +89,17 @@ class SiswaController extends Controller
 
             $siswaData = $request->only(['nama', 'kelas', 'jurusan', 'alamat', 'no_telp', 'gender']);
             $siswaData['id_pengguna'] = $pengguna->id_pengguna;
+
+            // Tetapkan sekolah sesuai hak akses
+            if ($user && $user->isGuruBk() && $user->sekolah_id) {
+                $siswaData['id_sekolah'] = $user->sekolah_id;
+            } elseif ($request->filled('id_sekolah')) {
+                $siswaData['id_sekolah'] = $request->id_sekolah;
+            } else {
+                $defaultSekolah = \App\Models\Sekolah::first();
+                $siswaData['id_sekolah'] = $defaultSekolah ? $defaultSekolah->id : 1;
+            }
+
             if ($request->hasFile('foto')) {
                 $image = $request->file('foto');
                 $image->storeAs('public/foto-siswa', $image->hashName());
@@ -80,11 +107,11 @@ class SiswaController extends Controller
             }
             Siswa::create($siswaData);
 
-            Alert::success("Success", "Data berhasil disimpan");
+            Alert::success("Success", "Data siswa berhasil disimpan");
 
             DB::commit();
 
-            return redirect("admin.siswa");
+            return redirect()->route('admin.siswa.index')->with('success', 'Data siswa berhasil ditambahkan.');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data.')->withInput();
@@ -111,14 +138,14 @@ class SiswaController extends Controller
     public function edit(Siswa $siswa)
     {
         $pengguna = User::find($siswa->id_pengguna);
-        return view('admin.siswa/edit', compact('siswa', 'pengguna'));
+        return view('admin.siswa.edit', compact('siswa', 'pengguna'));
     }
 
     public function editProfile($id)
     {
         $siswa = Siswa::findOrFail($id);
         $pengguna = User::find($siswa->id_pengguna);
-        return view('admin.siswa/edit_profile', compact('siswa', 'pengguna'));
+        return view('admin.siswa.edit_profile', compact('siswa', 'pengguna'));
     }
 
     /**
@@ -177,7 +204,7 @@ class SiswaController extends Controller
 
             Alert::success("Success", "Data berhasil diperbarui");
 
-            return redirect("admin.siswa");
+            return redirect()->route('admin.siswa.index');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui data.')->withInput();
@@ -265,7 +292,7 @@ class SiswaController extends Controller
 
             Alert::success("Success", "Data berhasil dihapus");
 
-            return redirect("admin.siswa");
+            return redirect()->route('admin.siswa.index');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus data.');
@@ -275,7 +302,7 @@ class SiswaController extends Controller
     public function export()
     {
         $siswa = Siswa::all();
-        $pdf = Pdf::loadview('siswa.export_pdf', ['data' => $siswa]);
+        $pdf = Pdf::loadview('admin.siswa.export_pdf', ['data' => $siswa]);
         return $pdf->download('laporan-siswa.pdf');
     }
 }

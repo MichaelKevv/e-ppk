@@ -1,307 +1,393 @@
 @extends('admin.layouts.template')
-@section('title', 'Tambah Pengaduan')
-@section('breadcrumb')
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-        <li class="breadcrumb-item text-sm">
-            <a class="opacity-5 text-dark" href="{{ route('admin.dashboard') }}">Dashboard</a>
-        </li>
-        <li class="breadcrumb-item text-sm">
-            <a class="opacity-5 text-dark" href="{{ route('admin.pengaduan.index') }}">Data Pengaduan</a>
-        </li>
-        <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Tambah Pengaduan</li>
-    </ol>
-</nav>
-@endsection
+@section('title', 'Buat Laporan Pengaduan')
 
 @section('content')
-<div class="container-fluid py-4">
-    <div class="row">
-        <div class="col-12">
-            <div class="card my-4">
-                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                    <div class="bg-gradient-dark shadow-dark border-radius-lg pt-4 pb-3">
-                        <h6 class="text-white text-capitalize ps-3">Tambah Data Pengaduan</h6>
-                    </div>
+<div class="max-w-4xl mx-auto space-y-6">
+
+    <!-- Header & Breadcrumb -->
+    <div class="flex items-center justify-between">
+        <a href="{{ route('admin.pengaduan.index') }}"
+           class="inline-flex items-center gap-2 text-xs font-bold text-blue-600 hover:text-blue-800 transition-colors">
+            <i class="fa-solid fa-arrow-left"></i>
+            <span>Kembali ke Daftar Pengaduan</span>
+        </a>
+        <span class="text-xs text-slate-400">Formulir Pengaduan Terlindungi</span>
+    </div>
+
+    <!-- Main Card -->
+    <div class="bg-white p-8 sm:p-10 rounded-3xl border border-slate-200 shadow-xs">
+        <div class="border-b border-slate-100 pb-5 mb-8">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold mb-2">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span>Privasi Terlindungi Lapora</span>
+            </div>
+            <h1 class="text-2xl font-black text-slate-800 tracking-tight">Formulir Laporan Pengaduan Kasus</h1>
+            <p class="text-xs text-slate-500 mt-1">
+                Ceritakan insiden perundungan yang Anda alami atau saksikan secara jujur dan rinci. Informasi ini akan langsung ditindaklanjuti oleh Guru BK dan Dinas Sosial.
+            </p>
+        </div>
+
+        <form action="{{ route('admin.pengaduan.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6" x-data="pengaduanForm()">
+            @csrf
+
+            <!-- Section 1: Informasi Terlibat -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                @if(isset($sekolahList) && $sekolahList->count() > 0)
+                <div class="sm:col-span-2">
+                    <label for="id_sekolah" class="block text-xs font-bold text-slate-700 mb-1.5">
+                        Institusi / Sekolah Tempat Kejadian <span class="text-rose-500">*</span>
+                    </label>
+                    <select name="id_sekolah" id="id_sekolah" required
+                            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-hidden bg-slate-50 focus:bg-white transition-all">
+                        @foreach($sekolahList as $s)
+                            <option value="{{ $s->id }}" {{ old('id_sekolah') == $s->id ? 'selected' : '' }}>
+                                {{ $s->nama_sekolah }} ({{ $s->jenjang }} - {{ $s->status_sekolah }}) &bull; {{ $s->kota ?? 'DKI Jakarta' }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
-                <div class="card-body px-4 pb-2">
-                    <form action="{{ route('admin.pengaduan.store') }}" method="post" enctype="multipart/form-data">
-                        @csrf
-                        <div class="row">
-                            <!-- Bentuk Perundungan -->
-                            <div class="col-md-6">
-                                <div class="input-group input-group-static mb-4">
-                                    <label for="bentuk_perundungan" class="ms-0">Bentuk Perundungan <span class="text-danger">*</span></label>
-                                    <select class="form-control" name="bentuk_perundungan" id="bentuk_perundungan" required>
-                                        <option value="" selected disabled>Pilih Bentuk Perundungan</option>
-                                        <option value="verbal">Verbal</option>
-                                        <option value="fisik">Fisik</option>
-                                        <option value="sosial">Sosial</option>
-                                        <option value="siber">Siber</option>
-                                        <option value="seksual">Seksual</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <!-- Frekuensi Kejadian -->
-                            <div class="col-md-6">
-                                <div class="input-group input-group-static mb-4">
-                                    <label for="frekuensi_kejadian" class="ms-0">Frekuensi Kejadian <span class="text-danger">*</span></label>
-                                    <select class="form-control" name="frekuensi_kejadian" id="frekuensi_kejadian" required>
-                                        <option value="" selected disabled>Pilih Frekuensi</option>
-                                        <option value="sekali">Sekali</option>
-                                        <option value="2-3_kali">2-3 Kali</option>
-                                        <option value="sering">Sering</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <!-- Nama Pelaku -->
-                            <div class="col-md-6">
-                                <div class="input-group input-group-static mb-4">
-                                    <label for="nama_pelaku" class="ms-0">Nama Pelaku <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="nama_pelaku" name="nama_pelaku" required>
-                                </div>
-                            </div>
-                            <!-- Nama Pelapor -->
-                            <div class="col-md-6" id="nama-pelapor-container" style="display: none;">
-                                <div class="input-group input-group-static mb-4">
-                                    <label for="nama_pelapor" class="ms-0">Nama Pelapor <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="nama_pelapor" name="nama_pelapor">
-                                    <div class="form-text">Hanya diisi untuk kasus perundungan seksual</div>
-                                </div>
-                            </div>
-                            <!-- Lokasi -->
-                            <div class="{{ Auth::user()->role !== 'siswa' ? 'col-6' : 'col-12' }}">
-                                <div class="input-group input-group-static mb-4">
-                                    <label for="lokasi" class="ms-0">Lokasi Kejadian</label>
-                                    <input type="text" class="form-control" id="lokasi"
-                                        placeholder="Contoh: Ruang kelas, Lapangan, Kantin, dll." name="lokasi">
-                                    <div class="form-text">Tempat dimana kejadian berlangsung (opsional)</div>
-                                </div>
-                            </div>
-                            <!-- Checkbox Group -->
-                            <div class="col-12">
-                                <div class="row">
-                                    <div class="col-md-3 col-6">
-                                        <div class="form-check mb-3">
-                                            <input class="form-check-input" type="checkbox" name="trauma_mental" id="trauma_mental" value="1">
-                                            <label class="form-check-label" for="trauma_mental">Trauma Mental</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 col-6">
-                                        <div class="form-check mb-3">
-                                            <input class="form-check-input" type="checkbox" name="luka_fisik" id="luka_fisik" value="1">
-                                            <label class="form-check-label" for="luka_fisik">Luka Fisik</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 col-6">
-                                        <div class="form-check mb-3">
-                                            <input class="form-check-input" type="checkbox" name="pelaku_lebih_dari_satu" id="pelaku_lebih_dari_satu" value="1">
-                                            <label class="form-check-label" for="pelaku_lebih_dari_satu">Pelaku Lebih dari Satu</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 col-6">
-                                        <div class="form-check mb-3">
-                                            <input class="form-check-input" type="checkbox" name="konten_digital" id="konten_digital" value="1">
-                                            <label class="form-check-label" for="konten_digital">Konten Digital</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Jenis Kata -->
-                            <div class="col-12">
-                                <div class="input-group input-group-static mb-4">
-                                    <label for="jenis_kata" class="ms-0">Jenis Kata/Kalimat yang Digunakan</label>
-                                    <input type="text" class="form-control" id="jenis_kata"
-                                        placeholder="Contoh: Kata-kata kasar, ancaman, dll." name="jenis_kata">
-                                    <div class="form-text">Jenis kata atau kalimat yang digunakan pelaku (opsional)</div>
-                                </div>
-                            </div>
-                            <!-- Klasifikasi -->
-                            <div class="col-md-6">
-                                <div class="input-group input-group-static mb-4">
-                                    <label for="klasifikasi" class="ms-0">Klasifikasi <span class="text-danger">*</span></label>
-                                    <select class="form-control" name="klasifikasi" id="klasifikasi" required>
-                                        <option value="" selected disabled>Pilih Klasifikasi</option>
-                                        <option value="ringan">Ringan</option>
-                                        <option value="sedang">Sedang</option>
-                                        <option value="berat">Berat</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <!-- Foto Bukti -->
-                            <div class="col-md-6">
-                                <div class="input-group input-group-static mb-4">
-                                    <label for="foto" class="ms-0">Foto Bukti <small class="text-muted">(maks. 2 MB, opsional)</small></label>
-                                    <input type="file" class="form-control" id="foto" name="foto" accept="image/*">
-                                </div>
-                                <div id="image-preview" class="mt-2"></div>
-                            </div>
-                            <!-- Deskripsi -->
-                            <div class="col-md-12">
-                                <div class="input-group input-group-static mb-4">
-                                    <label for="deskripsi" class="ms-0">Deskripsi</label>
-                                    <textarea name="deskripsi" id="deskripsi" class="form-control"></textarea>
-                                </div>
-                            </div>
-                            <!-- Informasi -->
-                            <div class="col-12">
-                                <div class="alert alert-info">
-                                    <div class="d-flex align-items-center">
-                                        <i class="bi bi-info-circle me-2"></i>
-                                        <div>
-                                            <strong>Informasi Penting:</strong>
-                                            Pengaduan Anda akan dijaga kerahasiaannya dan diproses secara profesional.
-                                            Pastikan data yang dimasukkan sudah benar dan sesuai fakta.
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Tombol Aksi -->
-                            <div class="col-12">
-                                <div class="d-flex justify-content-end gap-2">
-                                    <a href="{{ route('admin.pengaduan.index') }}" class="btn btn-secondary">
-                                        <i class="bi bi-arrow-left"></i> Kembali
-                                    </a>
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="bi bi-send"></i> Kirim Pengaduan
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
+                @endif
+                <!-- Nama Pelapor -->
+                <div>
+                    <label for="nama_pelapor" class="block text-xs font-bold text-slate-700 mb-1.5">
+                        Nama Pelapor / Korban <span class="text-slate-400 font-normal">(Kosongkan jika ingin Anonim)</span>
+                    </label>
+                    <input type="text" name="nama_pelapor" id="nama_pelapor" value="{{ old('nama_pelapor') }}"
+                           placeholder="Boleh dikosongkan untuk anonimitas"
+                           class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-hidden bg-slate-50 focus:bg-white transition-all">
+                </div>
+
+                <!-- Nama Pelaku -->
+                <div>
+                    <label for="nama_pelaku" class="block text-xs font-bold text-slate-700 mb-1.5">
+                        Nama Terduga Pelaku <span class="text-rose-500">*</span>
+                    </label>
+                    <input type="text" name="nama_pelaku" id="nama_pelaku" required value="{{ old('nama_pelaku') }}"
+                           placeholder="Nama siswa/pihak yang melakukan perundungan"
+                           class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-hidden bg-slate-50 focus:bg-white transition-all">
                 </div>
             </div>
-        </div>
+
+            <!-- Section 2: Bentuk & Frekuensi -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <!-- Bentuk Perundungan -->
+                <div>
+                    <label for="bentuk_perundungan" class="block text-xs font-bold text-slate-700 mb-1.5">
+                        Bentuk Perundungan <span class="text-rose-500">*</span>
+                    </label>
+                    <select name="bentuk_perundungan" id="bentuk_perundungan" required x-model="bentuk"
+                            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-hidden bg-slate-50 focus:bg-white transition-all">
+                        <option value="verbal">Verbal (Makian, ejekan, hinaan nama, julukan buruk)</option>
+                        <option value="fisik">Fisik (Pemukulan, dorongan, penendangan, perusakan barang)</option>
+                        <option value="sosial">Sosial (Pengucilan, fitnah kelompok, boikot teman)</option>
+                        <option value="siber">Siber (Media sosial, WhatsApp, teror pesan digital)</option>
+                        <option value="seksual">Seksual (Pelecehan fisik, verbal, atau visual)</option>
+                    </select>
+                </div>
+
+                <!-- Frekuensi Kejadian -->
+                <div>
+                    <label for="frekuensi_kejadian" class="block text-xs font-bold text-slate-700 mb-1.5">
+                        Frekuensi Kejadian <span class="text-rose-500">*</span>
+                    </label>
+                    <select name="frekuensi_kejadian" id="frekuensi_kejadian" required x-model="frekuensi"
+                            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-hidden bg-slate-50 focus:bg-white transition-all">
+                        <option value="sekali">Sekali (Kejadian pertama kali)</option>
+                        <option value="2-3_kali">2 - 3 Kali (Pernah terjadi beberapa kali)</option>
+                        <option value="sering">Sering (Berulang intensif / hampir setiap hari)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Section 3: Indikator Kondisi & Dampak -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <!-- Trauma Mental -->
+                <div>
+                    <label for="trauma_mental" class="block text-xs font-bold text-slate-700 mb-1.5">
+                        Apakah Mengalami Trauma / Ketakutan Mental? <span class="text-rose-500">*</span>
+                    </label>
+                    <select name="trauma_mental" id="trauma_mental" required x-model="trauma"
+                            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-hidden bg-slate-50 focus:bg-white transition-all">
+                        <option value="0">Tidak (Masih bisa beraktivitas seperti biasa)</option>
+                        <option value="1">Ya (Merasa takut ke sekolah, menangis, depresi, cemas)</option>
+                    </select>
+                </div>
+
+                <!-- Luka Fisik -->
+                <div>
+                    <label for="luka_fisik" class="block text-xs font-bold text-slate-700 mb-1.5">
+                        Apakah Ada Luka Fisik / Cidera Tubuh? <span class="text-rose-500">*</span>
+                    </label>
+                    <select name="luka_fisik" id="luka_fisik" required x-model="luka"
+                            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-hidden bg-slate-50 focus:bg-white transition-all">
+                        <option value="0">Tidak Ada Luka Fisik</option>
+                        <option value="1">Ya, Terdapat Luka / Memar / Cedera Tubuh</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <!-- Pelaku Lebih dari Satu -->
+                <div>
+                    <label for="pelaku_lebih_dari_satu" class="block text-xs font-bold text-slate-700 mb-1.5">
+                        Jumlah Pelaku
+                    </label>
+                    <select name="pelaku_lebih_dari_satu" id="pelaku_lebih_dari_satu" x-model="pelakuGanda"
+                            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-hidden bg-slate-50 focus:bg-white transition-all">
+                        <option value="0">Pelaku Tunggal (1 orang)</option>
+                        <option value="1">Pelaku Lebih dari Satu (Kelompok / Geng)</option>
+                    </select>
+                </div>
+
+                <!-- Konten Digital -->
+                <div>
+                    <label for="konten_digital" class="block text-xs font-bold text-slate-700 mb-1.5">
+                        Adanya Bukti Konten Siber / Rekaman Digital
+                    </label>
+                    <select name="konten_digital" id="konten_digital" x-model="kontenDigital"
+                            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-hidden bg-slate-50 focus:bg-white transition-all">
+                        <option value="0">Tidak Ada Konten Digital</option>
+                        <option value="1">Ya, Terdapat Screenshot / Video / Pesan Medsos</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Section 4: Lokasi & Ujaran Kata -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                    <label for="lokasi" class="block text-xs font-bold text-slate-700 mb-1.5">
+                        Lokasi Tempat Kejadian
+                    </label>
+                    <input type="text" name="lokasi" id="lokasi" value="{{ old('lokasi') }}"
+                           placeholder="Contoh: Belakang kantin, kelas 10A, toilet, media sosial"
+                           class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-hidden bg-slate-50 focus:bg-white transition-all">
+                </div>
+
+                <div>
+                    <label for="jenis_kata" class="block text-xs font-bold text-slate-700 mb-1.5">
+                        Kata-kata / Ujaran yang Diucapkan (Jika Ada)
+                    </label>
+                    <input type="text" name="jenis_kata" id="jenis_kata" value="{{ old('jenis_kata') }}"
+                           placeholder="Contoh kata makian / ejekan yang dilontarkan"
+                           class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-hidden bg-slate-50 focus:bg-white transition-all">
+                </div>
+            </div>
+
+            <!-- Section 5: Deskripsi Kronologi -->
+            <div>
+                <label for="deskripsi" class="block text-xs font-bold text-slate-700 mb-1.5">
+                    Kronologi Kejadian Lengkap <span class="text-rose-500">*</span>
+                </label>
+                <textarea name="deskripsi" id="deskripsi" rows="4" required
+                          placeholder="Jelaskan secara kronologis apa yang terjadi, kapan waktu kejadian, dan bagaimana insiden tersebut berlangsung..."
+                          class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-hidden bg-slate-50 focus:bg-white transition-all">{{ old('deskripsi') }}</textarea>
+            </div>
+
+            <!-- Section 6: Bukti Foto -->
+            <div>
+                <label for="foto" class="block text-xs font-bold text-slate-700 mb-1.5">
+                    Unggah Bukti Foto / Tangkapan Layar (Opsional)
+                </label>
+                <input type="file" name="foto" id="foto" accept="image/*"
+                       class="block w-full text-xs text-slate-600 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 border border-slate-200 rounded-xl p-1 bg-slate-50">
+                <p class="text-[11px] text-slate-400 mt-1">Format: JPG, PNG, WEBP. Maksimal 2MB.</p>
+            </div>
+
+            <!-- Smart Classification Assist Card: ID3 Decision Tree + Weighted Scoring Cross-Check -->
+            <div class="p-5 rounded-3xl border border-blue-200 bg-linear-to-br from-blue-50/80 via-white to-indigo-50/50 shadow-xs space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center font-bold text-lg shadow-md shadow-blue-500/20">
+                            <i class="fa-solid fa-network-wired"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-[11px] uppercase font-black tracking-wider text-blue-700">Klasifikasi Pohon Keputusan ID3</span>
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-700">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse"></span>
+                                    <span>Model Aktif</span>
+                                </span>
+                            </div>
+                            <p class="text-[11px] text-slate-500 mt-0.5">
+                                Diklasifikasikan otomatis melalui simpul-simpul inferensi Pohon Keputusan ID3 yang telah dilatih.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Output Klasifikasi Badge -->
+                    <div class="flex items-center gap-2 self-start sm:self-auto bg-white/80 p-1.5 rounded-2xl border border-slate-200/80 shadow-2xs">
+                        <span class="text-xs text-slate-500 pl-2 font-medium">Prediksi:</span>
+                        <span class="px-3.5 py-1.5 rounded-xl font-black uppercase text-xs tracking-wider shadow-xs"
+                              :class="{
+                                  'bg-emerald-500 text-white shadow-emerald-500/20': klasifikasiOtomatis === 'ringan',
+                                  'bg-amber-500 text-white shadow-amber-500/20': klasifikasiOtomatis === 'sedang',
+                                  'bg-rose-500 text-white shadow-rose-500/20': klasifikasiOtomatis === 'berat'
+                              }"
+                              x-text="klasifikasiOtomatis">
+                        </span>
+                        <span class="text-[11px] font-bold px-2 py-1 rounded-lg bg-slate-100 text-slate-600"
+                              title="Tingkat keyakinan berdasarkan proporsi sampel daun">
+                            <span x-text="result.confidence"></span>%
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Jalur Penelusuran Pohon ID3 (Decision Path) -->
+                <div class="pt-3 border-t border-blue-100/70">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fa-solid fa-route text-blue-600 text-xs"></i>
+                        <span class="text-[11px] font-bold text-slate-700 uppercase tracking-wide">Jalur Simpul Keputusan (Decision Path):</span>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-1.5">
+                        <template x-for="(step, idx) in result.path" :key="idx">
+                            <div class="inline-flex items-center gap-1.5">
+                                <span class="px-2.5 py-1 rounded-xl bg-white border border-blue-200/90 text-xs font-semibold text-slate-700 shadow-2xs flex items-center gap-1.5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                                    <span x-text="step"></span>
+                                </span>
+                                <i x-show="idx < result.path.length - 1" class="fa-solid fa-arrow-right text-[10px] text-blue-400"></i>
+                            </div>
+                        </template>
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-black uppercase"
+                              :class="{
+                                  'bg-emerald-100 text-emerald-800 border border-emerald-200': klasifikasiOtomatis === 'ringan',
+                                  'bg-amber-100 text-amber-800 border border-amber-200': klasifikasiOtomatis === 'sedang',
+                                  'bg-rose-100 text-rose-800 border border-rose-200': klasifikasiOtomatis === 'berat'
+                              }">
+                            <i class="fa-solid fa-flag-checkered text-[10px]"></i>
+                            <span x-text="'Hasil = ' + klasifikasiOtomatis"></span>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Footer Cross-Check: Formula Skor Terbobot Klien (Ground Truth Acuan) -->
+                <div class="pt-3 border-t border-blue-100/70 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px] text-slate-500">
+                    <div class="flex items-center gap-2">
+                        <span class="font-bold text-slate-600">Cross-Check Formula Klien:</span>
+                        <span class="font-mono text-slate-600 bg-white px-2 py-0.5 rounded-md border border-slate-200">
+                            S = 0.20X₁ + 0.15X₂ + 0.20X₃ + 0.20X₄ + 0.10X₅ + 0.15X₆ = <strong class="text-blue-600" x-text="weightedScore"></strong>
+                        </span>
+                        <span class="px-2 py-0.5 rounded-md font-bold"
+                              :class="{
+                                  'bg-emerald-50 text-emerald-700 border border-emerald-200': weightedLabel === 'Ringan',
+                                  'bg-amber-50 text-amber-700 border border-amber-200': weightedLabel === 'Sedang',
+                                  'bg-rose-50 text-rose-700 border border-rose-200': weightedLabel === 'Berat'
+                              }"
+                              x-text="'Kategori: ' + weightedLabel">
+                        </span>
+                    </div>
+                    <span class="text-[10px] text-slate-400">
+                        *Model ID3 dibangun melalui Entropy & Gain pada dataset berlabel ini.
+                    </span>
+                </div>
+
+                <!-- Hidden Input bound to genuine ID3 model prediction -->
+                <input type="hidden" name="klasifikasi" :value="klasifikasiOtomatis">
+            </div>
+
+            <!-- Submit Button -->
+            <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
+                <a href="{{ route('admin.pengaduan.index') }}"
+                   class="px-5 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50 transition-colors">
+                    Batal
+                </a>
+                <button type="submit"
+                        class="inline-flex items-center gap-2 px-7 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-md shadow-blue-500/25 transition-all hover:scale-[1.02] active:scale-95">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span>Kirim Pengaduan</span>
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 @endsection
 
-@push('styles')
-<style>
-    .input-group.input-group-static label {font-weight:600;margin-bottom:0.5rem;color:#344767;}
-    .form-control:focus {border-color:#e91e63;box-shadow:0 0 0 2px rgba(233,30,99,0.25);}
-    .card {box-shadow:0 4px 6px -1px rgba(0,0,0,0.1),0 2px 4px -1px rgba(0,0,0,0.06);border:0;}
-    .form-text {font-size:0.875rem;color:#6c757d;margin-top:0.25rem;}
-    .alert-info {background-color:#e8f4fd;border-color:#b6e0fe;color:#122f35ff;}
-    .form-check-label {font-weight:500;color:#344767;}
-    .form-check-input:checked {background-color:#e91e63;border-color:#e91e63;}
-    .text-danger {color:#e91e63 !important;}
-</style>
-@endpush
-
 @push('scripts')
 <script>
-// === Tampilkan / sembunyikan field Nama Pelapor ===
-document.addEventListener('DOMContentLoaded', function() {
-    const bentukSelect = document.getElementById('bentuk_perundungan');
-    const pelaporContainer = document.getElementById('nama-pelapor-container');
-    const pelaporInput = document.getElementById('nama_pelapor');
+function pengaduanForm() {
+    return {
+        bentuk: @json(old('bentuk_perundungan', 'verbal')),
+        frekuensi: @json(old('frekuensi_kejadian', 'sekali')),
+        trauma: @json(old('trauma_mental', '0')),
+        luka: @json(old('luka_fisik', '0')),
+        pelakuGanda: @json(old('pelaku_lebih_dari_satu', '0')),
+        kontenDigital: @json(old('konten_digital', '0')),
+        tree: @json($tree ?? null),
 
-    function toggleNamaPelapor() {
-        const selectedValue = bentukSelect.value;
-        if (selectedValue === 'seksual') {
-            pelaporContainer.style.display = 'block';
-            pelaporInput.setAttribute('required', true);
-        } else {
-            pelaporContainer.style.display = 'none';
-            pelaporInput.removeAttribute('required');
-            pelaporInput.value = '';
-        }
-    }
+        evaluateTree(node, sample, path = []) {
+            if (!node) {
+                return {
+                    klasifikasi: 'sedang',
+                    confidence: 60,
+                    path: ['Model pohon keputusan belum dimuat (default: Sedang)']
+                };
+            }
 
-    toggleNamaPelapor();
-    bentukSelect.addEventListener('change', toggleNamaPelapor);
-});
+            if (node.type === 'leaf') {
+                return {
+                    klasifikasi: node.label,
+                    confidence: node.confidence || 100,
+                    distribution: node.distribution || {},
+                    path: path
+                };
+            }
 
-// === Preview Gambar ===
-document.getElementById('foto').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    const preview = document.getElementById('image-preview');
-    if (file) {
-        const maxSize = 2 * 1024 * 1024;
-        if (file.size > maxSize) {
-            alert('Ukuran file terlalu besar. Maksimal 2MB.');
-            this.value = '';
-            preview.innerHTML = '';
-            return;
-        }
-        const validTypes = ['image/jpeg','image/jpg','image/png','image/gif'];
-        if (!validTypes.includes(file.type)) {
-            alert('Format file tidak didukung. Gunakan JPG, JPEG, PNG, atau GIF.');
-            this.value = '';
-            preview.innerHTML = '';
-            return;
-        }
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            preview.innerHTML = `
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <strong>Preview Foto:</strong> Gambar berhasil diunggah.
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                <img src="${e.target.result}" class="img-thumbnail mt-2" style="max-height:200px;max-width:300px;" alt="Preview Foto">
-                <button type="button" class="btn btn-sm btn-outline-danger mt-2" onclick="removeImage()">
-                    <i class="bi bi-trash"></i> Hapus Gambar
-                </button>`;
-        }
-        reader.readAsDataURL(file);
-    } else { preview.innerHTML = ''; }
-});
+            const attr = node.attribute;
+            let val = sample[attr] !== undefined ? String(sample[attr]) : '';
+            const attrLabel = node.attribute_label || attr;
+            const valDisplay = val === '1' ? 'Ya' : (val === '0' ? 'Tidak' : (val.charAt(0).toUpperCase() + val.slice(1)));
 
-function removeImage() {
-    document.getElementById('foto').value = '';
-    document.getElementById('image-preview').innerHTML = '';
+            const currentPath = [...path, `${attrLabel} = ${valDisplay}`];
+
+            if (node.branches && node.branches[val]) {
+                return this.evaluateTree(node.branches[val], sample, currentPath);
+            }
+
+            return {
+                klasifikasi: node.majority_class || 'sedang',
+                confidence: 60,
+                distribution: node.distribution || {},
+                path: [...currentPath, `(Cabang lain, fallback: ${node.majority_class || 'sedang'})`]
+            };
+        },
+
+        get result() {
+            const sample = {
+                bentuk_perundungan: this.bentuk,
+                frekuensi_kejadian: this.frekuensi,
+                trauma_mental: this.trauma,
+                luka_fisik: this.luka,
+                pelaku_lebih_dari_satu: this.pelakuGanda,
+                konten_digital: this.kontenDigital
+            };
+            return this.evaluateTree(this.tree, sample);
+        },
+
+        get klasifikasiOtomatis() {
+            return this.result.klasifikasi || 'sedang';
+        },
+
+        get weightedScore() {
+            const x1Scores = { 'verbal': 20, 'sosial': 40, 'siber': 60, 'fisik': 80, 'seksual': 100 };
+            const x2Scores = { 'sekali': 33.3, '2-3_kali': 66.6, 'sering': 100 };
+            
+            const x1 = x1Scores[this.bentuk] || 20;
+            const x2 = x2Scores[this.frekuensi] || 33.3;
+            const x3 = this.trauma === '1' ? 100 : 0;
+            const x4 = this.luka === '1' ? 100 : 0;
+            const x5 = this.pelakuGanda === '1' ? 100 : 0;
+            const x6 = this.kontenDigital === '1' ? 100 : 0;
+
+            const score = (0.20 * x1) + (0.15 * x2) + (0.20 * x3) + (0.20 * x4) + (0.10 * x5) + (0.15 * x6);
+            return Math.round(score * 10) / 10;
+        },
+
+        get weightedLabel() {
+            if (this.weightedScore < 34) return 'Ringan';
+            if (this.weightedScore < 67) return 'Sedang';
+            return 'Berat';
+        }
+    };
 }
-
-// === Validasi Form ===
-document.querySelector('form').addEventListener('submit', function(e) {
-    const bentukPerundungan = document.getElementById('bentuk_perundungan').value;
-    const frekuensiKejadian = document.getElementById('frekuensi_kejadian').value;
-    const klasifikasi = document.getElementById('klasifikasi').value;
-    const deskripsi = document.getElementById('deskripsi').value.trim();
-
-    if (!bentukPerundungan) {e.preventDefault();alert('Bentuk perundungan harus dipilih.');return;}
-    if (!frekuensiKejadian) {e.preventDefault();alert('Frekuensi kejadian harus dipilih.');return;}
-    if (!klasifikasi) {e.preventDefault();alert('Klasifikasi harus dipilih.');return;}
-    if (!deskripsi) {e.preventDefault();alert('Deskripsi pengaduan harus diisi.');return;}
-    if (deskripsi.length < 10) {e.preventDefault();alert('Deskripsi pengaduan minimal 10 karakter.');return;}
-
-    if (!confirm('Apakah Anda yakin ingin mengirim pengaduan ini?')) e.preventDefault();
-});
-
-// === Counter karakter deskripsi ===
-document.getElementById('deskripsi').addEventListener('input', function() {
-    const charCount = this.value.length;
-    const counter = document.getElementById('char-counter') || createCharCounter();
-    counter.textContent = `${charCount} karakter`;
-    if (charCount > 2000) {
-        counter.classList.add('text-danger');
-        counter.innerHTML = `${charCount} karakter <span class="text-danger">(Terlalu panjang!)</span>`;
-    } else if (charCount > 1000) {
-        counter.classList.add('text-warning');
-        counter.innerHTML = `${charCount} karakter`;
-    } else {
-        counter.classList.remove('text-danger','text-warning');
-        counter.innerHTML = `${charCount} karakter`;
-    }
-});
-function createCharCounter() {
-    const counter = document.createElement('div');
-    counter.id = 'char-counter';
-    counter.className = 'form-text text-end';
-    counter.textContent = '0 karakter';
-    document.getElementById('deskripsi').parentNode.appendChild(counter);
-    return counter;
-}
-document.addEventListener('DOMContentLoaded', function() {
-    createCharCounter();
-    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-    checkboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
-            this.value = this.checked ? '1' : '0';
-        });
-        checkbox.value = checkbox.checked ? '1' : '0';
-    });
-});
 </script>
 @endpush

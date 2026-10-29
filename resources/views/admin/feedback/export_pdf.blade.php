@@ -1,100 +1,163 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-    <title>Laporan Feedback</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <meta charset="utf-8">
+    <title>Laporan Feedback &amp; Konseling Kasus - Lapora</title>
     <style type="text/css">
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-
-        .table th,
-        .table td {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            color: #1e293b;
+            margin: 20px 25px;
             font-size: 9pt;
+            line-height: 1.4;
         }
 
-        .table thead th {
-            color: #000;
+        .header {
             text-align: center;
-        }
-
-        .table tbody td {
-            text-align: center;
-        }
-
-        h5 {
-            font-size: 16pt;
-            margin-bottom: 5px;
-        }
-
-        .table {
-            margin-top: 20px;
-        }
-
-        .printed-date {
-            font-size: 9pt;
+            border-bottom: 2px solid #0f172a;
+            padding-bottom: 12px;
             margin-bottom: 20px;
         }
 
-        .kop-surat hr {
-            border: 0;
-            border-top: 1px solid black;
-            margin: 5px 0;
+        .header h2 {
+            margin: 0;
+            font-size: 16pt;
+            text-transform: uppercase;
+            color: #0f172a;
+            letter-spacing: 0.5px;
         }
 
-        .kop-surat .line {
-            border-bottom: 2px solid black;
-            margin-top: 2px;
-            margin-bottom: 15px;
+        .header p {
+            margin: 4px 0 0 0;
+            font-size: 8.5pt;
+            color: #64748b;
         }
-        .img-fluid {
-  max-width: 100%;
-  height: auto;
-}
+
+        .meta-info {
+            margin-bottom: 15px;
+            font-size: 8.5pt;
+            color: #475569;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th {
+            background-color: #f1f5f9;
+            color: #334155;
+            font-weight: bold;
+            font-size: 8pt;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            border: 1px solid #cbd5e1;
+            padding: 8px 6px;
+            text-align: left;
+        }
+
+        td {
+            border: 1px solid #e2e8f0;
+            padding: 8px 6px;
+            font-size: 8pt;
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 7.5pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            background-color: #e0e7ff;
+            color: #3730a3;
+        }
+
+        .footer {
+            margin-top: 30px;
+            text-align: right;
+            font-size: 8.5pt;
+            color: #64748b;
+        }
     </style>
 </head>
-
 <body>
-    <div class="kop-surat">
-        <img src="{{ public_path('images/kop_surat.png') }}" class="img-fluid">
-        <hr>
-        <div class="line"></div>
+
+    <div class="header">
+        <h2>Laporan Riwayat Feedback &amp; Konseling</h2>
+        <p>Sistem Pengaduan &amp; Perlindungan Kekerasan Siswa (Lapora) &bull; Dokumen Resmi</p>
     </div>
-    <center>
-        <h5 class="mb-5">Laporan Feedback</h5>
-    </center>
-    <p>Dicetak pada tanggal: {{ \Carbon\Carbon::now()->isoFormat('D MMMM YYYY') }}</p>
-    <table class='table table-bordered table-striped'>
+
+    <div class="meta-info">
+        <strong>Dicetak Pada:</strong> {{ \Carbon\Carbon::now()->isoFormat('D MMMM YYYY, HH:mm') }} WIB &bull; 
+        <strong>Total Catatan:</strong> {{ count($data) }} Tanggapan
+    </div>
+
+    <table>
         <thead>
             <tr>
-                <th>#</th>
-                <th>Nama Siswa</th>
-                <th>Kelas</th>
-                <th>Judul Pengaduan</th>
-                <th>Feedback</th>
-                <th>Petugas</th>
-                <th>Tanggal</th>
+                <th style="width: 25px; text-align: center;">#</th>
+                <th style="width: 110px;">Siswa / Korban</th>
+                <th style="width: 130px;">Kasus Pengaduan</th>
+                <th>Isi Feedback / Catatan Konseling</th>
+                <th style="width: 110px;">Pemberi Feedback</th>
+                <th style="width: 85px; text-align: center;">Tanggal</th>
             </tr>
         </thead>
         <tbody>
-            @foreach ($data as $feedback)
+            @forelse ($data as $index => $feedback)
+                @php
+                    $p = $feedback->pengaduan;
+                    $namaSiswa = $p?->siswa?->nama ?? optional($p?->user?->siswas)->first()?->nama ?? '-';
+                    $kelasSiswa = $p?->siswa?->kelas ?? optional($p?->user?->siswas)->first()?->kelas ?? '-';
+                    $judulKasus = $p ? (ucfirst($p->bentuk_perundungan ?? 'Kasus') . ' di ' . ($p->lokasi ?? '-')) : 'Kasus Terhapus';
+                    $u = $feedback->user;
+                    $pengirim = $u ? ($u->name ?? $u->username) : 'Petugas';
+                    $rolePengirim = ucfirst($u?->role ?? 'Admin');
+                @endphp
                 <tr>
-                    <td>{{ $loop->iteration }}</td>
-                    <td>{{ $feedback->tb_siswa->nama }}</td>
-                    <td>{{ $feedback->tb_siswa->kelas }}</td>
-                    <td>{!! Str::limit($feedback->tb_pengaduan->judul, 50) !!}</td>
-                    <td>{!! Str::limit($feedback->teks_tanggapan, 50) !!}</td>
-                    <td>{{ $feedback->tb_petuga->nama }}</td>
-                    <td>{{ \Carbon\Carbon::parse($feedback->created_at)->isoFormat('D MMMM YYYY HH:mm:ss') }}
+                    <td style="text-align: center; color: #64748b;">{{ $index + 1 }}</td>
+                    <td>
+                        <strong>{{ $namaSiswa }}</strong><br>
+                        <span style="color: #64748b; font-size: 7.5pt;">Kelas: {{ $kelasSiswa }}</span>
+                    </td>
+                    <td>
+                        <strong>{{ $judulKasus }}</strong><br>
+                        @if ($p && $p->status)
+                            <span class="badge">{{ $p->status }}</span>
+                        @endif
+                    </td>
+                    <td style="color: #334155;">
+                        {!! nl2br(e(Str::limit(strip_tags($feedback->isi_tanggapan), 250))) !!}
+                    </td>
+                    <td>
+                        <strong>{{ $pengirim }}</strong><br>
+                        <span style="color: #64748b; font-size: 7.5pt;">Peran: {{ $rolePengirim }}</span>
+                    </td>
+                    <td style="text-align: center; color: #64748b; font-size: 7.5pt;">
+                        {{ \Carbon\Carbon::parse($feedback->created_at)->isoFormat('D MMM YYYY') }}<br>
+                        {{ \Carbon\Carbon::parse($feedback->created_at)->format('H:i') }} WIB
                     </td>
                 </tr>
-            @endforeach
+            @empty
+                <tr>
+                    <td colspan="6" style="text-align: center; color: #94a3b8; padding: 20px;">
+                        Tidak ada catatan feedback dalam sistem.
+                    </td>
+                </tr>
+            @endforelse
         </tbody>
     </table>
 
-</body>
+    <div class="footer">
+        <p>Dicetak otomatis oleh Sistem Lapora &bull; Halaman Arsip Konseling</p>
+    </div>
 
+</body>
 </html>

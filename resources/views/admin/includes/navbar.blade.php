@@ -1,204 +1,172 @@
-<nav class="navbar navbar-main navbar-expand-lg px-0 shadow-none border-radius-xl" id="navbarBlur" data-scroll="true">
-    <div class="container-fluid py-1 px-3">
-        {{-- Tombol Hamburger untuk toggle sidebar --}}
-        <button class="btn btn-link text-dark px-2 mb-0" id="sidebarToggle">
-            <i class="material-symbols-rounded" style="font-size: 28px;">menu</i>
+<header class="h-16 bg-white border-b border-slate-200/80 sticky top-0 z-30 flex items-center justify-between px-4 sm:px-6 lg:px-8 shadow-xs">
+    <!-- Left: Mobile Toggle & Page Title -->
+    <div class="flex items-center gap-4">
+        <!-- Mobile Sidebar Button -->
+        <button @click="sidebarOpen = true"
+                class="lg:hidden text-slate-500 hover:text-slate-800 p-2 rounded-lg hover:bg-slate-100 transition-colors">
+            <i class="fa-solid fa-bars text-lg"></i>
         </button>
-        @yield('breadcrumb')
-        <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
-            <div class="ms-md-auto pe-md-3 d-flex align-items-center">
 
-            </div>
-            <ul class="navbar-nav d-flex align-items-center  justify-content-end">
-                <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
-                    <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
-                        <div class="sidenav-toggler-inner">
-                            <i class="sidenav-toggler-line"></i>
-                            <i class="sidenav-toggler-line"></i>
-                            <i class="sidenav-toggler-line"></i>
-                        </div>
-                    </a>
-                </li>
-                <li class="nav-item px-3 d-flex align-items-center">
-                    <a href="javascript:;" class="nav-link text-body p-0">
-                        <i class="material-symbols-rounded fixed-plugin-button-nav">settings</i>
-                    </a>
-                </li>
-                <li class="nav-item dropdown pe-3 d-flex align-items-center">
-                    <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="material-symbols-rounded">notifications</i>
-                    </a>
-                    <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4"
-                        aria-labelledby="dropdownMenuButton">
-                        <li class="mb-2">
-                            <a class="dropdown-item border-radius-md" href="javascript:;">
-                                <div class="d-flex py-1">
-                                    <div class="my-auto">
-                                        <img src="admin/img/team-2.jpg" class="avatar avatar-sm  me-3 ">
-                                    </div>
-                                    <div class="d-flex flex-column justify-content-center">
-                                        <h6 class="text-sm font-weight-normal mb-1">
-                                            <span class="font-weight-bold">New message</span> from Laur
-                                        </h6>
-                                        <p class="text-xs text-secondary mb-0">
-                                            <i class="fa fa-clock me-1"></i>
-                                            13 minutes ago
-                                        </p>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="mb-2">
-                            <a class="dropdown-item border-radius-md" href="javascript:;">
-                                <div class="d-flex py-1">
-                                    <div class="my-auto">
-                                        <img src="admin/img/small-logos/logo-spotify.svg"
-                                            class="avatar avatar-sm bg-gradient-dark  me-3 ">
-                                    </div>
-                                    <div class="d-flex flex-column justify-content-center">
-                                        <h6 class="text-sm font-weight-normal mb-1">
-                                            <span class="font-weight-bold">New album</span> by Travis Scott
-                                        </h6>
-                                        <p class="text-xs text-secondary mb-0">
-                                            <i class="fa fa-clock me-1"></i>
-                                            1 day
-                                        </p>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item border-radius-md" href="javascript:;">
-                                <div class="d-flex py-1">
-                                    <div class="avatar avatar-sm bg-gradient-secondary  me-3  my-auto">
-                                        <svg width="12px" height="12px" viewBox="0 0 43 36" version="1.1"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            xmlns:xlink="http://www.w3.org/1999/xlink">
-                                            <title>credit-card</title>
-                                            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                                <g transform="translate(-2169.000000, -745.000000)" fill="#FFFFFF"
-                                                    fill-rule="nonzero">
-                                                    <g transform="translate(1716.000000, 291.000000)">
-                                                        <g transform="translate(453.000000, 454.000000)">
-                                                            <path class="color-background"
-                                                                d="M43,10.7482083 L43,3.58333333 C43,1.60354167 41.3964583,0 39.4166667,0 L3.58333333,0 C1.60354167,0 0,1.60354167 0,3.58333333 L0,10.7482083 L43,10.7482083 Z"
-                                                                opacity="0.593633743"></path>
-                                                            <path class="color-background"
-                                                                d="M0,16.125 L0,32.25 C0,34.2297917 1.60354167,35.8333333 3.58333333,35.8333333 L39.4166667,35.8333333 C41.3964583,35.8333333 43,34.2297917 43,32.25 L43,16.125 L0,16.125 Z M19.7083333,26.875 L7.16666667,26.875 L7.16666667,23.2916667 L19.7083333,23.2916667 L19.7083333,26.875 Z M35.8333333,26.875 L28.6666667,26.875 L28.6666667,23.2916667 L35.8333333,23.2916667 L35.8333333,26.875 Z">
-                                                            </path>
-                                                        </g>
-                                                    </g>
-                                                </g>
-                                            </g>
-                                        </svg>
-                                    </div>
-                                    <div class="d-flex flex-column justify-content-center">
-                                        <h6 class="text-sm font-weight-normal mb-1">
-                                            Payment successfully completed
-                                        </h6>
-                                        <p class="text-xs text-secondary mb-0">
-                                            <i class="fa fa-clock me-1"></i>
-                                            2 days
-                                        </p>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav-item dropdown pe-3 d-flex align-items-center">
-                    <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="material-symbols-rounded">account_circle</i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-3 animate__animated animate__fadeIn"
-                        aria-labelledby="userDropdown" style="min-width: 220px;">
-                        <li class="px-3 py-2 border-bottom">
-                            <div class="d-flex align-items-center">
-                                <img class="rounded-circle me-2"
-                                    src="{{ Auth::user()->foto
-                                        ? asset('storage/users/menu-profile/sm/' . Auth::user()->foto)
-                                        : asset('assets/front/img/default-user.png') }}"
-                                    alt="Profile" width="45" height="45" style="object-fit:cover;">
-                                <div>
-                                    <h6 class="mb-0 fw-semibold">{{ Auth::user()->name }}</h6>
-                                    <small class="text-muted">{{ Auth::user()->email }}</small>
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center py-2"
-                                href="">
-                                <i class="material-symbols-rounded opacity-5 me-1">account_circle</i>Profil Saya
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center py-2" href="">
-                                <i class="material-symbols-rounded opacity-5 me-1">home</i>Public View
-                            </a>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center text-danger py-2" href="#"
-                                id="logoutBtn">
-                                <i class="material-symbols-rounded opacity-5 me-1">logout</i>Logout
-                            </a>
-                            <form id="logout-form" action="{{ route('admin.logout') }}" method="POST"
-                                style="display: none;">
-                                @csrf
-                            </form>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
+        <!-- Breadcrumb / Title -->
+        <div class="flex items-center gap-2 text-sm">
+            <span class="text-slate-400 font-medium">Lapora</span>
+            <span class="text-slate-300">/</span>
+            <span class="font-bold text-slate-800 tracking-tight">@yield('title', 'Dashboard')</span>
         </div>
     </div>
-</nav>
-<style>
-    #sidenav-main {
-        transition: all 0.3s ease;
-        width: 250px;
-    }
 
-    #sidenav-main.collapsed {
-        margin-left: -250px;
-    }
+    <!-- Right: Quick Info & User Dropdown -->
+    <div class="flex items-center gap-4">
+        <!-- Live Status Pill -->
+        <div class="hidden sm:inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-200/60">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+            <span>Sistem Siaga</span>
+        </div>
 
-    /* Jika kamu ingin konten utama ikut bergeser */
-    .main-content {
-        transition: margin-left 0.3s ease;
-        margin-left: 250px;
-    }
+        <!-- Quick Link to Portal -->
+        <a href="{{ url('/') }}" target="_blank"
+           class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold text-slate-600 hover:text-indigo-600 hover:border-indigo-200 transition-colors">
+            <i class="fa-solid fa-earth-asia"></i>
+            <span>Portal Siswa</span>
+        </a>
 
-    .main-content.expanded {
-        margin-left: 0;
-    }
+        <!-- Urgent Case Notification Bell -->
+        <div class="relative" x-data="{ notifOpen: false }">
+            <button @click="notifOpen = !notifOpen"
+                    title="Peringatan Kasus Darurat"
+                    class="relative p-2 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors focus:outline-hidden">
+                <i class="fa-solid fa-bell text-base"></i>
+                @if(isset($urgentKasusCount) && $urgentKasusCount > 0)
+                    <span class="absolute top-1 right-1 flex h-4 w-4">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-4 w-4 bg-rose-600 text-[9px] font-black text-white items-center justify-center">
+                            {{ $urgentKasusCount > 9 ? '9+' : $urgentKasusCount }}
+                        </span>
+                    </span>
+                @endif
+            </button>
 
-    /* Sesuaikan untuk layar kecil */
-    @media (max-width: 992px) {
-        #sidenav-main {
-            position: fixed;
-            z-index: 1031;
-            height: 100%;
-        }
-    }
-</style>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const sidebar = document.getElementById('sidenav-main');
-        const toggleBtn = document.getElementById('sidebarToggle');
-        const mainContent = document.querySelector('.main-content'); // jika kamu punya div utama untuk konten
+            <!-- Notifications Dropdown -->
+            <div x-show="notifOpen"
+                 @click.away="notifOpen = false"
+                 x-transition:enter="transition ease-out duration-100"
+                 x-transition:enter-start="transform opacity-0 scale-95"
+                 x-transition:enter-end="transform opacity-100 scale-100"
+                 x-transition:leave="transition ease-in duration-75"
+                 x-transition:leave-start="transform opacity-100 scale-100"
+                 x-transition:leave-end="transform opacity-0 scale-95"
+                 class="absolute right-0 mt-2 w-80 sm:w-96 rounded-2xl bg-white shadow-xl border border-slate-200 py-2 text-xs z-50 divide-y divide-slate-100"
+                 style="display: none;">
+                
+                <div class="px-4 py-3 flex items-center justify-between bg-slate-50/60">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-rose-500 {{ isset($urgentKasusCount) && $urgentKasusCount > 0 ? 'animate-ping' : '' }}"></span>
+                        <h4 class="font-bold text-slate-800 text-xs uppercase tracking-wide">Peringatan Kasus Darurat</h4>
+                    </div>
+                    @if(isset($urgentKasusCount) && $urgentKasusCount > 0)
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-rose-100 text-rose-700">
+                            {{ $urgentKasusCount }} Prioritas Tinggi
+                        </span>
+                    @endif
+                </div>
 
-        toggleBtn.addEventListener('click', function () {
-            sidebar.classList.toggle('collapsed');
+                <div class="max-h-72 overflow-y-auto divide-y divide-slate-100">
+                    @if(isset($urgentKasusList) && $urgentKasusList->count() > 0)
+                        @foreach($urgentKasusList as $uk)
+                            <a href="{{ route('admin.pengaduan.show', $uk->id_pengaduan) }}"
+                               class="p-3.5 hover:bg-rose-50/40 transition-colors block space-y-1">
+                                <div class="flex items-center justify-between text-[11px]">
+                                    <span class="font-mono font-bold text-rose-700 flex items-center gap-1">
+                                        <i class="fa-solid fa-triangle-exclamation text-[10px]"></i>
+                                        <span>{{ $uk->kode_kasus }}</span>
+                                    </span>
+                                    <span class="text-slate-400 text-[10px]">{{ $uk->created_at?->diffForHumans() }}</span>
+                                </div>
+                                <p class="text-slate-800 font-semibold text-xs capitalize truncate">
+                                    {{ $uk->bentuk_perundungan }} &bull; {{ $uk->nama_pelaku }}
+                                </p>
+                                <div class="flex flex-wrap items-center gap-1 text-[10px] pt-0.5">
+                                    @if($uk->luka_fisik)
+                                        <span class="px-1.5 py-0.2 rounded-md bg-rose-100 text-rose-700 font-bold">Luka Fisik</span>
+                                    @endif
+                                    @if($uk->trauma_mental)
+                                        <span class="px-1.5 py-0.2 rounded-md bg-purple-100 text-purple-700 font-bold">Trauma Mental</span>
+                                    @endif
+                                    <span class="text-slate-400">&bull; {{ $uk->sekolah?->nama_sekolah ?? 'Satuan Pendidikan' }}</span>
+                                </div>
+                            </a>
+                        @endforeach
+                    @else
+                        <div class="p-6 text-center text-slate-400 space-y-1">
+                            <i class="fa-solid fa-circle-check text-2xl text-emerald-500/80 mb-1 block"></i>
+                            <p class="font-semibold text-slate-700 text-xs">Situasi Aman & Terkendali</p>
+                            <p class="text-[11px]">Tidak ada laporan kasus darurat yang membutuhkan penanganan saat ini.</p>
+                        </div>
+                    @endif
+                </div>
 
-            // Jika ingin konten utama bergeser
-            if (mainContent) {
-                mainContent.classList.toggle('expanded');
-            }
-        });
-    });
-</script>
+                @if(isset($urgentKasusCount) && $urgentKasusCount > 0)
+                    <div class="p-2 text-center bg-slate-50">
+                        <a href="{{ route('admin.pengaduan.index', ['filter_darurat' => 1]) }}"
+                           class="text-xs font-bold text-indigo-600 hover:text-indigo-700 hover:underline">
+                            Lihat Semua Kasus Butuh Tanggap Darurat &rarr;
+                        </a>
+                    </div>
+                @endif
+            </div>
+        </div>
+
+        <!-- User Dropdown Menu -->
+        <div class="relative" x-data="{ userMenu: false }">
+            <button @click="userMenu = !userMenu"
+                    class="flex items-center gap-3 p-1.5 rounded-xl hover:bg-slate-100 transition-colors focus:outline-hidden">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-600 to-violet-500 text-white font-bold text-xs flex items-center justify-center shadow-xs">
+                    {{ strtoupper(substr(Auth::user()->username ?? 'U', 0, 2)) }}
+                </div>
+                <div class="hidden sm:block text-left text-xs">
+                    <p class="font-bold text-slate-800">{{ Auth::user()->username }}</p>
+                    <p class="text-slate-400 capitalize">{{ Auth::user()->role }}</p>
+                </div>
+                <i class="fa-solid fa-chevron-down text-xs text-slate-400 transition-transform duration-200" :class="userMenu ? 'rotate-180' : ''"></i>
+            </button>
+
+            <!-- Dropdown Body -->
+            <div x-show="userMenu"
+                 @click.away="userMenu = false"
+                 x-transition:enter="transition ease-out duration-100"
+                 x-transition:enter-start="transform opacity-0 scale-95"
+                 x-transition:enter-end="transform opacity-100 scale-100"
+                 x-transition:leave="transition ease-in duration-75"
+                 x-transition:leave-start="transform opacity-100 scale-100"
+                 x-transition:leave-end="transform opacity-0 scale-95"
+                 class="absolute right-0 mt-2 w-48 rounded-xl bg-white shadow-lg border border-slate-200 py-1.5 text-xs text-slate-700 z-50 divide-y divide-slate-100"
+                 style="display: none;">
+                <div class="px-4 py-2.5 bg-slate-50/50">
+                    <p class="font-semibold text-slate-800">{{ Auth::user()->username }}</p>
+                    <p class="text-[11px] text-slate-500 truncate">{{ Auth::user()->email }}</p>
+                </div>
+                <div class="py-1">
+                    <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 px-4 py-2 hover:bg-slate-50 hover:text-indigo-600">
+                        <i class="fa-solid fa-gauge-high text-slate-400"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    @if (Auth::user()->role === 'siswa' && Auth::user()->siswas->first())
+                        <a href="{{ url('admin/siswa/edit/profile/' . Auth::user()->siswas->first()->id_siswa) }}" class="flex items-center gap-2 px-4 py-2 hover:bg-slate-50 hover:text-indigo-600">
+                            <i class="fa-solid fa-id-badge text-slate-400"></i>
+                            <span>Ubah Profil</span>
+                        </a>
+                    @endif
+                </div>
+                <div class="py-1">
+                    <form action="{{ route('admin.logout') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="w-full flex items-center gap-2 px-4 py-2 text-rose-600 hover:bg-rose-50 font-semibold text-left">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            <span>Keluar Sistem</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>

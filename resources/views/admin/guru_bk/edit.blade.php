@@ -1,179 +1,179 @@
 @extends('admin.layouts.template')
 @section('title', 'Edit Guru BK - ' . $guruBk->nama)
 
-@section('breadcrumb')
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-            <li class="breadcrumb-item text-sm">
-                <a class="opacity-5 text-dark" href="{{ route('admin.dashboard') }}">Dashboard</a>
-            </li>
-            <li class="breadcrumb-item text-sm">
-                <a class="opacity-5 text-dark" href="{{ route('admin.guru-bk.index') }}">Data Guru BK</a>
-            </li>
-            <li class="breadcrumb-item text-sm">
-                <a class="opacity-5 text-dark" href="{{ route('admin.guru-bk.show', $guruBk->nip) }}">Detail</a>
-            </li>
-            <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Edit Guru BK</li>
-        </ol>
-    </nav>
-@endsection
-
 @section('content')
-    <div class="container-fluid py-2">
-        <div class="row">
-            <div class="col-12">
-                <div class="card my-4">
-                    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                        <div class="bg-gradient-dark shadow-dark border-radius-lg pt-4 pb-3">
-                            <h6 class="text-white text-capitalize ps-3 mb-0">Edit Data Guru BK</h6>
-                        </div>
+<div class="max-w-4xl mx-auto space-y-6" x-data="{
+    showPassword: false,
+    previewUrl: '{{ !empty($guruBk->foto) && file_exists(public_path('storage/gurubk/foto/md/' . $guruBk->foto)) ? asset('storage/gurubk/foto/md/' . $guruBk->foto) : '' }}',
+    fileChosen(event) {
+        const file = event.target.files[0];
+        if (file) {
+            this.previewUrl = URL.createObjectURL(file);
+        }
+    }
+}">
+
+    <!-- Top Action Card -->
+    <div class="flex items-center justify-between bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+        <div>
+            <div class="flex items-center gap-2 mb-1">
+                <a href="{{ route('admin.guru-bk.index') }}" class="text-xs text-purple-600 hover:underline font-semibold flex items-center gap-1">
+                    <i class="fa-solid fa-arrow-left text-[10px]"></i>
+                    <span>Kembali ke Daftar Guru BK</span>
+                </a>
+                <span class="text-xs text-slate-400">&bull;</span>
+                <span class="text-xs text-slate-500 font-medium">Perbarui Profil</span>
+            </div>
+            <h1 class="text-xl sm:text-2xl font-black text-slate-800 tracking-tight">Edit Guru BK: {{ $guruBk->nama }}</h1>
+            <p class="text-xs text-slate-500 mt-1">Perbarui identitas kontak dan kredensial akun konselor sekolah.</p>
+        </div>
+    </div>
+
+    <!-- Error Alert if any -->
+    @if ($errors->any())
+        <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs">
+            <div class="flex items-center gap-2 font-bold mb-1">
+                <i class="fa-solid fa-triangle-exclamation text-rose-600"></i>
+                <span>Terdapat kesalahan pengisian data:</span>
+            </div>
+            <ul class="list-disc list-inside space-y-0.5 text-rose-700">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <!-- Edit Form Card -->
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-xs p-6 sm:p-8">
+        <form action="{{ route('admin.guru-bk.update', $guruBk->nip) }}" method="POST" enctype="multipart/form-data" class="space-y-8">
+            @csrf
+            @method('PUT')
+
+            <!-- Section 1: Data Pokok Kepegawaian -->
+            <div>
+                <h3 class="text-xs font-black text-slate-800 uppercase tracking-wider pb-3 border-b border-slate-100 flex items-center gap-2">
+                    <span class="w-6 h-6 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center text-xs">1</span>
+                    <span>Identitas Kepegawaian & Afiliasi</span>
+                </h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Nomor Induk Pegawai (NIP)</label>
+                        <input type="text" value="{{ $guruBk->nip }}" readonly
+                               class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-100 text-slate-500 text-xs font-mono cursor-not-allowed">
+                        <span class="text-[10px] text-slate-400 mt-1 block">NIP merupakan identifier unik tetap.</span>
                     </div>
-                    <div class="card-body px-4 pb-2">
-                        <form action="{{ route('admin.guru-bk.update', $guruBk->nip) }}" method="POST"
-                            enctype="multipart/form-data">
-                            @csrf
-                            @method('PUT')
 
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group mb-3">
-                                        <label for="nip" class="form-label">NIP</label>
-                                        <input type="text" class="form-control bg-light" id="nip"
-                                            value="{{ $guruBk->nip }}" readonly>
-                                        <small class="text-muted">NIP tidak dapat diubah</small>
-                                    </div>
-                                </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Sekolah Penugasan</label>
+                        <input type="text" value="{{ $guruBk->sekolah->nama_sekolah ?? 'Sekolah Terdaftar' }}" readonly
+                               class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-100 text-slate-500 text-xs cursor-not-allowed">
+                    </div>
 
-                                <div class="col-md-6">
-                                    <div class="form-group mb-3">
-                                        <label for="nama" class="form-label">Nama Lengkap <span
-                                                class="text-danger">*</span></label>
-                                        <input type="text" class="form-control @error('nama') is-invalid @enderror"
-                                            id="nama" name="nama" value="{{ old('nama', $guruBk->nama) }}"
-                                            placeholder="Masukkan nama lengkap" required>
-                                        @error('nama')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Nama Lengkap & Gelar <span class="text-rose-500">*</span></label>
+                        <input type="text" name="nama" value="{{ old('nama', $guruBk->nama) }}" required
+                               class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-purple-500 focus:outline-hidden text-xs">
+                    </div>
 
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group mb-3">
-                                        <label for="gender" class="form-label">Jenis Kelamin <span
-                                                class="text-danger">*</span></label>
-                                        <select class="form-control @error('gender') is-invalid @enderror" id="gender"
-                                            name="gender" required>
-                                            <option value="">Pilih Jenis Kelamin</option>
-                                            <option value="L"
-                                                {{ old('gender', $guruBk->gender) == 'L' ? 'selected' : '' }}>Laki-laki
-                                            </option>
-                                            <option value="P"
-                                                {{ old('gender', $guruBk->gender) == 'P' ? 'selected' : '' }}>Perempuan
-                                            </option>
-                                        </select>
-                                        @error('gender')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Jenis Kelamin <span class="text-rose-500">*</span></label>
+                        <select name="gender" required
+                                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-purple-500 focus:outline-hidden text-xs">
+                            <option value="L" {{ old('gender', strtoupper($guruBk->gender)) === 'L' ? 'selected' : '' }}>Laki-laki</option>
+                            <option value="P" {{ old('gender', strtoupper($guruBk->gender)) === 'P' ? 'selected' : '' }}>Perempuan</option>
+                        </select>
+                    </div>
 
-                                <div class="col-md-6">
-                                    <div class="form-group mb-3">
-                                        <label for="no_telp" class="form-label">No. Telepon</label>
-                                        <input type="text" class="form-control @error('no_telp') is-invalid @enderror"
-                                            id="no_telp" name="no_telp" value="{{ old('no_telp', $guruBk->no_telp) }}"
-                                            placeholder="Masukkan nomor telepon">
-                                        @error('no_telp')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Nomor Telepon / WhatsApp Konseling</label>
+                        <input type="tel" name="no_telp" value="{{ old('no_telp', $guruBk->no_telp) }}"
+                               class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-purple-500 focus:outline-hidden text-xs font-mono">
+                    </div>
 
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group mb-3">
-                                        <label for="username" class="form-label">Username <span
-                                                class="text-danger">*</span></label>
-                                        <input type="text" class="form-control @error('username') is-invalid @enderror"
-                                            id="username" name="username"
-                                            value="{{ old('username', $guruBk->user->username) }}"
-                                            placeholder="Masukkan username" required>
-                                        @error('username')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="form-group mb-3">
-                                        <label for="email" class="form-label">Email <span
-                                                class="text-danger">*</span></label>
-                                        <input type="email" class="form-control @error('email') is-invalid @enderror"
-                                            id="email" name="email" value="{{ old('email', $guruBk->user->email) }}"
-                                            placeholder="Masukkan email" required>
-                                        @error('email')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group mb-3">
-                                        <label for="password" class="form-label">Password</label>
-                                        <input type="password"
-                                            class="form-control @error('password') is-invalid @enderror" id="password"
-                                            name="password" placeholder="Kosongkan jika tidak ingin mengubah">
-                                        @error('password')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group mb-3">
-                                <label for="alamat" class="form-label">Alamat</label>
-                                <textarea class="form-control @error('alamat') is-invalid @enderror" id="alamat" name="alamat" rows="3"
-                                    placeholder="Masukkan alamat lengkap">{{ old('alamat', $guruBk->alamat) }}</textarea>
-                                @error('alamat')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="form-group mb-4">
-                                <label for="foto" class="form-label">Foto</label>
-
-                                @if ($guruBk->foto)
-                                    <div class="mb-3">
-                                        <img src="{{ asset('storage/gurubk/foto/lg/' . $guruBk->foto) }}" alt="Foto Guru BK"
-                                            class="img-thumbnail" style="max-height: 200px;">
-                                    </div>
-                                @endif
-
-                                <input type="file" class="form-control @error('foto') is-invalid @enderror"
-                                    id="foto" name="foto" accept="image/*">
-                                <small class="text-muted">Format: JPEG, PNG, JPG, GIF | Maks: 2MB</small>
-                                @error('foto')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="d-flex justify-content-end gap-2">
-                                <a href="{{ route('admin.guru-bk.show', $guruBk->nip) }}" class="btn btn-secondary">
-                                    <i class="material-symbols-rounded">cancel</i> Batal
-                                </a>
-                                <button type="submit" class="btn btn-success">
-                                    <i class="material-symbols-rounded">save</i> Perbarui
-                                </button>
-                            </div>
-                        </form>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Alamat Tempat Tinggal</label>
+                        <input type="text" name="alamat" value="{{ old('alamat', $guruBk->alamat) }}" placeholder="Alamat domisili..."
+                               class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-purple-500 focus:outline-hidden text-xs">
                     </div>
                 </div>
             </div>
-        </div>
+
+            <!-- Section 2: Kredensial Akun Login -->
+            <div>
+                <h3 class="text-xs font-black text-slate-800 uppercase tracking-wider pb-3 border-b border-slate-100 flex items-center gap-2">
+                    <span class="w-6 h-6 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-xs">2</span>
+                    <span>Kredensial Akun Login Guru BK</span>
+                </h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mt-5">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Username <span class="text-rose-500">*</span></label>
+                        <input type="text" name="username" value="{{ old('username', $guruBk->user->username ?? '') }}" required
+                               class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-purple-500 focus:outline-hidden text-xs font-mono">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Email Petugas <span class="text-rose-500">*</span></label>
+                        <input type="email" name="email" value="{{ old('email', $guruBk->user->email ?? '') }}" required
+                               class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-purple-500 focus:outline-hidden text-xs">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Password Baru <span class="text-[10px] text-slate-400 font-normal">(opsional)</span></label>
+                        <div class="relative">
+                            <input :type="showPassword ? 'text' : 'password'" name="password" placeholder="Kosongkan bila tak diubah"
+                                   class="w-full px-3.5 py-2.5 pr-10 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-purple-500 focus:outline-hidden text-xs">
+                            <button type="button" @click="showPassword = !showPassword"
+                                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600">
+                                <i :class="showPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'" class="text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Foto Profil Guru BK -->
+            <div>
+                <h3 class="text-xs font-black text-slate-800 uppercase tracking-wider pb-3 border-b border-slate-100 flex items-center gap-2">
+                    <span class="w-6 h-6 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center text-xs">3</span>
+                    <span>Foto Profil Petugas BK</span>
+                </h3>
+
+                <div class="flex items-center gap-6 mt-5">
+                    <div class="w-20 h-20 rounded-2xl bg-slate-100 border-2 border-dashed border-slate-200 flex items-center justify-center text-slate-400 overflow-hidden shrink-0">
+                        <template x-if="previewUrl">
+                            <img :src="previewUrl" alt="Foto Guru BK" class="w-full h-full object-cover">
+                        </template>
+                        <template x-if="!previewUrl">
+                            <i class="fa-solid fa-chalkboard-user text-2xl"></i>
+                        </template>
+                    </div>
+
+                    <div class="flex-1">
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Ganti Foto Profil Guru BK</label>
+                        <input type="file" name="foto" @change="fileChosen" accept="image/*"
+                               class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100 cursor-pointer">
+                        <p class="text-[11px] text-slate-400 mt-1">Kosongkan jika tidak ingin mengganti foto profil.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center justify-end gap-3 pt-6 border-t border-slate-100">
+                <a href="{{ route('admin.guru-bk.index') }}"
+                   class="px-5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-600 text-xs font-bold transition-all">
+                    Batal
+                </a>
+                <button type="submit"
+                        class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold shadow-md shadow-purple-500/25 transition-all hover:scale-105 active:scale-95">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    <span>Simpan Perubahan</span>
+                </button>
+            </div>
+        </form>
     </div>
+
+</div>
 @endsection
