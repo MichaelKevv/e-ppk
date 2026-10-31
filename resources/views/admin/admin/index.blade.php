@@ -1,246 +1,341 @@
 @extends('admin.layouts.template')
-@section('title', 'Data Admin')
-@section('breadcrumb')
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-        <li class="breadcrumb-item text-sm">
-            <a class="opacity-5 text-dark" href="{{ route('admin.dashboard') }}">Dashboard</a>
-        </li>
-        <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Admin</li>
-    </ol>
-</nav>
-@endsection
+@section('title', 'Data Master Admin')
 
 @section('content')
-<div class="container-fluid py-2">
-    <div class="row">
-        <div class="col-12">
-            <div class="card my-4">
-                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                    <div class="bg-gradient-dark shadow-dark border-radius-lg pt-4 pb-3 d-flex justify-content-between align-items-center">
-                        <h6 class="text-white text-capitalize ps-3">Data Admin</h6>
-                        <div class="d-flex gap-2 me-3">
-                            <a href="{{ route('admin.admin.create') }}" class="btn btn-success btn-sm">
-                                <i class="bi bi-plus-circle"></i> <span class="d-none d-md-inline">Tambah Admin</span>
-                            </a>
-                        </div>
-                    </div>
+<div class="space-y-6" x-data="{
+    search: '',
+    roleFilter: 'all'
+}">
+
+    <!-- Top Action Card -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+        <div>
+            <div class="flex items-center gap-2 mb-1">
+                <span class="px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-md bg-indigo-100 text-indigo-700">Master Data &bull; Administrator</span>
+                <span class="text-xs text-slate-400">&bull;</span>
+                <span class="text-xs font-semibold text-slate-500">Keamanan & Kontrol Sistem</span>
+            </div>
+            <h1 class="text-xl sm:text-2xl font-black text-slate-800 tracking-tight">Data Master Admin</h1>
+            <p class="text-xs text-slate-500 mt-1">
+                Kelola profil administrator sistem, kredensial login, hak akses tingkat tinggi, dan kontak penanggung jawab aplikasi Lapora.
+            </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2.5">
+            <a href="{{ route('admin.admin.create') }}"
+               class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md shadow-indigo-500/25 transition-all hover:scale-105 active:scale-95">
+                <i class="fa-solid fa-user-plus"></i>
+                <span>Tambah Admin Baru</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Quick Stats Cards -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Total Admin -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+            <div class="flex items-center justify-between">
+                <div>
+                    <span class="text-xs font-medium text-slate-500">Total Admin</span>
+                    <h3 class="text-2xl font-black text-slate-800 mt-1">{{ $data->count() }}</h3>
+                    <span class="text-[10px] text-indigo-600 font-semibold">Pengelola Sistem</span>
                 </div>
-                <div class="card-body px-0 pb-2">
-                    <!-- Desktop View -->
-                    <div class="d-none d-md-block">
-                        <div class="table-responsive p-0">
-                            <table class="table align-items-center mb-0">
-                                <thead>
-                                    <tr>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Foto</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nama</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Jabatan</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No. Telp</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Akun</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Dibuat</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse ($data as $admin)
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                @if ($admin->foto)
-                                                <picture>
-                                                    <source srcset="{{ asset('storage/admin/foto/sm/' . $admin->foto) }}" media="(max-width: 480px)">
-                                                    <source srcset="{{ asset('storage/admin/foto/md/' . $admin->foto) }}" media="(max-width: 1024px)">
-                                                    <img src="{{ asset('storage/admin/foto/lg/' . $admin->foto) }}"
-                                                        alt="{{ $admin->nama }}"
-                                                        class="img-fluid rounded-circle"
-                                                        width="70" height="70"
-                                                        style="object-fit: cover;">
-                                                </picture>
-                                                @else
-                                                <img src="{{ asset('assets/img/default-avatar.png') }}"
-                                                    alt="Default Avatar"
-                                                    class="img-fluid rounded-circle"
-                                                    width="70" height="70">
-                                                @endif
-                                            </div>
-                                        </td>
+                <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+            </div>
+        </div>
 
-                                        <td>
-                                            <h6 class="mb-0 text-sm">{{ $admin->nama }}</h6>
-                                        </td>
+        <!-- Super Admin / Administrator Utama -->
+        @php
+            $countAdmin = $data->filter(fn($a) => ($a->user->role ?? 'admin') === 'admin')->count();
+            $countAdminIt = $data->filter(fn($a) => ($a->user->role ?? '') === 'admin_it')->count();
+        @endphp
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+            <div class="flex items-center justify-between">
+                <div>
+                    <span class="text-xs font-medium text-slate-500">Administrator</span>
+                    <h3 class="text-2xl font-black text-slate-800 mt-1">{{ $countAdmin }}</h3>
+                    <span class="text-[10px] text-purple-600 font-semibold">Akses Penuh Sistem</span>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+            </div>
+        </div>
 
-                                        <td>
-                                            <span class="text-xs font-weight-bold mb-0">
-                                                {{ $admin->jabatan ?? '-' }}
-                                            </span>
-                                        </td>
+        <!-- IT Support / Teknis -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+            <div class="flex items-center justify-between">
+                <div>
+                    <span class="text-xs font-medium text-slate-500">Staff / IT Support</span>
+                    <h3 class="text-2xl font-black text-slate-800 mt-1">{{ $countAdminIt }}</h3>
+                    <span class="text-[10px] text-sky-600 font-semibold">Dukungan Teknis</span>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-laptop-code"></i>
+                </div>
+            </div>
+        </div>
 
-                                        <td>
-                                            <span class="text-xs font-weight-bold mb-0">
-                                                {{ $admin->no_telp ?? '-' }}
-                                            </span>
-                                        </td>
-
-                                        <td>
-                                            <span class="text-xs font-weight-bold mb-0">
-                                                {{ $admin->user->email ?? '-' }}
-                                            </span>
-                                        </td>
-
-                                        <td>
-                                            <span class="text-secondary text-xs font-weight-bold">
-                                                {{ \Carbon\Carbon::parse($admin->created_at)->isoFormat('D MMMM YYYY HH:mm') }}
-                                            </span>
-                                        </td>
-
-                                        <td>
-                                            <div class="d-flex flex-row gap-1">
-                                                <a href="{{ route('admin.admin.edit', $admin->id_admin) }}"
-                                                    class="btn btn-warning btn-sm"
-                                                    data-bs-toggle="tooltip" title="Edit Admin">
-                                                    <i class="material-symbols-rounded">edit</i>
-                                                </a>
-                                                <button type="button"
-                                                    class="btn btn-danger btn-sm btnDelete"
-                                                    data-bs-toggle="tooltip" title="Hapus Admin">
-                                                    <i class="material-symbols-rounded">delete</i>
-                                                </button>
-                                                <form action="{{ route('admin.admin.destroy', $admin->id_admin) }}"
-                                                    method="POST" class="d-none deleteForm">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    @empty
-                                    <tr>
-                                        <td colspan="7" class="text-center text-muted py-4">
-                                            Tidak ada data admin
-                                        </td>
-                                    </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- Mobile View -->
-                    <div class="d-md-none">
-                        <div class="row px-3">
-                            @forelse ($data as $admin)
-                            <div class="col-12 mb-3">
-                                <div class="card shadow-sm">
-                                    <div class="card-body p-3">
-                                        <!-- Header dengan foto dan info utama -->
-                                        <div class="d-flex align-items-start mb-3">
-                                            <div class="me-3 flex-shrink-0">
-                                                @if ($admin->foto)
-                                                <img src="{{ asset('storage/admin/foto/sm/' . $admin->foto) }}"
-                                                    alt="{{ $admin->nama }}"
-                                                    class="rounded-circle"
-                                                    width="60" height="60"
-                                                    style="object-fit: cover;">
-                                                @else
-                                                <img src="{{ asset('assets/img/default-avatar.png') }}"
-                                                    alt="Default Avatar"
-                                                    class="rounded-circle"
-                                                    width="60" height="60">
-                                                @endif
-                                            </div>
-                                            <div class="flex-grow-1">
-                                                <h6 class="mb-1 text-sm font-weight-bold">{{ $admin->nama }}</h6>
-                                                <div class="d-flex flex-wrap gap-2 align-items-center">
-                                                    <span class="badge badge-sm bg-gradient-info">
-                                                        {{ $admin->jabatan ?? 'Tidak ada jabatan' }}
-                                                    </span>
-                                                    <small class="text-muted">
-                                                        {{ \Carbon\Carbon::parse($admin->created_at)->isoFormat('D MMM YYYY') }}
-                                                    </small>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Informasi kontak dan akun -->
-                                        <div class="row mb-3">
-                                            <div class="col-6">
-                                                <small class="text-muted">Telepon</small>
-                                                <div class="text-xs font-weight-bold">
-                                                    {{ $admin->no_telp ?? '-' }}
-                                                </div>
-                                            </div>
-                                            <div class="col-6">
-                                                <small class="text-muted">Email</small>
-                                                <div class="text-xs font-weight-bold text-truncate">
-                                                    {{ $admin->user->email ?? '-' }}
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Tombol aksi -->
-                                        <div class="d-flex justify-content-end gap-1">
-                                            <a href="{{ route('admin.admin.edit', $admin->id_admin) }}"
-                                                class="btn btn-warning btn-sm"
-                                                data-bs-toggle="tooltip" title="Edit Admin">
-                                                <i class="material-symbols-rounded" style="font-size: 18px;">edit</i>
-                                                <span class="d-none d-sm-inline ms-1">Edit</span>
-                                            </a>
-                                            <button type="button"
-                                                class="btn btn-danger btn-sm btnDelete"
-                                                data-bs-toggle="tooltip" title="Hapus Admin">
-                                                <i class="material-symbols-rounded" style="font-size: 18px;">delete</i>
-                                                <span class="d-none d-sm-inline ms-1">Hapus</span>
-                                            </button>
-                                            <form action="{{ route('admin.admin.destroy', $admin->id_admin) }}"
-                                                method="POST" class="d-none deleteForm">
-                                                @csrf
-                                                @method('DELETE')
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            @empty
-                            <div class="col-12">
-                                <div class="card shadow-sm">
-                                    <div class="card-body text-center text-muted py-5">
-                                        <i class="material-symbols-rounded mb-2" style="font-size: 48px; opacity: 0.5;">people_alt</i>
-                                        <p class="mb-0">Tidak ada data admin</p>
-                                    </div>
-                                </div>
-                            </div>
-                            @endforelse
-                        </div>
-                    </div>
+        <!-- Status Keamanan -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+            <div class="flex items-center justify-between">
+                <div>
+                    <span class="text-xs font-medium text-slate-500">Status Akses</span>
+                    <h3 class="text-2xl font-black text-emerald-600 mt-1">Aktif</h3>
+                    <span class="text-[10px] text-emerald-600 font-semibold">RBAC Terproteksi</span>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-lock"></i>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Filter & Search Toolbar -->
+    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col md:flex-row items-center justify-between gap-3 text-xs">
+        <div class="w-full md:w-80 relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </span>
+            <input type="text" x-model="search" placeholder="Cari nama, username, email, jabatan..."
+                   class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-hidden text-xs">
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
+            <!-- Filter Role -->
+            <select x-model="roleFilter"
+                    class="px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white text-xs text-slate-700 font-medium">
+                <option value="all">Semua Tipe Akun</option>
+                <option value="admin">Administrator</option>
+                <option value="admin_it">IT Support</option>
+            </select>
+
+            <!-- Reset Filters -->
+            <button type="button" @click="search = ''; roleFilter = 'all';"
+                    x-show="search !== '' || roleFilter !== 'all'"
+                    class="px-3 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-semibold transition-colors">
+                <i class="fa-solid fa-rotate-left mr-1"></i> Reset
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content Table / Card -->
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50/80 border-b border-slate-200 text-slate-500 uppercase tracking-wider font-bold">
+                    <tr>
+                        <th class="px-5 py-3.5">Administrator</th>
+                        <th class="px-5 py-3.5">Kredensial & Role</th>
+                        <th class="px-5 py-3.5">Jabatan</th>
+                        <th class="px-5 py-3.5">Kontak</th>
+                        <th class="px-5 py-3.5">Terdaftar Sejak</th>
+                        <th class="px-5 py-3.5 text-right">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    @forelse ($data as $admin)
+                        @php
+                            $userRole = $admin->user->role ?? 'admin';
+                            $isCurrentUser = Auth::user() && (Auth::user()->id_pengguna === $admin->id_pengguna);
+                            $cleanPhone = preg_replace('/[^0-9]/', '', $admin->no_telp ?? '');
+                            if (str_starts_with($cleanPhone, '0')) {
+                                $cleanPhone = '62' . substr($cleanPhone, 1);
+                            }
+                        @endphp
+                        <tr class="hover:bg-slate-50/60 transition-colors"
+                            x-show="
+                                (roleFilter === 'all' || '{{ $userRole }}' === roleFilter) &&
+                                (search === '' ||
+                                 '{{ strtolower(addslashes($admin->nama)) }}'.includes(search.toLowerCase()) ||
+                                 '{{ strtolower(addslashes($admin->user->username ?? '')) }}'.includes(search.toLowerCase()) ||
+                                 '{{ strtolower(addslashes($admin->user->email ?? '')) }}'.includes(search.toLowerCase()) ||
+                                 '{{ strtolower(addslashes($admin->jabatan ?? '')) }}'.includes(search.toLowerCase()) ||
+                                 '{{ strtolower(addslashes($admin->no_telp ?? '')) }}'.includes(search.toLowerCase()))
+                            ">
+                            <!-- Admin Name & Photo -->
+                            <td class="px-5 py-4">
+                                <div class="flex items-center gap-3.5">
+                                    <div class="relative">
+                                        @if ($admin->foto)
+                                            <img src="{{ asset('storage/admin/foto/sm/' . $admin->foto) }}"
+                                                 alt="{{ $admin->nama }}"
+                                                 class="w-11 h-11 rounded-xl object-cover border border-slate-200 shadow-2xs">
+                                        @else
+                                            <div class="w-11 h-11 rounded-xl bg-linear-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center font-bold text-sm shadow-2xs">
+                                                {{ strtoupper(substr($admin->nama, 0, 2)) }}
+                                            </div>
+                                        @endif
+                                        @if ($isCurrentUser)
+                                            <span class="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full" title="Akun Anda Saat Ini"></span>
+                                        @endif
+                                    </div>
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <h4 class="font-bold text-slate-800 text-sm">{{ $admin->nama }}</h4>
+                                            @if ($isCurrentUser)
+                                                <span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-100 text-emerald-700">
+                                                    Anda
+                                                </span>
+                                            @endif
+                                        </div>
+                                        <span class="text-[11px] text-slate-400 font-mono">ID: #ADM-{{ str_pad($admin->id_admin, 3, '0', STR_PAD_LEFT) }}</span>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <!-- Credentials & Role -->
+                            <td class="px-5 py-4">
+                                <div class="space-y-1">
+                                    <div class="flex items-center gap-1.5 font-semibold text-slate-700">
+                                        <i class="fa-solid fa-at text-[10px] text-slate-400"></i>
+                                        <span>{{ $admin->user->username ?? '-' }}</span>
+                                    </div>
+                                    <div class="flex items-center gap-1.5 text-slate-500 text-[11px]">
+                                        <i class="fa-regular fa-envelope text-[10px] text-slate-400"></i>
+                                        <span>{{ $admin->user->email ?? '-' }}</span>
+                                    </div>
+                                    <div>
+                                        @if ($userRole === 'admin')
+                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-purple-50 text-purple-700 border border-purple-200">
+                                                <i class="fa-solid fa-shield-halved text-[9px]"></i> Administrator
+                                            </span>
+                                        @elseif ($userRole === 'admin_it')
+                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-sky-50 text-sky-700 border border-sky-200">
+                                                <i class="fa-solid fa-code text-[9px]"></i> IT Support
+                                            </span>
+                                        @else
+                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200">
+                                                {{ ucfirst($userRole) }}
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </td>
+
+                            <!-- Jabatan -->
+                            <td class="px-5 py-4">
+                                <div class="font-medium text-slate-700">
+                                    {{ $admin->jabatan ?? 'Administrator Sistem' }}
+                                </div>
+                                <span class="text-[11px] text-slate-400">Manajemen Pusat</span>
+                            </td>
+
+                            <!-- Kontak -->
+                            <td class="px-5 py-4">
+                                @if ($admin->no_telp)
+                                    <a href="https://wa.me/{{ $cleanPhone }}" target="_blank"
+                                       class="inline-flex items-center gap-1.5 text-emerald-600 hover:text-emerald-700 font-medium hover:underline">
+                                        <i class="fa-brands fa-whatsapp text-sm"></i>
+                                        <span>{{ $admin->no_telp }}</span>
+                                    </a>
+                                @else
+                                    <span class="text-slate-400 italic text-[11px]">Belum diisi</span>
+                                @endif
+                            </td>
+
+                            <!-- Tanggal Terdaftar -->
+                            <td class="px-5 py-4 text-slate-500">
+                                <div class="font-medium text-slate-700">
+                                    {{ \Carbon\Carbon::parse($admin->created_at)->translatedFormat('d M Y') }}
+                                </div>
+                                <span class="text-[10px] text-slate-400 font-mono">
+                                    {{ \Carbon\Carbon::parse($admin->created_at)->format('H:i') }} WIB
+                                </span>
+                            </td>
+
+                            <!-- Action Buttons -->
+                            <td class="px-5 py-4 text-right">
+                                <div class="flex items-center justify-end gap-1.5">
+                                    <!-- Edit -->
+                                    <a href="{{ route('admin.admin.edit', $admin->id_admin) }}"
+                                       class="p-2 text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 rounded-lg transition-colors"
+                                       title="Edit Data Admin">
+                                        <i class="fa-solid fa-pen-to-square text-sm"></i>
+                                    </a>
+
+                                    <!-- Delete -->
+                                    @if ($isCurrentUser)
+                                        <button type="button" disabled
+                                                class="p-2 text-slate-300 cursor-not-allowed rounded-lg"
+                                                title="Tidak dapat menghapus akun Anda sendiri">
+                                            <i class="fa-solid fa-trash-can text-sm"></i>
+                                        </button>
+                                    @elseif ($data->count() <= 1)
+                                        <button type="button" disabled
+                                                class="p-2 text-slate-300 cursor-not-allowed rounded-lg"
+                                                title="Tidak dapat menghapus admin terakhir">
+                                            <i class="fa-solid fa-trash-can text-sm"></i>
+                                        </button>
+                                    @else
+                                        <form action="{{ route('admin.admin.destroy', $admin->id_admin) }}" method="POST"
+                                              class="inline-block delete-form"
+                                              data-name="{{ $admin->nama }}">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="button"
+                                                    class="p-2 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors btn-delete"
+                                                    title="Hapus Admin">
+                                                <i class="fa-solid fa-trash-can text-sm"></i>
+                                            </button>
+                                        </form>
+                                    @endif
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="px-5 py-12 text-center text-slate-400">
+                                <div class="flex flex-col items-center justify-center">
+                                    <i class="fa-solid fa-user-shield text-4xl text-slate-300 mb-3"></i>
+                                    <p class="font-bold text-slate-600">Belum ada data administrator</p>
+                                    <p class="text-xs text-slate-400 mt-0.5">Silakan tambahkan akun administrator pertama sistem.</p>
+                                    <a href="{{ route('admin.admin.create') }}" class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-semibold hover:bg-indigo-700 transition-colors">
+                                        + Tambah Admin
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
-@endsection
 
 @push('scripts')
 <script>
-    document.querySelectorAll('.btnDelete').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const form = this.closest('.card-body').querySelector('.deleteForm') ||
-                this.closest('td').querySelector('.deleteForm');
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.btn-delete').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const form = this.closest('form');
+                const adminName = form.dataset.name || 'Admin';
 
-            Swal.fire({
-                title: 'Yakin hapus admin ini?',
-                text: "Data yang dihapus tidak dapat dikembalikan.",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Ya, hapus!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    form.submit();
-                }
+                Swal.fire({
+                    title: 'Hapus Data Admin?',
+                    html: `Apakah Anda yakin ingin menghapus data admin <strong>${adminName}</strong>?<br><small class="text-slate-400">Akun kredensial login juga akan dihapus secara permanen.</small>`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#e11d48',
+                    cancelButtonColor: '#64748b',
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal',
+                    customClass: {
+                        popup: 'rounded-2xl',
+                        confirmButton: 'rounded-xl text-xs font-bold px-4 py-2.5',
+                        cancelButton: 'rounded-xl text-xs font-semibold px-4 py-2.5'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
             });
         });
     });
 </script>
 @endpush
+@endsection

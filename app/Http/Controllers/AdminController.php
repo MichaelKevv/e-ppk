@@ -17,7 +17,7 @@ class AdminController extends Controller
 {
     public function index()
     {
-        $data = Admin::with('user')->get();
+        $data = Admin::with('user')->latest()->get();
         return view('admin.admin.index', compact('data'));
     }
 
@@ -29,37 +29,46 @@ class AdminController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'nama' => 'required|string|max:255',
-            'jabatan' => 'nullable|string|max:255',
+            'nama' => 'required|string|max:100',
+            'jabatan' => 'nullable|string|max:100',
             'no_telp' => 'nullable|string|max:20',
-            'username' => 'required|string|unique:users,username',
-            'email' => 'required|string|unique:users,email',
+            'username' => 'required|string|max:50|unique:users,username',
+            'email' => 'required|string|email|max:100|unique:users,email',
             'password' => 'required|string|min:6',
+            'role' => 'nullable|in:admin,admin_it',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+        ], [
+            'nama.required' => 'Nama lengkap admin wajib diisi.',
+            'username.required' => 'Username wajib diisi.',
+            'username.unique' => 'Username sudah digunakan, silakan pilih username lain.',
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.unique' => 'Email sudah terdaftar pada akun lain.',
+            'password.required' => 'Password wajib diisi.',
+            'password.min' => 'Password minimal terdiri dari 6 karakter.',
+            'foto.image' => 'File foto harus berupa gambar.',
+            'foto.max' => 'Ukuran foto maksimal adalah 2MB.'
         ]);
 
         if ($validator->fails()) {
-            $errors = $validator->errors()->all();
-            $errorMessage = "Create data Admin gagal. periksa kembali data yang diinput.<br>";
-            foreach ($errors as $error) {
-                $errorMessage .= "$error";
-            }
-            $errorMessage .= "<br>";
             return redirect()->back()
-                ->withInput()
-                ->with('error', $errorMessage);
+                ->withErrors($validator)
+                ->withInput();
         }
 
-        $data = $request->only(['nama', 'jabatan', 'no_telp', 'username', 'email', 'password']);
-
         $user = User::create([
-            'username' => $data['username'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-            'role'     => 'admin',
+            'username' => $request->username,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role'     => $request->role ?? 'admin',
         ]);
 
-        $data['id_pengguna'] = $user->id_pengguna;
+        $adminData = [
+            'id_pengguna' => $user->id_pengguna,
+            'nama' => $request->nama,
+            'jabatan' => $request->jabatan ?? 'Administrator',
+            'no_telp' => $request->no_telp,
+        ];
 
         if ($request->hasFile('foto')) {
             $file = $request->file('foto');
@@ -68,7 +77,6 @@ class AdminController extends Controller
 
             $manager = new ImageManager(new Driver());
 
-            // Simpan dalam 3 ukuran
             $sm = $manager->read($file)->scale(150, 150)->toWebp(80);
             Storage::disk('public')->put('admin/foto/sm/' . $filename, (string) $sm);
 
@@ -78,57 +86,73 @@ class AdminController extends Controller
             $lg = $manager->read($file)->scale(800, 800)->toWebp(90);
             Storage::disk('public')->put('admin/foto/lg/' . $filename, (string) $lg);
 
-            $data['foto'] = $filename;
+            $adminData['foto'] = $filename;
         }
 
-        Admin::create($data);
-        return redirect()->route('admin.admin.index')->with('success', 'Admin berhasil ditambahkan');
+        Admin::create($adminData);
+
+        return redirect()->route('admin.admin.index')->with('success', 'Data Admin baru berhasil ditambahkan');
     }
 
     public function edit(Admin $admin)
     {
-        $admin->username = $admin->user->username;
-        $admin->email = $admin->user->email;
+        $admin->load('user');
+        $admin->username = $admin->user->username ?? '';
+        $admin->email = $admin->user->email ?? '';
+        $admin->role = $admin->user->role ?? 'admin';
         return view('admin.admin.edit', compact('admin'));
     }
 
     public function update(Request $request, Admin $admin)
     {
+        $user = $admin->user;
+        $userId = $user ? $user->id_pengguna : 0;
+
         $validator = Validator::make($request->all(), [
-            'nama' => 'required|string|max:255',
-            'jabatan' => 'nullable|string|max:255',
+            'nama' => 'required|string|max:100',
+            'jabatan' => 'nullable|string|max:100',
             'no_telp' => 'nullable|string|max:20',
-            'username' => 'required|string',
-            'email' => 'required|string',
+            'username' => 'required|string|max:50|unique:users,username,' . $userId . ',id_pengguna',
+            'email' => 'required|string|email|max:100|unique:users,email,' . $userId . ',id_pengguna',
+            'password' => 'nullable|string|min:6',
+            'role' => 'nullable|in:admin,admin_it',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+        ], [
+            'nama.required' => 'Nama lengkap admin wajib diisi.',
+            'username.required' => 'Username wajib diisi.',
+            'username.unique' => 'Username sudah digunakan oleh akun lain.',
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.unique' => 'Email sudah digunakan oleh akun lain.',
+            'password.min' => 'Password minimal terdiri dari 6 karakter.',
+            'foto.image' => 'File foto harus berupa gambar.',
+            'foto.max' => 'Ukuran foto maksimal adalah 2MB.'
         ]);
 
         if ($validator->fails()) {
-            $errors = $validator->errors()->all();
-            $errorMessage = "Create data Admin gagal. periksa kembali data yang diinput.<br>";
-            foreach ($errors as $error) {
-                $errorMessage .= "$error";
-            }
-            $errorMessage .= "<br>";
             return redirect()->back()
-                ->withInput()
-                ->with('error', $errorMessage);
+                ->withErrors($validator)
+                ->withInput();
         }
 
-        $user = $admin->user;
-        $user->username = $request->username;
-        $user->email = $request->email;
-        if ($request->password) {
-            $user->password = Hash::make($request->password);
+        if ($user) {
+            $user->username = $request->username;
+            $user->email = $request->email;
+            if ($request->filled('password')) {
+                $user->password = Hash::make($request->password);
+            }
+            if ($request->filled('role')) {
+                $user->role = $request->role;
+            }
+            $user->save();
         }
-        $user->save();
 
         $admin->nama = $request->nama;
         $admin->jabatan = $request->jabatan;
         $admin->no_telp = $request->no_telp;
 
         if ($request->hasFile('foto')) {
-            // hapus foto lama
+            // Hapus foto lama jika ada
             if ($admin->foto) {
                 Storage::disk('public')->delete('admin/foto/sm/' . $admin->foto);
                 Storage::disk('public')->delete('admin/foto/md/' . $admin->foto);
@@ -153,19 +177,35 @@ class AdminController extends Controller
         }
 
         $admin->save();
-        return redirect()->route('admin.admin.index')->with('success', 'Admin berhasil diperbarui');
+
+        return redirect()->route('admin.admin.index')->with('success', 'Data Admin berhasil diperbarui');
     }
 
     public function destroy(Admin $admin)
     {
+        // Cegah menghapus akun yang sedang login
+        if (Auth::user() && Auth::user()->id_pengguna === $admin->id_pengguna) {
+            return redirect()->route('admin.admin.index')->with('error', 'Anda tidak dapat menghapus akun administrator Anda sendiri saat sedang login.');
+        }
+
+        // Cegah menghapus admin terakhir
+        if (Admin::count() <= 1) {
+            return redirect()->route('admin.admin.index')->with('error', 'Tidak dapat menghapus akun admin terakhir pada sistem.');
+        }
+
         if ($admin->foto) {
             Storage::disk('public')->delete('admin/foto/sm/' . $admin->foto);
             Storage::disk('public')->delete('admin/foto/md/' . $admin->foto);
             Storage::disk('public')->delete('admin/foto/lg/' . $admin->foto);
         }
 
+        $user = $admin->user;
         $admin->delete();
 
-        return redirect()->route('admin.admin.index')->with('success', 'Admin berhasil dihapus');
+        if ($user) {
+            $user->delete();
+        }
+
+        return redirect()->route('admin.admin.index')->with('success', 'Data Admin dan kredensial akun berhasil dihapus');
     }
 }

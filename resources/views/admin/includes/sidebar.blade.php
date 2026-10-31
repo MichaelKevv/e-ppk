@@ -157,6 +157,15 @@
                 </div>
             </div>
 
+            @if (in_array(Auth::user()->role, ['admin', 'admin_it']))
+                <!-- Data Admin -->
+                <a href="{{ route('admin.admin.index') }}"
+                   class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all duration-150 {{ request()->is('admin/admin*') ? 'bg-indigo-600 text-white shadow-sm font-semibold' : 'text-slate-300 hover:bg-slate-800/80 hover:text-white' }}">
+                    <i class="fa-solid fa-user-shield w-5 text-center text-sm {{ request()->is('admin/admin*') ? 'text-white' : 'text-slate-400' }}"></i>
+                    <span>Data Admin</span>
+                </a>
+            @endif
+
             <!-- Dinsos -->
             <a href="{{ route('admin.dinsos.index') }}"
                class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all duration-150 {{ request()->is('admin/dinsos*') ? 'bg-indigo-600 text-white shadow-sm font-semibold' : 'text-slate-300 hover:bg-slate-800/80 hover:text-white' }}">
