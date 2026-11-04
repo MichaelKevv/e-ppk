@@ -838,7 +838,7 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
 <script>
 window.exportDecisionTreeToPng = async function(rootAlpine) {
     const captureEl = document.getElementById('tree-capture-container');
@@ -847,8 +847,8 @@ window.exportDecisionTreeToPng = async function(rootAlpine) {
         return;
     }
 
-    if (typeof html2canvas === 'undefined') {
-        alert('Library html2canvas sedang dimuat, silakan tunggu sebentar dan klik kembali.');
+    if (typeof htmlToImage === 'undefined') {
+        alert('Library gambar sedang dimuat, silakan tunggu sebentar dan klik kembali.');
         return;
     }
 
@@ -878,29 +878,39 @@ window.exportDecisionTreeToPng = async function(rootAlpine) {
     document.body.appendChild(statusToast);
 
     try {
-        await new Promise(r => setTimeout(r, 300));
+        await new Promise(r => setTimeout(r, 350));
 
         const scrollWidth = captureEl.scrollWidth;
         const scrollHeight = captureEl.scrollHeight;
 
-        const canvas = await html2canvas(captureEl, {
-            scale: 2, // 2x DPI untuk hasil tajam saat disisipkan ke Word / Dokumen
-            backgroundColor: '#ffffff',
-            useCORS: true,
-            logging: false,
-            width: scrollWidth,
-            height: scrollHeight,
-            windowWidth: scrollWidth + 250,
-            windowHeight: scrollHeight + 250,
-            onclone: (clonedDoc) => {
-                const target = clonedDoc.getElementById('tree-capture-container');
-                if (target) {
-                    target.style.transform = 'none';
-                    target.style.margin = '0 auto';
-                    target.style.boxShadow = 'none';
+        // html-to-image mendukung penuh Tailwind CSS v4 & modern CSS (oklch)
+        let dataUrl;
+        try {
+            dataUrl = await htmlToImage.toPng(captureEl, {
+                pixelRatio: 2, // 2x DPI untuk hasil tajam saat disisipkan ke Word / Dokumen
+                backgroundColor: '#ffffff',
+                cacheBust: true,
+                width: scrollWidth,
+                height: scrollHeight,
+                style: {
+                    transform: 'none',
+                    margin: '0 auto',
                 }
-            }
-        });
+            });
+        } catch (fontErr) {
+            console.warn('Mencoba render ulang tanpa font embedding:', fontErr);
+            dataUrl = await htmlToImage.toPng(captureEl, {
+                pixelRatio: 2,
+                backgroundColor: '#ffffff',
+                width: scrollWidth,
+                height: scrollHeight,
+                skipFonts: true,
+                style: {
+                    transform: 'none',
+                    margin: '0 auto',
+                }
+            });
+        }
 
         const link = document.createElement('a');
         const now = new Date();
@@ -908,9 +918,10 @@ window.exportDecisionTreeToPng = async function(rootAlpine) {
                         String(now.getMonth() + 1).padStart(2, '0') + '' +
                         String(now.getDate()).padStart(2, '0') + '_' +
                         String(now.getHours()).padStart(2, '0') +
-                        String(now.getMinutes()).padStart(2, '0');
+                        String(now.getMinutes()).padStart(2, '0') +
+                        String(now.getSeconds()).padStart(2, '0');
         link.download = `pohon_keputusan_id3_${dateStr}.png`;
-        link.href = canvas.toDataURL('image/png');
+        link.href = dataUrl;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);

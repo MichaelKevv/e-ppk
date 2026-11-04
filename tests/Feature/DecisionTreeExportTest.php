@@ -37,6 +37,6 @@ class DecisionTreeExportTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('Export Excel (.xlsx)');
         $response->assertSee('Ekspor Pohon (PNG)');
-        $response->assertSee('html2canvas');
+        $response->assertSee('html-to-image');
     }
 }
