@@ -3,7 +3,16 @@
 
 @section('content')
 <div x-data="{
-    activeTab: '{{ request('tab', request()->has('page') ? 'dataset' : 'tree') }}'
+    activeTab: '{{ request('tab', request()->has('page') ? 'dataset' : 'tree') }}',
+    isExportingPng: false,
+    async exportTreePng() {
+        if (this.activeTab !== 'tree') {
+            this.activeTab = 'tree';
+            history.replaceState(null, '', '?tab=tree');
+            await new Promise(r => setTimeout(r, 200));
+        }
+        await window.exportDecisionTreeToPng(this);
+    }
 }" class="space-y-6">
 
     <!-- Page Header & Action Bar -->
@@ -44,18 +53,36 @@
                 </button>
             </form>
 
-            <!-- Download Template CSV -->
-            <a href="{{ route('admin.decision-tree.download-template') }}"
-               class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-xs font-bold transition-all">
-                <i class="fa-solid fa-file-csv text-emerald-600"></i>
-                <span>Template CSV</span>
+            <!-- Ekspor Pohon PNG -->
+            <button type="button" @click="exportTreePng()" :disabled="isExportingPng"
+                    title="Unduh diagram pohon utuh resolusi tinggi (PNG) untuk dimasukkan ke dokumen Word/laporan"
+                    class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-xs font-bold transition-all active:scale-95 disabled:opacity-50">
+                <i class="fa-solid fa-file-image" x-show="!isExportingPng"></i>
+                <i class="fa-solid fa-spinner fa-spin" x-show="isExportingPng" style="display: none;"></i>
+                <span x-text="isExportingPng ? 'Memproses PNG...' : 'Ekspor Pohon (PNG)'">Ekspor Pohon (PNG)</span>
+            </button>
+
+            <!-- Export Excel (.xlsx) -->
+            <a href="{{ route('admin.decision-tree.export-excel') }}"
+               title="Ekspor seluruh dataset latih ke Microsoft Excel (.xlsx)"
+               class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs text-xs font-bold transition-all hover:scale-[1.02] active:scale-95">
+                <i class="fa-solid fa-file-excel"></i>
+                <span>Export Excel (.xlsx)</span>
             </a>
 
             <!-- Export CSV -->
             <a href="{{ route('admin.decision-tree.export-csv') }}"
+               title="Ekspor seluruh dataset latih ke file CSV"
                class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-xs font-bold transition-all">
-                <i class="fa-solid fa-download"></i>
-                <span>Export Dataset</span>
+                <i class="fa-solid fa-file-csv text-slate-600"></i>
+                <span>Export CSV</span>
+            </a>
+
+            <!-- Download Template CSV -->
+            <a href="{{ route('admin.decision-tree.download-template') }}"
+               class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-xs font-bold transition-all">
+                <i class="fa-solid fa-download text-emerald-600"></i>
+                <span>Template CSV</span>
             </a>
         </div>
     </div>
@@ -259,6 +286,17 @@
                             <span>Tengah</span>
                         </button>
                     </div>
+
+                    <!-- Ekspor PNG Button on Visualizer Toolbar -->
+                    <button type="button"
+                            @click="exportTreePng()"
+                            :disabled="isExportingPng"
+                            title="Unduh diagram pohon resolusi tinggi (PNG) untuk dokumen Word/laporan"
+                            class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-xs transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50">
+                        <i class="fa-solid fa-file-image text-[11px]" x-show="!isExportingPng"></i>
+                        <i class="fa-solid fa-spinner fa-spin text-[11px]" x-show="isExportingPng" style="display: none;"></i>
+                        <span x-text="isExportingPng ? 'Memproses...' : 'Ekspor PNG'">Ekspor PNG</span>
+                    </button>
                 </div>
             </div>
 
@@ -283,8 +321,27 @@
                 @if ($tree)
                     <div class="w-max min-w-full flex transition-transform duration-150 origin-top"
                          :style="'transform: scale(' + zoom + '); transform-origin: top center;'">
-                        <div class="m-auto px-16 py-4">
-                            @include('admin.metode.partials.tree-node', ['node' => $tree])
+                        <div id="tree-capture-container" class="m-auto px-12 py-8 bg-white rounded-2xl border border-slate-200/80 shadow-xs">
+                            <!-- Header Info Diagram untuk Hasil Tangkapan Dokumen -->
+                            <div class="text-center pb-5 mb-6 border-b border-slate-100">
+                                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-bold mb-1.5">
+                                    <i class="fa-solid fa-sitemap"></i>
+                                    <span>Model Pohon Keputusan (Algoritma ID3)</span>
+                                </div>
+                                <h2 class="text-lg font-extrabold text-slate-800 tracking-tight">
+                                    Klasifikasi Tingkat Keparahan Kasus Perundungan
+                                </h2>
+                                <p class="text-xs text-slate-500 mt-1">
+                                    Total Sampel: <span class="font-bold text-slate-700">{{ $totalDataset }} Kasus</span> &bull;
+                                    Root Node: <span class="font-bold text-indigo-600">{{ $tree['attribute_label'] ?? ($tree['attribute'] ?? '-') }}</span> &bull;
+                                    Akurasi Model: <span class="font-bold text-emerald-600">{{ $evaluation['accuracy'] ?? 0 }}%</span> &bull;
+                                    Entropi Total: <span class="font-bold text-amber-600">{{ $entropyTotal }}</span>
+                                </p>
+                            </div>
+
+                            <div class="flex justify-center">
+                                @include('admin.metode.partials.tree-node', ['node' => $tree])
+                            </div>
                         </div>
                     </div>
                 @else
@@ -461,14 +518,30 @@
                     <p class="text-xs text-slate-500 mt-0.5">Daftar kasus historis dan pengaduan terverifikasi yang digunakan untuk membangun model.</p>
                 </div>
 
-                <!-- Reset Seeder Action -->
-                <form action="{{ route('admin.decision-tree.reset-seeder') }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin mereset dataset ke 60 data historis awal? Data kustom akan terhapus.')">
-                    @csrf
-                    <button type="submit" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-medium text-slate-600 hover:text-rose-600 hover:bg-rose-50 transition-colors">
-                        <i class="fa-solid fa-rotate-left text-xs"></i>
-                        <span>Reset ke 60 Data Seeder</span>
-                    </button>
-                </form>
+                <div class="flex flex-wrap items-center gap-2">
+                    <!-- Export Excel (.xlsx) -->
+                    <a href="{{ route('admin.decision-tree.export-excel') }}"
+                       class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs transition-all hover:scale-[1.02] active:scale-95">
+                        <i class="fa-solid fa-file-excel"></i>
+                        <span>Export Excel (.xlsx)</span>
+                    </a>
+
+                    <!-- Export CSV -->
+                    <a href="{{ route('admin.decision-tree.export-csv') }}"
+                       class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-xs font-bold transition-all">
+                        <i class="fa-solid fa-file-csv text-slate-600"></i>
+                        <span>Export CSV</span>
+                    </a>
+
+                    <!-- Reset Seeder Action -->
+                    <form action="{{ route('admin.decision-tree.reset-seeder') }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin mereset dataset ke 60 data historis awal? Data kustom akan terhapus.')">
+                        @csrf
+                        <button type="submit" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-medium text-slate-600 hover:text-rose-600 hover:bg-rose-50 transition-colors">
+                            <i class="fa-solid fa-rotate-left text-xs"></i>
+                            <span>Reset 60 Data</span>
+                        </button>
+                    </form>
+                </div>
             </div>
 
             <!-- Legenda Indikator Biner Kasus -->
@@ -763,3 +836,96 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+window.exportDecisionTreeToPng = async function(rootAlpine) {
+    const captureEl = document.getElementById('tree-capture-container');
+    if (!captureEl) {
+        alert('Diagram pohon keputusan belum tersedia.');
+        return;
+    }
+
+    if (typeof html2canvas === 'undefined') {
+        alert('Library html2canvas sedang dimuat, silakan tunggu sebentar dan klik kembali.');
+        return;
+    }
+
+    const treeEl = document.querySelector('[x-ref="canvas"]')?.closest('[x-data]');
+    let oldZoom = 1;
+    let treeComponent = null;
+
+    if (treeEl && window.Alpine) {
+        try {
+            treeComponent = window.Alpine.$data(treeEl);
+            if (treeComponent && typeof treeComponent.zoom !== 'undefined') {
+                oldZoom = treeComponent.zoom;
+                treeComponent.zoom = 1;
+            }
+        } catch (e) {
+            console.warn('Could not read treeComponent zoom:', e);
+        }
+    }
+
+    if (rootAlpine) rootAlpine.isExportingPng = true;
+
+    // Toast feedback render
+    const statusToast = document.createElement('div');
+    statusToast.id = 'export-png-toast';
+    statusToast.className = 'fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3 text-xs font-semibold border border-slate-700';
+    statusToast.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-indigo-400 text-base"></i><span>Sedang merender gambar pohon keputusan resolusi tinggi (PNG)...</span>';
+    document.body.appendChild(statusToast);
+
+    try {
+        await new Promise(r => setTimeout(r, 300));
+
+        const scrollWidth = captureEl.scrollWidth;
+        const scrollHeight = captureEl.scrollHeight;
+
+        const canvas = await html2canvas(captureEl, {
+            scale: 2, // 2x DPI untuk hasil tajam saat disisipkan ke Word / Dokumen
+            backgroundColor: '#ffffff',
+            useCORS: true,
+            logging: false,
+            width: scrollWidth,
+            height: scrollHeight,
+            windowWidth: scrollWidth + 250,
+            windowHeight: scrollHeight + 250,
+            onclone: (clonedDoc) => {
+                const target = clonedDoc.getElementById('tree-capture-container');
+                if (target) {
+                    target.style.transform = 'none';
+                    target.style.margin = '0 auto';
+                    target.style.boxShadow = 'none';
+                }
+            }
+        });
+
+        const link = document.createElement('a');
+        const now = new Date();
+        const dateStr = now.getFullYear() + '' +
+                        String(now.getMonth() + 1).padStart(2, '0') + '' +
+                        String(now.getDate()).padStart(2, '0') + '_' +
+                        String(now.getHours()).padStart(2, '0') +
+                        String(now.getMinutes()).padStart(2, '0');
+        link.download = `pohon_keputusan_id3_${dateStr}.png`;
+        link.href = canvas.toDataURL('image/png');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+    } catch (err) {
+        console.error('Export PNG failed:', err);
+        alert('Gagal mengekspor gambar pohon keputusan: ' + err.message);
+    } finally {
+        if (treeComponent && typeof treeComponent.zoom !== 'undefined') {
+            treeComponent.zoom = oldZoom;
+        }
+        if (rootAlpine) rootAlpine.isExportingPng = false;
+        const toast = document.getElementById('export-png-toast');
+        if (toast) toast.remove();
+    }
+};
+</script>
+@endpush

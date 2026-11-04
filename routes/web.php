@@ -106,6 +106,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/download-template', [DecisionTreeController::class, 'downloadTemplate'])->name('download-template');
             Route::post('/import-csv', [DecisionTreeController::class, 'importCsv'])->name('import-csv');
             Route::get('/export-csv', [DecisionTreeController::class, 'exportCsv'])->name('export-csv');
+            Route::get('/export-excel', [DecisionTreeController::class, 'exportExcel'])->name('export-excel');
             Route::delete('/dataset/{id}', [DecisionTreeController::class, 'destroyDataset'])->name('dataset.destroy');
             Route::post('/reset-seeder', [DecisionTreeController::class, 'resetSeeder'])->name('reset-seeder');
         });

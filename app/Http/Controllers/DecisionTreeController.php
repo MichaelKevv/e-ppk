@@ -8,6 +8,11 @@ use App\Services\DecisionTreeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Response;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
 
 class DecisionTreeController extends Controller
 {
@@ -319,6 +324,141 @@ class DecisionTreeController extends Controller
         };
 
         return Response::stream($callback, 200, $headers);
+    }
+
+    /**
+     * Ekspor seluruh dataset latih ke Microsoft Excel (.xlsx)
+     */
+    public function exportExcel()
+    {
+        $cases = Pengaduan::whereNotNull('klasifikasi')->get();
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Dataset Latih ID3');
+
+        // Headers
+        $headers = [
+            'A1' => 'No',
+            'B1' => 'Kode Kasus',
+            'C1' => 'Bentuk Perundungan',
+            'D1' => 'Frekuensi Kejadian',
+            'E1' => 'Trauma Mental',
+            'F1' => 'Luka Fisik',
+            'G1' => 'Pelaku > 1 Orang',
+            'H1' => 'Konten Siber / Digital',
+            'I1' => 'Tingkat Keparahan (Klasifikasi)',
+            'J1' => 'Sumber Data',
+        ];
+
+        foreach ($headers as $cell => $val) {
+            $sheet->setCellValue($cell, $val);
+        }
+
+        // Header style: dark indigo background, bold white text, centered, height
+        $sheet->getStyle('A1:J1')->applyFromArray([
+            'font' => [
+                'bold' => true,
+                'color' => ['rgb' => 'FFFFFF'],
+                'size' => 11,
+                'name' => 'Calibri',
+            ],
+            'fill' => [
+                'fillType' => Fill::FILL_SOLID,
+                'startColor' => ['rgb' => '4338CA'], // Indigo-700
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER,
+                'wrapText' => true,
+            ],
+        ]);
+        $sheet->getRowDimension(1)->setRowHeight(30);
+
+        $rowNum = 2;
+        foreach ($cases as $index => $c) {
+            $sheet->setCellValue('A' . $rowNum, $index + 1);
+            $sheet->setCellValue('B' . $rowNum, $c->kode_kasus);
+            $sheet->setCellValue('C' . $rowNum, ucfirst($c->bentuk_perundungan));
+            $sheet->setCellValue('D' . $rowNum, ucwords(str_replace('_', ' ', $c->frekuensi_kejadian)));
+            $sheet->setCellValue('E' . $rowNum, $c->trauma_mental ? 'Ya (1)' : 'Tidak (0)');
+            $sheet->setCellValue('F' . $rowNum, $c->luka_fisik ? 'Ya (1)' : 'Tidak (0)');
+            $sheet->setCellValue('G' . $rowNum, $c->pelaku_lebih_dari_satu ? 'Kelompok (1)' : 'Tunggal (0)');
+            $sheet->setCellValue('H' . $rowNum, $c->konten_digital ? 'Ada (1)' : 'Tidak (0)');
+            $sheet->setCellValue('I' . $rowNum, strtoupper($c->klasifikasi));
+            $sheet->setCellValue('J' . $rowNum, ucfirst($c->sumber ?? 'historis'));
+
+            // Alternating row color
+            if ($rowNum % 2 === 1) {
+                $sheet->getStyle('A' . $rowNum . ':J' . $rowNum)->applyFromArray([
+                    'fill' => [
+                        'fillType' => Fill::FILL_SOLID,
+                        'startColor' => ['rgb' => 'F8FAFC'],
+                    ],
+                ]);
+            }
+
+            // Classification highlight
+            $badgeColor = match (strtolower($c->klasifikasi)) {
+                'ringan' => 'D1FAE5', // emerald-100
+                'sedang' => 'FEF3C7', // amber-100
+                'berat' => 'FFE4E6',  // rose-100
+                default => 'F1F5F9',
+            };
+            $sheet->getStyle('I' . $rowNum)->applyFromArray([
+                'fill' => [
+                    'fillType' => Fill::FILL_SOLID,
+                    'startColor' => ['rgb' => $badgeColor],
+                ],
+                'font' => [
+                    'bold' => true,
+                ],
+            ]);
+
+            $sheet->getRowDimension($rowNum)->setRowHeight(22);
+            $rowNum++;
+        }
+
+        $lastRow = max(2, $rowNum - 1);
+
+        // Grid borders
+        $sheet->getStyle('A1:J' . $lastRow)->applyFromArray([
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['rgb' => 'CBD5E1'],
+                ],
+            ],
+            'alignment' => [
+                'vertical' => Alignment::VERTICAL_CENTER,
+            ],
+        ]);
+
+        // Specific column alignments
+        $sheet->getStyle('A2:A' . $lastRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('B2:B' . $lastRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('C2:D' . $lastRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('E2:H' . $lastRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('I2:I' . $lastRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('J2:J' . $lastRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+        // Auto width for columns
+        foreach (range('A', 'J') as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        // Enable auto filter for easy sorting in Excel
+        $sheet->setAutoFilter('A1:J' . $lastRow);
+
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'dataset_latih_perundungan_' . date('Ymd_His') . '.xlsx';
+
+        return response()->streamDownload(function () use ($writer) {
+            $writer->save('php://output');
+        }, $filename, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Cache-Control' => 'max-age=0',
+        ]);
     }
 
     /**
