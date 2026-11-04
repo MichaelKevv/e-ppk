@@ -61,7 +61,7 @@
                 <i class="fa-solid fa-bullhorn w-5 text-center text-sm {{ request()->is('admin/pengaduan*') ? 'text-white' : 'text-slate-400' }}"></i>
                 <span>Pengaduan Kasus</span>
             </div>
-            @php $countLaporan = \App\Models\Pengaduan::where('status', 'diproses')->count(); @endphp
+            @php $countLaporan = \App\Models\Pengaduan::forUser(Auth::user())->where('status', 'diproses')->count(); @endphp
             @if ($countLaporan > 0 && Auth::user()->role !== 'siswa')
                 <span class="px-2 py-0.5 text-[11px] font-bold rounded-full bg-rose-500 text-white">
                     {{ $countLaporan }}
@@ -85,39 +85,41 @@
             </a>
         @endif
 
-        <!-- Metode Analitik (Decision Tree & TAM) -->
-        <div class="pt-4 text-[11px] uppercase font-bold tracking-wider text-slate-400 px-3 pb-1">Metode & Analitik</div>
+        @if (in_array(Auth::user()->role, ['admin', 'admin_it']))
+            <!-- Metode Analitik (Decision Tree & TAM) -->
+            <div class="pt-4 text-[11px] uppercase font-bold tracking-wider text-slate-400 px-3 pb-1">Metode & Analitik</div>
 
-        <div x-data="{ open: {{ request()->is('admin/decision-tree*') || request()->is('admin/survey*') || request()->is('admin/tam*') ? 'true' : 'false' }} }">
-            <button @click="open = !open"
-                    class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white transition-all duration-150">
-                <div class="flex items-center gap-3">
-                    <i class="fa-solid fa-brain w-5 text-center text-sm text-indigo-400"></i>
-                    <span>Analisis Komputasi</span>
+            <div x-data="{ open: {{ request()->is('admin/decision-tree*') || request()->is('admin/survey*') || request()->is('admin/tam*') ? 'true' : 'false' }} }">
+                <button @click="open = !open"
+                        class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-slate-300 hover:bg-slate-800/80 hover:text-white transition-all duration-150">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-brain w-5 text-center text-sm text-indigo-400"></i>
+                        <span>Analisis Komputasi</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-down text-xs transition-transform duration-200" :class="open ? 'rotate-180' : ''"></i>
+                </button>
+                <div x-show="open" class="mt-1 pl-7 space-y-1" style="display: none;">
+                    <!-- Decision Tree ID3 -->
+                    <a href="{{ route('admin.decision-tree.index') }}"
+                       class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors {{ request()->is('admin/decision-tree*') ? 'bg-indigo-600/30 text-indigo-300 font-semibold border-l-2 border-indigo-500' : 'text-slate-400 hover:text-white hover:bg-slate-800/50' }}">
+                        <i class="fa-solid fa-sitemap text-xs"></i>
+                        <span>Decision Tree (ID3)</span>
+                    </a>
+                    <!-- Survey Data & TAM -->
+                    <a href="{{ route('admin.survey.index') }}"
+                       class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors {{ request()->is('admin/survey*') ? 'bg-indigo-600/30 text-indigo-300 font-semibold border-l-2 border-indigo-500' : 'text-slate-400 hover:text-white hover:bg-slate-800/50' }}">
+                        <i class="fa-solid fa-poll text-xs"></i>
+                        <span>Survey Data (TAM)</span>
+                    </a>
+                    <!-- Evaluasi TAM Model -->
+                    <a href="{{ route('admin.tam.index') }}"
+                       class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors {{ request()->is('admin/tam*') ? 'bg-indigo-600/30 text-indigo-300 font-semibold border-l-2 border-indigo-500' : 'text-slate-400 hover:text-white hover:bg-slate-800/50' }}">
+                        <i class="fa-solid fa-calculator text-xs"></i>
+                        <span>Kalkulasi Model TAM</span>
+                    </a>
                 </div>
-                <i class="fa-solid fa-chevron-down text-xs transition-transform duration-200" :class="open ? 'rotate-180' : ''"></i>
-            </button>
-            <div x-show="open" class="mt-1 pl-7 space-y-1" style="display: none;">
-                <!-- Decision Tree ID3 -->
-                <a href="{{ route('admin.decision-tree.index') }}"
-                   class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors {{ request()->is('admin/decision-tree*') ? 'bg-indigo-600/30 text-indigo-300 font-semibold border-l-2 border-indigo-500' : 'text-slate-400 hover:text-white hover:bg-slate-800/50' }}">
-                    <i class="fa-solid fa-sitemap text-xs"></i>
-                    <span>Decision Tree (ID3)</span>
-                </a>
-                <!-- Survey Data & TAM -->
-                <a href="{{ route('admin.survey.index') }}"
-                   class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors {{ request()->is('admin/survey*') ? 'bg-indigo-600/30 text-indigo-300 font-semibold border-l-2 border-indigo-500' : 'text-slate-400 hover:text-white hover:bg-slate-800/50' }}">
-                    <i class="fa-solid fa-poll text-xs"></i>
-                    <span>Survey Data (TAM)</span>
-                </a>
-                <!-- Evaluasi TAM Model -->
-                <a href="{{ route('admin.tam.index') }}"
-                   class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors {{ request()->is('admin/tam*') ? 'bg-indigo-600/30 text-indigo-300 font-semibold border-l-2 border-indigo-500' : 'text-slate-400 hover:text-white hover:bg-slate-800/50' }}">
-                    <i class="fa-solid fa-calculator text-xs"></i>
-                    <span>Kalkulasi Model TAM</span>
-                </a>
             </div>
-        </div>
+        @endif
 
         @if (in_array(Auth::user()->role, ['admin', 'admin_it', 'gurubk']))
             <!-- Master Data Section -->
@@ -164,14 +166,14 @@
                     <i class="fa-solid fa-user-shield w-5 text-center text-sm {{ request()->is('admin/admin*') ? 'text-white' : 'text-slate-400' }}"></i>
                     <span>Data Admin</span>
                 </a>
-            @endif
 
-            <!-- Dinsos -->
-            <a href="{{ route('admin.dinsos.index') }}"
-               class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all duration-150 {{ request()->is('admin/dinsos*') ? 'bg-indigo-600 text-white shadow-sm font-semibold' : 'text-slate-300 hover:bg-slate-800/80 hover:text-white' }}">
-                <i class="fa-solid fa-hands-holding-child w-5 text-center text-sm {{ request()->is('admin/dinsos*') ? 'text-white' : 'text-slate-400' }}"></i>
-                <span>Dinas Sosial</span>
-            </a>
+                <!-- Dinsos -->
+                <a href="{{ route('admin.dinsos.index') }}"
+                   class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all duration-150 {{ request()->is('admin/dinsos*') ? 'bg-indigo-600 text-white shadow-sm font-semibold' : 'text-slate-300 hover:bg-slate-800/80 hover:text-white' }}">
+                    <i class="fa-solid fa-hands-holding-child w-5 text-center text-sm {{ request()->is('admin/dinsos*') ? 'text-white' : 'text-slate-400' }}"></i>
+                    <span>Dinas Sosial</span>
+                </a>
+            @endif
 
             <!-- Artikel Edukasi -->
             <a href="{{ route('admin.artikel.index') }}"
