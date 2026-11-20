@@ -153,9 +153,14 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                     <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
                         <span class="text-slate-400 block mb-1">Korban / Pelapor</span>
-                        <p class="font-bold text-slate-800 text-sm">{{ $pengaduan->nama_pelapor ?: ($pengaduan->nama_siswa ?: 'Pelapor Anonim (Dirahasiakan)') }}</p>
-                        @if($pengaduan->kelas_siswa)
-                            <span class="text-[11px] text-slate-500 font-semibold block mt-0.5">Kelas: {{ $pengaduan->kelas_siswa }}</span>
+                        @if(Auth::user()->isSiswa() && Auth::id() === $pengaduan->id_user)
+                            <p class="font-bold text-slate-800 text-sm">{{ $pengaduan->siswa?->nama ?? $pengaduan->nama_pelapor }} (Saya)</p>
+                            @if($pengaduan->siswa?->kelas)
+                                <span class="text-[11px] text-slate-500 font-semibold block mt-0.5">Kelas: {{ $pengaduan->siswa->kelas }}</span>
+                            @endif
+                        @else
+                            <p class="font-mono font-bold text-slate-800 text-sm">*** <span class="text-slate-400 font-normal font-sans text-xs">(Identitas Dirahasiakan / Anonim)</span></p>
+                            <span class="text-[11px] text-slate-400 font-semibold block mt-0.5">Kelas: ***</span>
                         @endif
                         @if($pengaduan->sekolah)
                             <span class="text-[11px] text-blue-600 block mt-0.5">{{ $pengaduan->sekolah->nama_sekolah }}</span>
@@ -377,11 +382,19 @@
                         @foreach($pengaduan->feedback as $fb)
                             @php
                                 $isMe = $fb->id_user === Auth::id();
+                                $senderLabel = 'Petugas Konselor';
+                                if ($isMe) {
+                                    $senderLabel = 'Anda (' . (Auth::user()->isSiswa() ? 'Saya' : Auth::user()->nama_lengkap) . ')';
+                                } elseif ($fb->user && $fb->user->isSiswa()) {
+                                    $senderLabel = 'Siswa Pelapor (***)';
+                                } elseif ($fb->user) {
+                                    $senderLabel = $fb->user->nama_lengkap;
+                                }
                             @endphp
                             <div class="p-3.5 rounded-2xl text-xs space-y-1 {{ $isMe ? 'bg-indigo-50/80 border border-indigo-200/60 ml-4' : 'bg-slate-50 border border-slate-200/80 mr-4' }}">
                                 <div class="flex items-center justify-between text-[10px]">
                                     <span class="font-bold {{ $isMe ? 'text-indigo-800' : 'text-slate-800' }}">
-                                        {{ $isMe ? 'Anda (' . Auth::user()->nama_lengkap . ')' : ($fb->user?->nama_lengkap ?? 'Petugas Konselor') }}
+                                        {{ $senderLabel }}
                                     </span>
                                     <span class="text-slate-400 font-medium">{{ \Carbon\Carbon::parse($fb->created_at)->diffForHumans() }}</span>
                                 </div>

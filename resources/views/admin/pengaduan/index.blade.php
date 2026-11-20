@@ -167,7 +167,7 @@
                             x-show="(sumberTab === 'all' || '{{ $item->sumber ?? 'pengaduan' }}' === sumberTab) &&
                                     (statusFilter === 'all' || '{{ $item->status ?? 'diproses' }}' === statusFilter) &&
                                     (klasifikasiFilter === 'all' || '{{ $item->klasifikasi }}' === klasifikasiFilter) &&
-                                    (search === '' || '{{ strtolower(($item->kode_kasus ?? '') . ' ' . $item->nama_pelaku . ' ' . $item->nama_pelapor . ' ' . $item->lokasi) }}'.includes(search.toLowerCase()))">
+                                    (search === '' || '{{ strtolower(($item->kode_kasus ?? '') . ' ' . $item->nama_pelaku . ' ' . $item->lokasi) }}'.includes(search.toLowerCase()))">
                             <!-- Kode & Tanggal -->
                             <td class="p-4">
                                 <span class="font-bold text-slate-900 block font-mono">{{ $item->kode_kasus ?? ('# ' . $item->id_pengaduan) }}</span>
@@ -199,7 +199,7 @@
                             <td class="p-4">
                                 <span class="font-bold text-slate-800 block">{{ $item->nama_pelaku ?: 'Tidak Diketahui' }}</span>
                                 <span class="text-[11px] text-slate-500">
-                                    Pelapor: {{ $item->nama_pelapor ?: '(Dirahasiakan)' }}
+                                    Pelapor: <span class="font-mono font-bold text-slate-700">{{ Auth::user()->isSiswa() && Auth::id() === $item->id_user ? ($item->nama_pelapor ?: 'Saya (Pelapor)') : '***' }}</span>
                                 </span>
                             </td>
 

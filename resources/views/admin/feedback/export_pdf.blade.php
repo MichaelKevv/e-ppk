@@ -114,18 +114,23 @@
             @forelse ($data as $index => $feedback)
                 @php
                     $p = $feedback->pengaduan;
-                    $namaSiswa = $p?->siswa?->nama ?? optional($p?->user?->siswas)->first()?->nama ?? '-';
-                    $kelasSiswa = $p?->siswa?->kelas ?? optional($p?->user?->siswas)->first()?->kelas ?? '-';
+                    $namaSiswa = '***';
+                    $kelasSiswa = '-';
                     $judulKasus = $p ? (ucfirst($p->bentuk_perundungan ?? 'Kasus') . ' di ' . ($p->lokasi ?? '-')) : 'Kasus Terhapus';
                     $u = $feedback->user;
-                    $pengirim = $u ? ($u->name ?? $u->username) : 'Petugas';
-                    $rolePengirim = ucfirst($u?->role ?? 'Admin');
+                    if ($u && $u->role === 'siswa') {
+                        $pengirim = 'Siswa Pelapor (***)';
+                        $rolePengirim = 'Siswa (Anonim)';
+                    } else {
+                        $pengirim = $u ? ($u->name ?? $u->username) : 'Petugas';
+                        $rolePengirim = ucfirst($u?->role ?? 'Admin');
+                    }
                 @endphp
                 <tr>
                     <td style="text-align: center; color: #64748b;">{{ $index + 1 }}</td>
                     <td>
-                        <strong>{{ $namaSiswa }}</strong><br>
-                        <span style="color: #64748b; font-size: 7.5pt;">Kelas: {{ $kelasSiswa }}</span>
+                        <strong>***</strong><br>
+                        <span style="color: #64748b; font-size: 7.5pt;">Identitas Dirahasiakan</span>
                     </td>
                     <td>
                         <strong>{{ $judulKasus }}</strong><br>

@@ -173,4 +173,19 @@ class Pengaduan extends Model
     {
         return $this->foto ? asset('storage/pengaduan/foto/lg/' . $this->foto) : null;
     }
+
+    /**
+     * Pastikan nama pelapor selalu disamarkan / anonim (***) untuk Guru BK, Dinsos, dan publik
+     */
+    public function getNamaPelaporAttribute($value): string
+    {
+        if (\Illuminate\Support\Facades\Auth::check()) {
+            $user = \Illuminate\Support\Facades\Auth::user();
+            if ($user->isSiswa() && $user->id_pengguna === $this->id_user) {
+                return $value ?: 'Saya (Pelapor)';
+            }
+        }
+
+        return '***';
+    }
 }

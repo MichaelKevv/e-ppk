@@ -28,17 +28,18 @@ class FeedbackController extends Controller
                 ->get();
         }
 
-        $data = $data->map(function ($item) {
+        $data = $data->map(function ($item) use ($user) {
             if ($item->pengaduan) {
                 $p = $item->pengaduan;
                 $pUser = $p->user;
-                $namaSiswa = $p->siswa?->nama ?? ($pUser && $pUser->siswas->isNotEmpty() ? $pUser->siswas->first()->nama : "Siswa #{$p->id_user}");
-                $kelasSiswa = $p->siswa?->kelas ?? ($pUser && $pUser->siswas->isNotEmpty() ? $pUser->siswas->first()->kelas : '-');
-                $jurusanSiswa = $p->siswa?->jurusan ?? ($pUser && $pUser->siswas->isNotEmpty() ? $pUser->siswas->first()->jurusan : '-');
+                $isOwner = $user && $user->isSiswa() && $p->id_user === $user->id_pengguna;
+                $namaSiswa = $isOwner ? ($p->siswa?->nama ?? "Saya (Siswa)") : '***';
+                $kelasSiswa = $isOwner ? ($p->siswa?->kelas ?? ($pUser && $pUser->siswas->isNotEmpty() ? $pUser->siswas->first()->kelas : '-')) : '***';
+                $jurusanSiswa = $isOwner ? ($p->siswa?->jurusan ?? ($pUser && $pUser->siswas->isNotEmpty() ? $pUser->siswas->first()->jurusan : '-')) : '***';
                 $lokasi = $p->lokasi ? ucfirst($p->lokasi) : 'Lokasi tidak spesifik';
                 $bentuk = $p->bentuk_perundungan ? ucfirst($p->bentuk_perundungan) : 'Kasus Perundungan';
 
-                $item->judul_pengaduan = "{$bentuk} di {$lokasi} - {$namaSiswa}";
+                $item->judul_pengaduan = "{$bentuk} di {$lokasi} - " . ($isOwner ? $namaSiswa : 'Pelapor (***)');
                 $item->nama_siswa = $namaSiswa;
                 $item->kelas_siswa = $kelasSiswa;
                 $item->jurusan_siswa = $jurusanSiswa;
@@ -58,13 +59,16 @@ class FeedbackController extends Controller
                 $u = $item->user ?? User::find($item->id_user);
                 if ($u) {
                     if ($u->role === 'siswa') {
-                        $item->nama_pengirim = $u->siswas->first()?->nama ?? $u->name ?? $u->username;
+                        $isSelf = $user && $user->id_pengguna === $u->id_pengguna;
+                        $item->nama_pengirim = $isSelf ? ($u->siswas->first()?->nama ?? 'Saya') : 'Siswa Pelapor (***)';
                         $item->role_pengirim = 'Siswa (Korban/Pelapor)';
                     } elseif ($u->role === 'gurubk') {
-                        $item->nama_pengirim = $u->gurubks->first()?->nama ?? $u->name ?? $u->username;
+                        $guru = $u->gurubks->isNotEmpty() ? $u->gurubks->first()->nama : ($u->name ?? $u->username);
+                        $item->nama_pengirim = $guru;
                         $item->role_pengirim = 'Guru BK (Konselor)';
                     } elseif ($u->role === 'dinsos') {
-                        $item->nama_pengirim = $u->dinsos->first()?->nama ?? $u->name ?? $u->username;
+                        $dinsos = $u->dinsos->isNotEmpty() ? $u->dinsos->first()->nama : ($u->name ?? $u->username);
+                        $item->nama_pengirim = $dinsos;
                         $item->role_pengirim = 'Dinas Sosial';
                     } elseif ($u->role === 'kepala_sekolah') {
                         $item->nama_pengirim = $u->name ?? $u->username;
@@ -167,16 +171,19 @@ class FeedbackController extends Controller
     {
         $feedback->load(['pengaduan.siswa', 'pengaduan.user.siswas', 'gurubk', 'user.siswas', 'user.gurubks', 'user.dinsos']);
 
+        $currentUser = Auth::user();
+
         if ($feedback->pengaduan) {
             $p = $feedback->pengaduan;
             $user = $p->user ?? User::find($p->id_user);
-            $namaSiswa = $p->siswa?->nama ?? ($user && $user->siswas->isNotEmpty() ? $user->siswas[0]->nama : "Siswa #{$p->id_user}");
+            $isOwner = $currentUser && $currentUser->isSiswa() && $p->id_user === $currentUser->id_pengguna;
+            $namaSiswa = $isOwner ? ($p->siswa?->nama ?? "Saya (Siswa)") : '***';
             $lokasi = $p->lokasi ? ucfirst($p->lokasi) : 'Lokasi tidak diketahui';
             $bentuk = $p->bentuk_perundungan ? ucfirst($p->bentuk_perundungan) : 'Perundungan';
-            $feedback->judul_pengaduan = "{$bentuk} di {$lokasi} - {$namaSiswa}";
+            $feedback->judul_pengaduan = "{$bentuk} di {$lokasi} - " . ($isOwner ? $namaSiswa : 'Pelapor (***)');
             $feedback->nama_siswa = $namaSiswa;
-            $feedback->kelas_siswa = $p->siswa?->kelas ?? ($user && $user->siswas->isNotEmpty() ? $user->siswas[0]->kelas : '-');
-            $feedback->jurusan_siswa = $p->siswa?->jurusan ?? ($user && $user->siswas->isNotEmpty() ? $user->siswas[0]->jurusan : '-');
+            $feedback->kelas_siswa = $isOwner ? ($p->siswa?->kelas ?? ($user && $user->siswas->isNotEmpty() ? $user->siswas[0]->kelas : '-')) : '***';
+            $feedback->jurusan_siswa = $isOwner ? ($p->siswa?->jurusan ?? ($user && $user->siswas->isNotEmpty() ? $user->siswas[0]->jurusan : '-')) : '***';
         } else {
             $feedback->judul_pengaduan = 'Pengaduan Terhapus';
             $feedback->nama_siswa = '-';
@@ -187,8 +194,8 @@ class FeedbackController extends Controller
         if ($feedback->id_user) {
             $user = $feedback->user ?? User::find($feedback->id_user);
             if ($user && $user->role == 'siswa') {
-                $siswa = $user->siswas()->first();
-                $feedback->nama_pengirim = $siswa ? $siswa->nama : ($user->name ?? $user->username);
+                $isSelf = $currentUser && $currentUser->id_pengguna === $user->id_pengguna;
+                $feedback->nama_pengirim = $isSelf ? ($user->siswas->first()?->nama ?? 'Saya') : 'Siswa Pelapor (***)';
                 $feedback->role_pengirim = 'Siswa (Korban/Pelapor)';
             } elseif ($user && $user->role == 'gurubk') {
                 $guru = $user->gurubks()->first();
@@ -248,7 +255,14 @@ class FeedbackController extends Controller
 
     public function export()
     {
-        $feedback = Feedback::with(['pengaduan.siswa', 'pengaduan.user.siswas', 'gurubk', 'user'])->get();
+        $user = Auth::user();
+        $query = Feedback::with(['pengaduan.siswa', 'pengaduan.user.siswas', 'gurubk', 'user']);
+        if ($user && $user->isGuruBk() && $user->sekolah_id) {
+            $query->whereHas('pengaduan', function ($q) use ($user) {
+                $q->where('id_sekolah', $user->sekolah_id);
+            });
+        }
+        $feedback = $query->get();
         $pdf = Pdf::loadview('admin.feedback.export_pdf', ['data' => $feedback]);
         return $pdf->download('laporan-feedback-konseling.pdf');
     }

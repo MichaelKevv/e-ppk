@@ -211,11 +211,15 @@
 
                             <!-- Siswa / Korban -->
                             <td class="p-4">
-                                <div class="font-bold text-slate-800 text-xs">
+                                <div class="font-bold text-slate-800 text-xs {{ $item->nama_siswa === '***' ? 'font-mono' : '' }}">
                                     {{ $item->nama_siswa }}
                                 </div>
                                 <div class="text-[11px] text-slate-500">
-                                    {{ $item->kelas_siswa }} &bull; {{ $item->jurusan_siswa }}
+                                    @if ($item->nama_siswa === '***')
+                                        <span class="text-slate-400 italic">Identitas Dirahasiakan</span>
+                                    @else
+                                        {{ $item->kelas_siswa }} &bull; {{ $item->jurusan_siswa }}
+                                    @endif
                                 </div>
                             </td>
 

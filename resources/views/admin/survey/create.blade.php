@@ -72,7 +72,7 @@
                             <option value="">-- Tidak Terikat Kasus Khusus (Evaluasi Umum) --</option>
                             @foreach($pengaduanList as $p)
                                 <option value="{{ $p->id_pengaduan }}">
-                                    {{ $p->kode_kasus ?? '#'.$p->id_pengaduan }} - Pelapor: {{ $p->nama_pelapor ?? 'Anonim' }}
+                                    {{ $p->kode_kasus ?? '#'.$p->id_pengaduan }} - Pelapor: {{ $p->nama_pelapor ?: '***' }}
                                 </option>
                             @endforeach
                         </select>

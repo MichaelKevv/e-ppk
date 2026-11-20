@@ -121,8 +121,11 @@
                 <div class="space-y-3 text-xs">
                     <div>
                         <span class="text-slate-400 block text-[11px] font-semibold">Nama Siswa</span>
-                        <p class="font-bold text-slate-800 text-xs mt-0.5">
+                        <p class="font-bold text-slate-800 text-xs mt-0.5 {{ $feedback->nama_siswa === '***' ? 'font-mono' : '' }}">
                             {{ $feedback->nama_siswa }}
+                            @if ($feedback->nama_siswa === '***')
+                                <span class="text-slate-400 font-normal font-sans text-[11px]">(Anonim)</span>
+                            @endif
                         </p>
                     </div>
 
@@ -137,7 +140,7 @@
                         </div>
                     </div>
 
-                    @if ($feedback->pengaduan && $feedback->pengaduan->siswa)
+                    @if ($feedback->pengaduan && $feedback->pengaduan->siswa && Auth::user()->isSiswa() && Auth::id() === $feedback->pengaduan->id_user)
                         <div>
                             <span class="text-slate-400 block text-[11px] font-semibold">Kontak / No. Telepon</span>
                             <p class="font-semibold text-slate-700 mt-0.5">
@@ -174,7 +177,7 @@
                             $msgRole = strtolower($msg->user->role ?? '');
                             $isCounselor = in_array($msgRole, ['gurubk', 'dinsos', 'admin', 'admin_it']);
                             $senderName = match($msgRole) {
-                                'siswa' => $msg->user?->siswas->first()?->nama ?? $msg->user?->name ?? 'Siswa',
+                                'siswa' => (Auth::check() && Auth::user()->isSiswa() && Auth::id() === $msg->id_user) ? ($msg->user?->siswas->first()?->nama ?? 'Saya') : 'Siswa Pelapor (***)',
                                 'gurubk' => $msg->user?->gurubks->first()?->nama ?? $msg->user?->name ?? 'Guru BK',
                                 'dinsos' => $msg->user?->dinsos->first()?->nama ?? $msg->user?->name ?? 'Dinas Sosial',
                                 default => $msg->user?->name ?? $msg->user?->username ?? 'Petugas Lapora',

@@ -73,11 +73,11 @@
         <thead>
             <tr>
                 <th>#</th>
-                <th>Nama Siswa</th>
-                <th>Kelas</th>
-                <th>Jurusan</th>
-                <th>Judul</th>
-                <th>Deskripsi</th>
+                <th>Pelapor</th>
+                <th>Sekolah</th>
+                <th>Bentuk Kasus</th>
+                <th>Terduga Pelaku</th>
+                <th>Lokasi</th>
                 <th>Tanggal</th>
                 <th>Status</th>
             </tr>
@@ -86,13 +86,13 @@
             @foreach ($data as $pengaduan)
                 <tr>
                     <td>{{ $loop->iteration }}</td>
-                    <td>{{ $pengaduan->tb_siswa->nama }}</td>
-                    <td>{{ $pengaduan->tb_siswa->kelas }}</td>
-                    <td>{{ $pengaduan->tb_siswa->jurusan }}</td>
-                    <td>{{ $pengaduan->judul }}</td>
-                    <td>{!! $pengaduan->deskripsi !!}</td>
-                    <td>{{ \Carbon\Carbon::parse($pengaduan->created_at)->isoFormat('D MMMM YYYY HH:mm:ss') }}</td>
-                    <td>{{ $pengaduan->status }}</td>
+                    <td><strong>***</strong></td>
+                    <td>{{ $pengaduan->sekolah?->nama_sekolah ?? '-' }}</td>
+                    <td>{{ ucfirst($pengaduan->bentuk_perundungan ?? 'perundungan') }}</td>
+                    <td>{{ $pengaduan->nama_pelaku ?: 'Tidak Diketahui' }}</td>
+                    <td>{{ $pengaduan->lokasi ?: 'Lingkungan Sekolah' }}</td>
+                    <td>{{ \Carbon\Carbon::parse($pengaduan->created_at)->isoFormat('D MMMM YYYY HH:mm') }}</td>
+                    <td>{{ ucfirst($pengaduan->status) }}</td>
                 </tr>
             @endforeach
         </tbody>

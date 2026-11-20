@@ -189,10 +189,7 @@
         <tr>
             <td class="label">Pelapor / Korban</td>
             <td class="val">
-                <strong>{{ $pengaduan->siswa?->nama ?? ($pengaduan->user?->name ?? 'Anonim / Terproteksi') }}</strong>
-                @if($pengaduan->siswa?->kelas)
-                    (Kelas: {{ $pengaduan->siswa->kelas }})
-                @endif
+                <strong>***</strong> (Identitas Terproteksi / Anonim)
             </td>
         </tr>
         <tr>

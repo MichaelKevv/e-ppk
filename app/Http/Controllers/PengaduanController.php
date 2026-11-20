@@ -224,6 +224,16 @@ class PengaduanController extends Controller
         if ($user && $user->isGuruBk() && $pengaduan->id_sekolah && $user->sekolah_id && $pengaduan->id_sekolah !== $user->sekolah_id) {
             abort(403, 'Akses ditolak: Kasus ini terdaftar pada sekolah lain dan berada di luar yurisdiksi penanganan Anda.');
         }
+
+        // Anonimkan identitas pelapor jika yang melihat adalah Guru BK, Dinsos, atau Admin
+        if (!$user || !$user->isSiswa() || $pengaduan->id_user !== $user->id_pengguna) {
+            $pengaduan->nama_siswa = '***';
+            $pengaduan->kelas_siswa = '-';
+            if ($pengaduan->relationLoaded('siswa') && $pengaduan->siswa) {
+                $pengaduan->siswa->nama = '***';
+                $pengaduan->siswa->kelas = '-';
+            }
+        }
             
         return view('admin.pengaduan.detail', compact('pengaduan'));
     }
@@ -402,14 +412,19 @@ class PengaduanController extends Controller
 
     public function export()
     {
-        $pengaduan = Pengaduan::all();
+        $user = Auth::user();
+        $pengaduan = Pengaduan::forUser($user)->with(['sekolah'])->get();
         $pdf = Pdf::loadview('admin.pengaduan.export_pdf', ['data' => $pengaduan]);
         return $pdf->download('laporan-pengaduan-lapora.pdf');
     }
 
     public function export_single($id)
     {
+        $user = Auth::user();
         $pengaduan = Pengaduan::with(['sekolah', 'siswa', 'riwayatTindakan.user'])->findOrFail($id);
+        if ($user && $user->isGuruBk() && $pengaduan->id_sekolah && $user->sekolah_id && $pengaduan->id_sekolah !== $user->sekolah_id) {
+            abort(403, 'Akses ditolak: Kasus ini terdaftar pada sekolah lain.');
+        }
         $pdf = Pdf::loadview('admin.pengaduan.export_single', compact('pengaduan'));
         $filename = 'berita-acara-' . ($pengaduan->kode_kasus ?: 'kasus-' . $pengaduan->id_pengaduan) . '.pdf';
         return $pdf->download($filename);
